@@ -35,6 +35,19 @@ class AsyncCrewAIResearchTool:
         self.executor = ThreadPoolExecutor(max_workers=4)
         self.setup_llm_and_tools()
         self.setup_agents()
+
+    async def send_workflow_message(self, agent_name: str, message: str, data: Dict = None):
+        """Ana adımların durumunu bildirmek için bir iş akışı mesajı gönderir."""
+        if self.websocket_callback:
+            workflow_message = {
+                "type": "workflow_message",
+                "agent": agent_name,
+                "message": message,
+                "data": data or {},
+                "timestamp": datetime.utcnow().isoformat()
+            }
+            await self.websocket_callback(json.dumps(workflow_message))
+            print(f"📡 Workflow Message Sent: {agent_name} -> {message}")  # Debug için
         
     def setup_llm_and_tools(self):
         """LLM ve araçları ayarla"""
@@ -204,157 +217,79 @@ class AsyncCrewAIResearchTool:
         return result
     
     async def comprehensive_research(self, topic: str) -> Dict[str, Any]:
-        """Kapsamlı araştırma workflow'u - Tam asenkron"""
+        """Kapsamlı araştırma iş akışını yönetir."""
         research_data = {
-            "topic": topic,
-            "timestamp": datetime.utcnow().isoformat(),
-            "user": "al1berk",
+            "topic": topic, 
+            "timestamp": datetime.utcnow().isoformat(), 
             "subtopics": [],
-            "detailed_research": {},
-            "final_report": "",
-            "saved_files": [],
-            "workflow_steps": []
+            "detailed_research": {}, 
+            "final_report": ""
         }
         
         try:
-            # Başlangıç mesajı
-            await self.send_progress_update("🚀 CrewAI Multi-Agent sistemi başlatılıyor...")
-            await asyncio.sleep(0.5)  # UI'ın güncellenmesi için kısa bekleme
-            
-            # Step 1: Web araştırması başlat
-            await self.send_main_step_update("step1", "running", "🔍 Web araştırması başlatılıyor...")
-            await self.send_agent_message("WebResearcher", "🚀 Web araştırması başlatılıyor...", {"topic": topic})
+            # Adım 1: Web araştırması - BAŞLANGIÇ VE BİTİŞ MESAJLARI
+            await self.send_workflow_message("WebResearcher", "🔍 Web araştırması başlatılıyor...")
             
             initial_task = Task(
-                description=(
-                    f"'{topic}' konusu hakkında kapsamlı web araştırması yap.\n"
-                    "1. Konunun temel bilgilerini araştır\n"
-                    "2. Ana alt konuları belirle\n"
-                    "3. Güncel gelişmeleri araştır\n"
-                    "4. Kapsamlı bir ön rapor oluştur"
-                ),
-                expected_output="Konuyla ilgili kapsamlı ön araştırma raporu",
+                description=f"'{topic}' hakkında kapsamlı bir ön araştırma raporu oluştur.",
+                expected_output="Detaylı, iyi yapılandırılmış ve bilgilendirici ön araştırma raporu.",
                 agent=self.web_researcher
             )
-            
-            crew1 = Crew(
-                agents=[self.web_researcher],
-                tasks=[initial_task],
-                process=Process.sequential
-            )
-            
-            # Asenkron çalıştır
+            crew1 = Crew(agents=[self.web_researcher], tasks=[initial_task])
             result1 = await self.run_crew_async(crew1)
-            if not result1["success"]:
+            
+            if not result1["success"]: 
                 raise Exception(f"Web araştırması hatası: {result1['error']}")
+                
+            await self.send_workflow_message("WebResearcher", "✅ Web araştırması tamamlandı")
             
-            initial_result = result1["result"]
-            await self.send_main_step_update("step1", "completed", "✅ Web araştırması tamamlandı")
-            await self.send_agent_message("WebResearcher", "✅ Web araştırması tamamlandı", {
-                "result_length": len(str(initial_result))
-            })
-            research_data["workflow_steps"].append("initial_web_research")
-            
-            # Step 2: YouTube analizi başlat
-            await self.send_main_step_update("step2", "running", "📹 YouTube analizi başlatılıyor...")
-            await self.send_agent_message("YouTubeAnalyst", "📹 YouTube içerik analizi başlatılıyor...", {"topic": topic})
+            # Adım 2: YouTube analizi - BAŞLANGIÇ VE BİTİŞ MESAJLARI
+            await self.send_workflow_message("YouTubeAnalyst", "📹 YouTube analizi başlatılıyor...")
             
             youtube_task = Task(
-                description=(
-                    f"'{topic}' konusu hakkında YouTube'da araştırma yap.\n"
-                    "1. En alakalı videoları bul\n"
-                    "2. En iyi videonun transkriptini çıkar\n"
-                    "3. Video içeriğini özetle\n"
-                    "4. Web araştırmasını tamamlayacak bilgileri çıkar"
-                ),
-                expected_output="YouTube videolarından çıkarılan ek bilgiler",
+                description=f"'{topic}' hakkında en popüler ve bilgilendirici YouTube videolarını bul. En iyi videonun transkriptini çıkar ve anahtar noktaları özetle.",
+                expected_output="YouTube video analizi, transkript özeti ve önemli bulgular.",
                 agent=self.youtube_analyst
             )
-            
-            crew2 = Crew(
-                agents=[self.youtube_analyst],
-                tasks=[youtube_task],
-                process=Process.sequential
-            )
-            
-            # Asenkron çalıştır
+            crew2 = Crew(agents=[self.youtube_analyst], tasks=[youtube_task])
             result2 = await self.run_crew_async(crew2)
-            if not result2["success"]:
+            
+            if not result2["success"]: 
                 raise Exception(f"YouTube analizi hatası: {result2['error']}")
+                
+            await self.send_workflow_message("YouTubeAnalyst", "✅ YouTube analizi tamamlandı")
             
-            youtube_result = result2["result"]
-            await self.send_main_step_update("step2", "completed", "✅ YouTube analizi tamamlandı")
-            await self.send_agent_message("YouTubeAnalyst", "✅ YouTube analizi tamamlandı", {
-                "result_length": len(str(youtube_result))
-            })
-            research_data["workflow_steps"].append("youtube_analysis")
+            # Adım 3: Rapor yapılandırma - BAŞLANGIÇ VE BİTİŞ MESAJLARI
+            await self.send_workflow_message("ReportProcessor", "📋 Rapor yapılandırılıyor...")
             
-            # Step 3: Rapor yapılandırma başlat
-            await self.send_main_step_update("step3", "running", "📋 Rapor yapılandırılıyor...")
-            await self.send_agent_message("ReportProcessor", "📋 Rapor yapılandırması başlatılıyor...", {})
-            
-            combined_content = f"WEB ARAŞTIRMASI:\n{initial_result}\n\nYOUTUBE ANALİZİ:\n{youtube_result}"
+            combined_content = f"WEB ARAŞTIRMA SONUÇLARI:\n{result1['result']}\n\nYOUTUBE ANALİZ SONUÇLARI:\n{result2['result']}"
             
             structure_result = await self.structure_report_with_retry_async(combined_content, topic)
-            if not structure_result:
-                raise Exception("Rapor yapılandırması başarısız")
+            if not structure_result: 
+                raise Exception("Rapor yapılandırması başarısız oldu.")
             
-            research_data["subtopics"] = structure_result
-            
-            await self.send_main_step_update("step3", "completed", "✅ Rapor yapılandırması tamamlandı")
-            await self.send_agent_message("ReportProcessor", "✅ Rapor yapılandırması tamamlandı", {
-                "subtopics_count": len(structure_result)
-            })
-            research_data["workflow_steps"].append("report_structuring")
-            
-            # Alt konuları gönder
+            await self.send_workflow_message("ReportProcessor", "✅ Rapor yapılandırması tamamlandı")
             await self.send_subtopics_found(structure_result)
-            await asyncio.sleep(1)  # UI'ın alt konuları göstermesi için
             
-            # Step 4: Alt başlıkları detaylandır
-            await self.send_agent_message("DetailResearcher", "🔍 Alt başlıklar detaylandırılıyor...", {
-                "subtopics_count": len(structure_result)
-            })
-            
+            # Adım 4: Detaylı araştırma
             detailed_sections = await self.detail_each_section_async(structure_result, topic)
             research_data["detailed_research"] = detailed_sections
-            research_data["workflow_steps"].append("detailed_research")
             
-            await self.send_agent_message("DetailResearcher", "✅ Tüm alt başlıklar detaylandırıldı", {
-                "detailed_count": len(detailed_sections)
-            })
-            
-            # Step 5: Final raporu kaydet
-            await self.send_agent_message("DataManager", "💾 Final rapor kaydediliyor...", {})
-            
+            # Adım 5: Final rapor
+            final_report = self.create_presentation_summary(detailed_sections, topic)
+            research_data["final_report"] = final_report
+
+            # Adım 6: Dosyaya kaydet
             saved_file = await self.save_final_research(detailed_sections, topic)
             if saved_file:
-                research_data["saved_files"].append(saved_file)
-            
-            research_data["workflow_steps"].append("file_saving")
-            
-            await self.send_agent_message("DataManager", "✅ Rapor başarıyla kaydedildi", {
-                "filename": saved_file
-            })
-            
-            # Final özet oluştur
-            research_data["final_report"] = await self.create_presentation_summary(detailed_sections, topic)
-            
-            await self.send_progress_update("🎉 Araştırma tamamen tamamlandı!", {
-                "total_subtopics": len(detailed_sections),
-                "saved_file": saved_file,
-                "workflow_completed": True
-            })
-            
+                research_data["saved_file"] = saved_file
+
             return research_data
             
         except Exception as e:
-            await self.send_progress_update(f"❌ Araştırma hatası: {str(e)}", {
-                "error": str(e),
-                "workflow_failed": True
-            })
-            raise e
-    
+            error_report = f"Üzgünüm, '{topic}' araştırması sırasında bir hata oluştu: {e}"
+            return {"final_report": error_report, "detailed_research": []}
+
     async def structure_report_with_retry_async(self, content: str, topic: str, max_retries: int = 3) -> List[Dict]:
         """Raporu yapılandır - Asenkron retry mekanizması ile"""
         
@@ -365,7 +300,7 @@ class AsyncCrewAIResearchTool:
                 structure_task = Task(
                     description=(
                         f"Aşağıdaki araştırma içeriğini analiz et ve {topic} konusu için "
-                        f"mantıklı alt başlıklara böl:\n\n{content[:2000]}...\n\n"  # Content'i kısalt
+                        f"mantıklı alt başlıklara böl:\n\n{content[:2000]}...\n\n"
                         "GÖREV:\n"
                         "1. İçeriği incele ve ana konuları belirle\n"
                         "2. 4-6 arası alt başlık oluştur\n"
@@ -434,7 +369,7 @@ class AsyncCrewAIResearchTool:
                 await self.send_progress_update(f"❌ JSON hatası (deneme {attempt + 1}): {str(e)}")
                 if attempt == max_retries - 1:
                     return None
-                await asyncio.sleep(1)  # Kısa bekleme
+                await asyncio.sleep(1)
         
         return None
     
@@ -446,7 +381,6 @@ class AsyncCrewAIResearchTool:
             alt_baslik = section['alt_baslik']
             mevcut_aciklama = section['aciklama']
             
-            # Alt konu başladığını bildir
             await self.send_subtopic_update(alt_baslik, "running")
             await self.send_agent_message("DetailResearcher", f"🔍 Alt başlık {i}/{len(sections)} detaylandırılıyor: {alt_baslik}")
             
@@ -472,7 +406,6 @@ class AsyncCrewAIResearchTool:
                 process=Process.sequential
             )
             
-            # Asenkron çalıştır
             result = await self.run_crew_async(crew)
             if not result["success"]:
                 detailed_content = f"Hata: {result['error']}"
@@ -484,11 +417,9 @@ class AsyncCrewAIResearchTool:
                 "aciklama": detailed_content
             })
             
-            # Alt konu tamamlandığını bildir
             await self.send_subtopic_update(alt_baslik, "completed", detailed_content)
             await self.send_agent_message("DetailResearcher", f"✅ '{alt_baslik}' detaylandırıldı ({i}/{len(sections)})")
             
-            # Her alt konu arasında kısa bekleme
             await asyncio.sleep(0.5)
         
         return detailed_sections
@@ -501,12 +432,10 @@ class AsyncCrewAIResearchTool:
             safe_topic = safe_topic.replace(' ', '_')[:30]
             filename = f"crew_research_{safe_topic}_{timestamp}.json"
             
-            # Research dizini oluştur
             research_dir = Path("research_data")
             research_dir.mkdir(exist_ok=True)
             file_path = research_dir / filename
             
-            # Veriyi hazırla
             final_data = {
                 "topic": topic,
                 "timestamp": datetime.utcnow().isoformat(),
@@ -520,7 +449,6 @@ class AsyncCrewAIResearchTool:
                 }
             }
             
-            # Dosyaya kaydet
             async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
                 await f.write(json.dumps(final_data, ensure_ascii=False, indent=2))
             
@@ -530,7 +458,7 @@ class AsyncCrewAIResearchTool:
             await self.send_progress_update(f"❌ Dosya kaydetme hatası: {str(e)}")
             return None
     
-    async def create_presentation_summary(self, detailed_sections: List[Dict], topic: str) -> str:
+    def create_presentation_summary(self, detailed_sections: List[Dict], topic: str) -> str:
         """Sunum için özet oluştur"""
         summary = f"🔍 **'{topic}' Araştırması Tamamlandı!**\n\n"
         summary += "📋 **CrewAI Multi-Agent Sistemi Tarafından Keşfedilen Konular:**\n"
@@ -540,12 +468,10 @@ class AsyncCrewAIResearchTool:
         
         summary += f"\n🚀 **İlk konu ile başlıyorum:** {detailed_sections[0]['alt_baslik'] if detailed_sections else 'Genel bilgiler'}\n\n"
         
-        # İlk konuyu detaylandır
         if detailed_sections:
             first_section = detailed_sections[0]
             summary += f"**{first_section['alt_baslik']} Hakkında:**\n"
             
-            # İlk konunun açıklamasının ilk 500 karakteri
             description = first_section['aciklama']
             if len(description) > 500:
                 summary += description[:500] + "...\n"
@@ -566,28 +492,6 @@ class AsyncCrewAIA2AHandler:
         self.websocket_callback = websocket_callback
         self.crew_tool = AsyncCrewAIResearchTool(websocket_callback)
     
-    async def research_workflow(self, query: str) -> Dict:
-        """CrewAI ile Asenkron A2A protokolü research workflow'u"""
-        
-        # Workflow başlangıcı
-        await self.send_workflow_message("CrewAI-Manager", "🚀 Asenkron Multi-Agent araştırma sistemi başlatılıyor", {
-            "query": query,
-            "agents": ["WebResearcher", "YouTubeAnalyst", "ReportProcessor", "DetailResearcher", "DataManager"],
-            "mode": "async"
-        })
-        
-        # Ana araştırmayı başlat
-        result = await self.crew_tool.comprehensive_research(query)
-        
-        # Workflow tamamlanması
-        await self.send_workflow_message("CrewAI-Manager", "✅ Asenkron Multi-Agent araştırma workflow'u tamamlandı", {
-            "subtopics_count": len(result.get("detailed_research", [])),
-            "workflow_steps": result.get("workflow_steps", []),
-            "saved_files": result.get("saved_files", [])
-        })
-        
-        return result
-    
     async def send_workflow_message(self, agent_name: str, message: str, data: Dict = None):
         """Workflow mesajı gönder"""
         if self.websocket_callback:
@@ -599,6 +503,25 @@ class AsyncCrewAIA2AHandler:
                 "timestamp": datetime.utcnow().isoformat()
             }
             await self.websocket_callback(json.dumps(workflow_message))
+    
+    async def research_workflow(self, query: str) -> Dict:
+        """CrewAI ile Asenkron A2A protokolü research workflow'u"""
+        
+        await self.send_workflow_message("CrewAI-Manager", "🚀 Asenkron Multi-Agent araştırma sistemi başlatılıyor", {
+            "query": query,
+            "agents": ["WebResearcher", "YouTubeAnalyst", "ReportProcessor", "DetailResearcher", "DataManager"],
+            "mode": "async"
+        })
+        
+        result = await self.crew_tool.comprehensive_research(query)
+        
+        await self.send_workflow_message("CrewAI-Manager", "✅ Asenkron Multi-Agent araştırma workflow'u tamamlandı", {
+            "subtopics_count": len(result.get("detailed_research", [])),
+            "workflow_steps": result.get("workflow_steps", []),
+            "saved_files": result.get("saved_files", [])
+        })
+        
+        return result
 
 # Test fonksiyonu
 async def test_async_crew_research():

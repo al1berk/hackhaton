@@ -84,6 +84,7 @@ class LangGraphChatWithProgress {
     }
 
     handleIncomingMessage(data) {
+        console.log('Incoming message:', data); // Debug için
         this.removeTypingIndicator();
 
         switch(data.type) {
@@ -231,29 +232,78 @@ class LangGraphChatWithProgress {
     }
 
     handleCrewProgress(data) {
+        console.log('Crew Progress:', data); // Debug için
+        
+        // Main step güncelleme
         if (data.step_data && data.step_data.main_step) {
             this.updateMainStepStatus(data.step_data.main_step, data.step_data.status || 'running');
         }
         
+        // Agent bazlı güncelleme
         if (data.agent) {
             this.updateStepStatusByAgent(data.agent, data.message);
         }
     }
 
     handleWorkflowMessage(data) {
-        if (data.agent === 'WebResearcher') {
-            this.updateMainStepStatus('step1', data.message.includes('tamamlandı') ? 'completed' : 'running');
-        } else if (data.agent === 'YouTubeAnalyst') {
-            this.updateMainStepStatus('step2', data.message.includes('tamamlandı') ? 'completed' : 'running');
-        } else if (data.agent === 'ReportProcessor') {
-            this.updateMainStepStatus('step3', data.message.includes('tamamlandı') ? 'completed' : 'running');
-            if (data.message.includes('tamamlandı')) {
-                setTimeout(() => this.waitForSubTopics(), 1000);
-            }
+        console.log('Workflow Message:', data); // Debug için
+        
+        // Agent-to-step mapping
+        const agentToStep = {
+            'WebResearcher': 'step1',
+            'YouTubeAnalyst': 'step2', 
+            'ReportProcessor': 'step3'
+        };
+        
+        const stepId = agentToStep[data.agent];
+        if (!stepId) {
+            console.warn('Unknown agent:', data.agent);
+            return;
+        }
+
+        // Status belirleme - daha kesin kontrol
+        let status = 'running';
+        if (data.message.includes('tamamlandı') || data.message.includes('✅')) {
+            status = 'completed';
+        } else if (data.message.includes('başlatılıyor') || data.message.includes('🔍') || data.message.includes('📹') || data.message.includes('📋')) {
+            status = 'running';
+        }
+        
+        console.log(`Updating step ${stepId} to ${status}`); // Debug için
+        this.updateMainStepStatus(stepId, status);
+        
+        // Step 3 tamamlandığında alt konuları bekle
+        if (stepId === 'step3' && status === 'completed') {
+            setTimeout(() => {
+                this.waitForSubTopics();
+            }, 1000);
         }
     }
 
+    updateStepStatusByAgent(agentName, message) {
+        console.log(`updateStepStatusByAgent: ${agentName} -> ${message}`); // Debug için
+        
+        const agentToStep = {
+            'WebResearcher': 'step1',
+            'YouTubeAnalyst': 'step2',
+            'ReportProcessor': 'step3',
+            'DetailResearcher': null // Bu alt konular için
+        };
+        
+        const stepId = agentToStep[agentName];
+        if (!stepId) return;
+        
+        let status = 'running';
+        if (message.includes('tamamlandı') || message.includes('✅')) {
+            status = 'completed';
+        }
+        
+        this.updateMainStepStatus(stepId, status);
+    }
+
     handleA2AMessage(data) {
+        console.log('A2A Message:', data); // Debug için
+        
         if (data.message.includes('detaylandırılıyor')) {
             const topicMatch = data.message.match(/Alt başlık \d+\/\d+ detaylandırılıyor: (.+)/);
             if (topicMatch) this.updateSubTopicStatus(topicMatch[1], 'running');
@@ -264,8 +314,13 @@ class LangGraphChatWithProgress {
     }
 
     updateMainStepStatus(stepId, status) {
+        console.log(`updateMainStepStatus called: ${stepId} -> ${status}`); // Debug için
+        
         const stepElement = document.getElementById(`main-step-${stepId}`);
-        if (!stepElement) return;
+        if (!stepElement) {
+            console.warn(`Step element not found: main-step-${stepId}`);
+            return;
+        }
         
         const icons = {
             pending: stepElement.querySelector('.pending-icon'),
@@ -274,24 +329,41 @@ class LangGraphChatWithProgress {
         };
         const statusText = stepElement.querySelector('.step-status');
         
-        Object.values(icons).forEach(icon => icon.style.display = 'none');
+        // Önce tüm ikonları gizle ve sınıfları kaldır
+        Object.values(icons).forEach(icon => {
+            if (icon) icon.style.display = 'none';
+        });
         stepElement.classList.remove('pending', 'running', 'completed');
 
+        // Yeni duruma göre ayarla
         switch(status) {
             case 'running':
-                icons.running.style.display = 'inline-block';
-                statusText.textContent = 'İşlem devam ediyor...';
-                stepElement.classList.add('running');
+                if (icons.running) {
+                    icons.running.style.display = 'inline-block';
+                    statusText.textContent = 'İşlem devam ediyor...';
+                    stepElement.classList.add('running');
+                }
                 break;
             case 'completed':
-                icons.completed.style.display = 'inline-block';
-                statusText.textContent = 'Tamamlandı ✓';
-                stepElement.classList.add('completed');
+                if (icons.completed) {
+                    icons.completed.style.display = 'inline-block';
+                    statusText.textContent = 'Tamamlandı ✓';
+                    stepElement.classList.add('completed');
+                }
                 break;
-            default:
-                icons.pending.style.display = 'inline-block';
-                statusText.textContent = 'Bekliyor...';
-                stepElement.classList.add('pending');
+            default: // pending
+                if (icons.pending) {
+                    icons.pending.style.display = 'inline-block';
+                    statusText.textContent = 'Bekliyor...';
+                    stepElement.classList.add('pending');
+                }
+        }
+        
+        // State'i güncelle
+        const step = this.researchProgress.mainSteps.find(s => s.id === stepId);
+        if (step) {
+            step.status = status;
+            console.log(`Step ${stepId} updated to ${status}`); // Debug için
         }
     }
 

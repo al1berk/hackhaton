@@ -12,7 +12,7 @@ class Config:
     BRAVE_API_KEY = os.getenv("BRAVE_API_KEY")
     
     # Model configurations
-    GEMINI_MODEL = "gemini-2.5-pro"
+    GEMINI_MODEL = "gemini-2.5-flash"
     GEMINI_TEMPERATURE = 0.7
     GEMINI_MAX_TOKENS = 2048
     
