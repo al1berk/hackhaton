@@ -1,0 +1,172 @@
+/* static/css/components/buttons.css */
+
+.new-chat-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.new-chat-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.settings-btn {
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.settings-btn:hover {
+    background: var(--background-color);
+    color: var(--primary-color);
+}
+
+.input-actions button {
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.attach-btn, .emoji-btn {
+    background: transparent;
+    color: var(--text-muted);
+}
+
+.attach-btn:hover, .emoji-btn:hover {
+    background: var(--border-color);
+    color: var(--text-primary);
+}
+
+.send-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+.send-btn:hover:not(:disabled) {
+    background: var(--primary-hover);
+    transform: scale(1.05);
+}
+
+.send-btn:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.close-btn {
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+    background: var(--background-color);
+    color: var(--text-primary);
+}
+
+.confirmation-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.confirmation-btn.yes {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.confirmation-btn.yes:hover {
+    background-color: #047857;
+}
+
+.confirmation-btn.no {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.confirmation-btn.no:hover {
+    background-color: #b91c1c;
+}
+
+.export-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.export-btn:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+}
+
+.view-report-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+    min-width: 250px;
+}
+
+.view-report-btn:hover {
+    background: linear-gradient(135deg, #218838 0%, #1e7e8c 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(40,167,69,0.4);
+}
+
+.view-report-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(40,167,69,0.3);
+}
+
+.view-report-btn i {
+    font-size: 18px;
+}

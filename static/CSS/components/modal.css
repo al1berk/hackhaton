@@ -1,0 +1,123 @@
+/* static/css/components/modal.css */
+
+.modal-overlay, .topic-detail-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none; /* Changed to none, JS will handle display */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal, .topic-detail-modal {
+    background: var(--surface-color);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    animation: modalSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal {
+    max-width: 500px;
+}
+
+.modal-header, .topic-detail-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px 16px 0 0;
+}
+
+.modal-header h3, .topic-detail-header h2 {
+    font-weight: 600;
+    color: #495057;
+    margin: 0;
+}
+
+.modal-body, .topic-detail-body {
+    padding: 25px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.setting-group {
+    margin-bottom: 1.5rem;
+}
+
+.setting-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.setting-group select, .setting-group input[type="checkbox"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--surface-color);
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.setting-group input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Topic Detail Specific */
+.topic-detail-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.topic-content {
+    line-height: 1.6;
+    color: #495057;
+    font-size: 15px;
+}
+.topic-content p { margin-bottom: 15px; }
+.topic-content strong { color: #212529; font-weight: 600; }
+.topic-content code { background: #f8f9fa; padding: 2px 6px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 13px; }
+
+.topic-meta {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #dee2e6;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.meta-item i { margin-right: 8px; width: 16px; }
+
+.topic-detail-footer {
+    padding: 20px 25px;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    background: #f8f9fa;
+    border-radius: 0 0 16px 16px;
+}

@@ -1,0 +1,62 @@
+/* static/css/components/chat_history.css */
+
+.chat-history {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.chat-history-header {
+    padding: 1rem 1.5rem 0.5rem;
+}
+
+.chat-history-header h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.chat-list {
+    padding: 0 1rem;
+}
+
+.chat-item {
+    padding: 0.75rem;
+    margin-bottom: 0.25rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.chat-item:hover {
+    background: var(--background-color);
+    border-color: var(--border-color);
+}
+
+.chat-item.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.chat-item-title {
+    font-weight: 500;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chat-item-preview {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chat-item.active .chat-item-preview {
+    color: rgba(255, 255, 255, 0.8);
+}

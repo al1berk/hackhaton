@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .connected { background: #d4edda; color: #155724; }
+        .disconnected { background: #f8d7da; color: #721c24; }
+        .error { background: #fff3cd; color: #856404; }
+        .log { background: #f8f9fa; padding: 10px; margin: 10px 0; border-left: 4px solid #007bff; max-height: 300px; overflow-y: auto; }
+        button { padding: 10px 15px; margin: 5px; border: none; border-radius: 3px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        input { padding: 8px; margin: 5px; width: 300px; }
+    </style>
+</head>
+<body>
+    <h1>🔧 WebSocket Debug Test</h1>
+    
+    <div class="status disconnected" id="status">
+        🔴 Bağlantı Yok
+    </div>
+    
+    <div>
+        <button class="btn-primary" onclick="connectWebSocket()">Bağlan</button>
+        <button class="btn-danger" onclick="disconnectWebSocket()">Bağlantıyı Kes</button>
+        <button class="btn-success" onclick="clearLog()">Logları Temizle</button>
+    </div>
+    
+    <div>
+        <input type="text" id="messageInput" placeholder="Test mesajı yazın..." value="Merhaba test">
+        <button class="btn-success" onclick="sendTestMessage()">Mesaj Gönder</button>
+    </div>
+    
+    <h3>📋 Debug Logları:</h3>
+    <div class="log" id="logContainer"></div>
+
+    <script>
+        let ws = null;
+        let connectionAttempts = 0;
+        const maxAttempts = 5;
+
+        function log(message, type = 'info') {
+            const now = new Date().toLocaleTimeString();
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            logEntry.innerHTML = `<strong>[${now}]</strong> ${message}`;
+            logEntry.style.color = type === 'error' ? '#dc3545' : type === 'success' ? '#28a745' : '#333';
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[${now}] ${message}`);
+        }
+
+        function updateStatus(status, message) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${status}`;
+            statusDiv.innerHTML = message;
+        }
+
+        function connectWebSocket() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                log('⚠️ WebSocket zaten bağlı!', 'error');
+                return;
+            }
+
+            connectionAttempts++;
+            log(`🔄 Bağlantı denemesi #${connectionAttempts}`);
+
+            // Different URL attempts
+            const protocols = ['ws:', 'wss:'];
+            const hosts = ['localhost:8000', '127.0.0.1:8000', window.location.host];
+            const currentProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            
+            const wsUrl = `${currentProtocol}//${window.location.host}/ws`;
+            log(`🔗 Bağlantı URL'si: ${wsUrl}`);
+
+            try {
+                ws = new WebSocket(wsUrl);
+                
+                ws.onopen = function(event) {
+                    log('✅ WebSocket bağlantısı başarıyla kuruldu!', 'success');
+                    updateStatus('connected', '🟢 Bağlandı');
+                    connectionAttempts = 0;
+                    
+                    // Send connection test
+                    const testMessage = {
+                        type: 'connection_test',
+                        timestamp: new Date().toISOString(),
+                        client_info: {
+                            userAgent: navigator.userAgent,
+                            url: window.location.href
+                        }
+                    };
+                    
+                    ws.send(JSON.stringify(testMessage));
+                    log('📤 Bağlantı test mesajı gönderildi');
+                };
+
+                ws.onmessage = function(event) {
+                    log(`📨 Mesaj alındı: ${event.data}`, 'success');
+                    
+                    try {
+                        const data = JSON.parse(event.data);
+                        log(`📋 Parsed JSON: ${JSON.stringify(data, null, 2)}`);
+                    } catch (e) {
+                        log(`📋 Raw mesaj (JSON değil): ${event.data}`);
+                    }
+                };
+
+                ws.onclose = function(event) {
+                    log(`🔌 WebSocket bağlantısı kapandı. Code: ${event.code}, Reason: ${event.reason || 'Sebep belirtilmedi'}`, 'error');
+                    updateStatus('disconnected', '🔴 Bağlantı Kesildi');
+                    
+                    // Auto reconnect logic
+                    if (connectionAttempts < maxAttempts && event.code !== 1000) {
+                        setTimeout(() => {
+                            log(`🔄 Otomatik yeniden bağlanma ${connectionAttempts + 1}/${maxAttempts}`);
+                            connectWebSocket();
+                        }, 2000 * connectionAttempts); // Exponential backoff
+                    }
+                };
+
+                ws.onerror = function(error) {
+                    log(`❌ WebSocket hatası: ${error}`, 'error');
+                    updateStatus('error', '🟡 Bağlantı Hatası');
+                };
+
+            } catch (error) {
+                log(`❌ WebSocket oluşturma hatası: ${error.message}`, 'error');
+                updateStatus('error', '🟡 Oluşturma Hatası');
+            }
+        }
+
+        function disconnectWebSocket() {
+            if (ws) {
+                ws.close(1000, 'Manual disconnect');
+                log('🔌 Bağlantı manuel olarak kapatıldı');
+            } else {
+                log('⚠️ Kapatılacak WebSocket bağlantısı yok', 'error');
+            }
+        }
+
+        function sendTestMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) {
+                log('⚠️ Boş mesaj gönderilemez', 'error');
+                return;
+            }
+            
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                log('❌ WebSocket bağlı değil, önce bağlanın', 'error');
+                return;
+            }
+
+            try {
+                const testData = {
+                    message: message,
+                    timestamp: new Date().toISOString(),
+                    test: true
+                };
+                
+                ws.send(JSON.stringify(testData));
+                log(`📤 Test mesajı gönderildi: ${message}`, 'success');
+                input.value = '';
+            } catch (error) {
+                log(`❌ Mesaj gönderme hatası: ${error.message}`, 'error');
+            }
+        }
+
+        function clearLog() {
+            document.getElementById('logContainer').innerHTML = '';
+            log('🧹 Loglar temizlendi');
+        }
+
+        // Auto-connect on page load
+        window.onload = function() {
+            log('🚀 Sayfa yüklendi, otomatik bağlantı başlatılıyor...');
+            connectWebSocket();
+        };
+
+        // Enter key to send message
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendTestMessage();
+            }
+        });
+    </script>
+</body>
+</html>

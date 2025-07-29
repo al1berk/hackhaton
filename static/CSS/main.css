@@ -1,0 +1,19 @@
+/* static/css/main.css */
+
+/* Temel ve genel stiller */
+@import url('base.css');
+
+/* Ana sayfa yerleşim iskeleti */
+@import url('layout.css');
+
+/* Bileşen stilleri */
+@import url('components/buttons.css');
+@import url('components/chat_history.css');
+@import url('components/messages.css');
+@import url('components/modal.css');
+
+/* Dinamik olarak oluşturulan ilerleme göstergeleri */
+@import url('progress.css');
+
+/* En sonda yer alması gereken responsive stiller */
+@import url('responsive.css');
