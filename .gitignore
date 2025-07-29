@@ -1,3 +1,14 @@
+# Python Sanal Ortamı
 btk_env/
 venv/
+.venv/
+
+# Python cache
 __pycache__/
+*.pyc
+
+# Geçici ses dosyaları
+temp_audio_*
+
+# Diğer genel dosyalar
+.DS_Store
