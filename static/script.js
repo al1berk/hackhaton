@@ -11,6 +11,8 @@ class LangGraphChatWithProgress {
             currentSubTopic: null
         };
         this.completedTopics = {};
+        this.expandedTopics = new Set(); // Açık olan alt başlıkları takip etmek için
+        this.researchCompleted = false; // Araştırma tamamlandı mı?
         
         this.messageInput = document.getElementById('messageInput');
         this.sendBtn = document.getElementById('sendBtn');
@@ -84,7 +86,7 @@ class LangGraphChatWithProgress {
     }
 
     handleIncomingMessage(data) {
-        console.log('Incoming message:', data); // Debug için
+        console.log('Incoming message:', data);
         this.removeTypingIndicator();
 
         switch(data.type) {
@@ -98,38 +100,48 @@ class LangGraphChatWithProgress {
             case 'confirmation_request':
                 this.showConfirmationUI(data.content);
                 break;
-                
+            
             case 'crew_research_start':
                 this.initializeMainSteps();
+                this.researchCompleted = false;
                 break;
-                
+            
             case 'crew_progress':
                 this.handleCrewProgress(data);
                 break;
-                
+            
             case 'workflow_message':
                 this.handleWorkflowMessage(data);
                 break;
-                
+            
             case 'a2a_message':
                 this.handleA2AMessage(data);
                 break;
-                
+            
             case 'subtopics_found':
+                console.log('Subtopics found:', data.subtopics);
                 this.initializeSubTopics(data.subtopics);
                 break;
-                
+            
             case 'subtopic_progress':
+                console.log('Subtopic progress:', data);
                 this.updateSubTopicProgress(data);
                 break;
-                
+            
             case 'system':
                 this.addMessage(data.content, 'system');
                 break;
-                
+            
             default:
                 if (data.content && data.content.trim() !== "") {
                     this.addMessage(data.content, 'ai');
+                    
+                    // Araştırma tamamlandı mı kontrol et
+                    if (data.content.includes('Araştırması Tamamlandı') || data.content.includes('araştırma workflow\'u tamamlandı')) {
+                        this.researchCompleted = true;
+                        this.showViewReportButton();
+                        this.sendFollowUpMessage();
+                    }
                 }
         }
         
@@ -160,7 +172,9 @@ class LangGraphChatWithProgress {
             
             confirmationContainer.remove();
             
-            this.showTypingIndicator();
+            if (isConfirmed) {
+                this.showTypingIndicator();
+            }
         };
 
         yesButton.onclick = () => sendConfirmation(true);
@@ -232,23 +246,20 @@ class LangGraphChatWithProgress {
     }
 
     handleCrewProgress(data) {
-        console.log('Crew Progress:', data); // Debug için
+        console.log('Crew Progress:', data);
         
-        // Main step güncelleme
         if (data.step_data && data.step_data.main_step) {
             this.updateMainStepStatus(data.step_data.main_step, data.step_data.status || 'running');
         }
         
-        // Agent bazlı güncelleme
         if (data.agent) {
             this.updateStepStatusByAgent(data.agent, data.message);
         }
     }
 
     handleWorkflowMessage(data) {
-        console.log('Workflow Message:', data); // Debug için
+        console.log('Workflow Message:', data);
         
-        // Agent-to-step mapping
         const agentToStep = {
             'WebResearcher': 'step1',
             'YouTubeAnalyst': 'step2', 
@@ -261,7 +272,6 @@ class LangGraphChatWithProgress {
             return;
         }
 
-        // Status belirleme - daha kesin kontrol
         let status = 'running';
         if (data.message.includes('tamamlandı') || data.message.includes('✅')) {
             status = 'completed';
@@ -269,10 +279,9 @@ class LangGraphChatWithProgress {
             status = 'running';
         }
         
-        console.log(`Updating step ${stepId} to ${status}`); // Debug için
+        console.log(`Updating step ${stepId} to ${status}`);
         this.updateMainStepStatus(stepId, status);
         
-        // Step 3 tamamlandığında alt konuları bekle
         if (stepId === 'step3' && status === 'completed') {
             setTimeout(() => {
                 this.waitForSubTopics();
@@ -281,13 +290,13 @@ class LangGraphChatWithProgress {
     }
 
     updateStepStatusByAgent(agentName, message) {
-        console.log(`updateStepStatusByAgent: ${agentName} -> ${message}`); // Debug için
+        console.log(`updateStepStatusByAgent: ${agentName} -> ${message}`);
         
         const agentToStep = {
             'WebResearcher': 'step1',
             'YouTubeAnalyst': 'step2',
             'ReportProcessor': 'step3',
-            'DetailResearcher': null // Bu alt konular için
+            'DetailResearcher': null
         };
         
         const stepId = agentToStep[agentName];
@@ -302,7 +311,7 @@ class LangGraphChatWithProgress {
     }
 
     handleA2AMessage(data) {
-        console.log('A2A Message:', data); // Debug için
+        console.log('A2A Message:', data);
         
         if (data.message.includes('detaylandırılıyor')) {
             const topicMatch = data.message.match(/Alt başlık \d+\/\d+ detaylandırılıyor: (.+)/);
@@ -314,7 +323,7 @@ class LangGraphChatWithProgress {
     }
 
     updateMainStepStatus(stepId, status) {
-        console.log(`updateMainStepStatus called: ${stepId} -> ${status}`); // Debug için
+        console.log(`updateMainStepStatus called: ${stepId} -> ${status}`);
         
         const stepElement = document.getElementById(`main-step-${stepId}`);
         if (!stepElement) {
@@ -329,13 +338,11 @@ class LangGraphChatWithProgress {
         };
         const statusText = stepElement.querySelector('.step-status');
         
-        // Önce tüm ikonları gizle ve sınıfları kaldır
         Object.values(icons).forEach(icon => {
             if (icon) icon.style.display = 'none';
         });
         stepElement.classList.remove('pending', 'running', 'completed');
 
-        // Yeni duruma göre ayarla
         switch(status) {
             case 'running':
                 if (icons.running) {
@@ -351,7 +358,7 @@ class LangGraphChatWithProgress {
                     stepElement.classList.add('completed');
                 }
                 break;
-            default: // pending
+            default:
                 if (icons.pending) {
                     icons.pending.style.display = 'inline-block';
                     statusText.textContent = 'Bekliyor...';
@@ -359,11 +366,10 @@ class LangGraphChatWithProgress {
                 }
         }
         
-        // State'i güncelle
         const step = this.researchProgress.mainSteps.find(s => s.id === stepId);
         if (step) {
             step.status = status;
-            console.log(`Step ${stepId} updated to ${status}`); // Debug için
+            console.log(`Step ${stepId} updated to ${status}`);
         }
     }
 
@@ -382,41 +388,50 @@ class LangGraphChatWithProgress {
     }
 
     initializeSubTopics(subtopics) {
+        console.log('Initializing subtopics:', subtopics);
+        
         const waitingElement = document.getElementById('waitingSubTopics');
         if (waitingElement) waitingElement.remove();
         
         this.researchProgress.subTopics = subtopics.map((topic, index) => ({
             id: `subtopic-${index}`,
-            title: typeof topic === 'string' ? topic : topic.alt_baslik || topic.title,
+            title: typeof topic === 'string' ? topic : (topic.alt_baslik || topic.title || `Konu ${index + 1}`),
             status: 'pending',
             content: ''
         }));
         
+        console.log('SubTopics array created:', this.researchProgress.subTopics);
+        
         this.createSubTopicsUI();
     }
 
-    createSubTopicsUI() {
-        const subTopicsContainer = document.createElement('div');
-        subTopicsContainer.className = 'subtopics-container';
-        subTopicsContainer.id = 'subTopicsContainer';
-        
-        subTopicsContainer.innerHTML = `
-            <div class="subtopics-header">
-                <div class="subtopics-title">
-                    <i class="fas fa-list-ul"></i>
-                    <span>Detay Araştırma Konuları</span>
-                </div>
-            </div>
-            <div class="subtopics-list"></div>
-        `;
+    // *** DÜZELTİLMİŞ FONKSİYONLAR ***
 
-        const topicsDiv = subTopicsContainer.querySelector('.subtopics-list');
-        this.researchProgress.subTopics.forEach((topic, index) => {
-            const topicElement = document.createElement('div');
-            topicElement.className = 'subtopic-item';
-            topicElement.id = `subtopic-${topic.id}`;
-            
-            topicElement.innerHTML = `
+createSubTopicsUI() {
+    console.log('Creating SubTopics UI for:', this.researchProgress.subTopics);
+    
+    const subTopicsContainer = document.createElement('div');
+    subTopicsContainer.className = 'subtopics-container';
+    subTopicsContainer.id = 'subTopicsContainer';
+    
+    subTopicsContainer.innerHTML = `
+        <div class="subtopics-header">
+            <div class="subtopics-title">
+                <i class="fas fa-list-ul"></i>
+                <span>Detay Araştırma Konuları</span>
+            </div>
+        </div>
+        <div class="subtopics-list"></div>
+    `;
+
+    const topicsDiv = subTopicsContainer.querySelector('.subtopics-list');
+    this.researchProgress.subTopics.forEach((topic, index) => {
+        const topicElement = document.createElement('div');
+        topicElement.className = 'subtopic-item';
+        topicElement.id = `subtopic-${topic.id}`;
+        
+        topicElement.innerHTML = `
+            <div class="subtopic-header" data-topic-id="${topic.id}">
                 <div class="subtopic-indicator">
                     <div class="subtopic-number">${index + 1}</div>
                     <div class="subtopic-status-icon">
@@ -429,88 +444,554 @@ class LangGraphChatWithProgress {
                     <div class="subtopic-title">${topic.title}</div>
                     <div class="subtopic-status">Sırada bekliyor...</div>
                 </div>
-            `;
-            
-            topicElement.addEventListener('click', () => {
-                if (topic.status === 'completed') {
-                    this.openTopicDetailModal(topic);
-                }
-            });
-            
-            topicsDiv.appendChild(topicElement);
-        });
-        
-        this.messagesContainer.appendChild(subTopicsContainer);
-        this.scrollToBottom();
-    }
-
-    updateSubTopicStatus(topicTitle, status, content = '') {
-        const topic = this.researchProgress.subTopics.find(t => t.title === topicTitle);
-        if (!topic) return;
-        
-        const topicElement = document.getElementById(`subtopic-${topic.id}`);
-        if (!topicElement) return;
-
-        const icons = {
-            pending: topicElement.querySelector('.pending-icon'),
-            running: topicElement.querySelector('.spinning-icon'),
-            completed: topicElement.querySelector('.completed-icon')
-        };
-        const statusText = topicElement.querySelector('.subtopic-status');
-        
-        Object.values(icons).forEach(icon => icon.style.display = 'none');
-        topicElement.classList.remove('pending', 'running', 'completed', 'clickable');
-        
-        switch(status) {
-            case 'running':
-                icons.running.style.display = 'inline-block';
-                statusText.textContent = 'Araştırılıyor...';
-                topicElement.classList.add('running');
-                break;
-            case 'completed':
-                icons.completed.style.display = 'inline-block';
-                statusText.textContent = 'Tamamlandı - Detayları görüntüle';
-                topicElement.classList.add('completed', 'clickable');
-                topic.content = content;
-                this.completedTopics[topic.id] = { title: topic.title, content: content };
-                break;
-            default:
-                icons.pending.style.display = 'inline-block';
-                statusText.textContent = 'Sırada bekliyor...';
-                topicElement.classList.add('pending');
-        }
-        topic.status = status;
-    }
-
-    openTopicDetailModal(topic) {
-        const modal = document.createElement('div');
-        modal.className = 'topic-detail-modal-overlay';
-        modal.id = 'topicDetailModal';
-        
-        const topicData = this.completedTopics[topic.id];
-        const content = topicData ? topicData.content : 'İçerik bulunamadı.';
-        
-        modal.innerHTML = `
-            <div class="topic-detail-modal">
-                <div class="topic-detail-header">
-                    <h2>${topic.title}</h2>
-                    <button class="close-modal-btn" onclick="closeTopicModal()"><i class="fas fa-times"></i></button>
+                <div class="expand-icon">
+                    <i class="fas fa-chevron-down"></i>
                 </div>
-                <div class="topic-detail-body">
-                    <div class="topic-content">${this.formatTopicContent(content)}</div>
-                    <div class="topic-meta">
-                        <div class="meta-item"><i class="fas fa-robot"></i><span>CrewAI DetailResearcher tarafından araştırıldı</span></div>
-                        <div class="meta-item"><i class="fas fa-clock"></i><span>${new Date().toLocaleString('tr-TR')}</span></div>
-                    </div>
-                </div>
-                <div class="topic-detail-footer">
-                    <button class="export-btn" onclick="exportTopicContent('${topic.id}')"><i class="fas fa-download"></i> İçeriği Dışa Aktar</button>
-                    <button class="close-btn" onclick="closeTopicModal()">Kapat</button>
-                </div>
+            </div>
+            <div class="subtopic-details" style="display: none;">
+                <div class="subtopic-content-text">İçerik henüz hazırlanmadı...</div>
             </div>
         `;
         
-        document.body.appendChild(modal);
+        // Click event'i header'a ekle - sadece tamamlanmış olanlar için
+        const headerElement = topicElement.querySelector('.subtopic-header');
+        headerElement.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const topicId = headerElement.getAttribute('data-topic-id');
+            const topic = this.researchProgress.subTopics.find(t => t.id === topicId);
+            
+            console.log('Topic clicked:', topic?.title, 'Status:', topic?.status);
+            console.log('Topic object:', topic);
+            
+            if (topic && topic.status === 'completed') {
+                this.toggleSubTopicDetails(topicId);
+            } else {
+                console.log('Topic not completed yet or not found');
+            }
+        });
+        
+        topicsDiv.appendChild(topicElement);
+    });
+    
+    this.messagesContainer.appendChild(subTopicsContainer);
+    this.scrollToBottom();
+}
+
+updateSubTopicStatus(topicTitle, status, content = '') {
+    console.log('updateSubTopicStatus called:', { 
+        topicTitle, 
+        status, 
+        contentLength: content.length,
+        contentPreview: content.substring(0, 100) + '...' 
+    });
+    
+    const topic = this.researchProgress.subTopics.find(t => t.title === topicTitle);
+    if (!topic) {
+        console.warn('Topic not found for title:', topicTitle);
+        console.log('Available topics:', this.researchProgress.subTopics.map(t => t.title));
+        return;
+    }
+    
+    console.log('Found topic:', topic.id, topic.title);
+    
+    const topicElement = document.getElementById(`subtopic-${topic.id}`);
+    if (!topicElement) {
+        console.warn('Topic element not found:', `subtopic-${topic.id}`);
+        return;
+    }
+
+    const icons = {
+        pending: topicElement.querySelector('.pending-icon'),
+        running: topicElement.querySelector('.spinning-icon'),
+        completed: topicElement.querySelector('.completed-icon')
+    };
+    const statusText = topicElement.querySelector('.subtopic-status');
+    const contentText = topicElement.querySelector('.subtopic-content-text');
+    const headerElement = topicElement.querySelector('.subtopic-header');
+    
+    // Tüm iconları gizle
+    Object.values(icons).forEach(icon => {
+        if (icon) icon.style.display = 'none';
+    });
+    
+    // CSS sınıflarını temizle
+    topicElement.classList.remove('pending', 'running', 'completed', 'clickable');
+    if (headerElement) {
+        headerElement.classList.remove('clickable');
+    }
+    
+    switch(status) {
+        case 'running':
+            if (icons.running) icons.running.style.display = 'inline-block';
+            if (statusText) statusText.textContent = 'Araştırılıyor...';
+            topicElement.classList.add('running');
+            break;
+            
+        case 'completed':
+            if (icons.completed) icons.completed.style.display = 'inline-block';
+            if (statusText) statusText.textContent = 'Tamamlandı - Tıkla ve detayları gör';
+            
+            // Topic nesnesini güncelle
+            topic.status = 'completed';
+            topic.content = content;
+            
+            // Completed topic'i kaydet
+            this.completedTopics[topic.id] = { 
+                title: topic.title, 
+                content: content 
+            };
+            
+            // CSS sınıflarını ekle
+            topicElement.classList.add('completed', 'clickable');
+            if (headerElement) {
+                headerElement.classList.add('clickable');
+                headerElement.style.cursor = 'pointer';
+            }
+            
+            // İçeriği DOM'a yükle
+            if (contentText && content) {
+                const formattedContent = this.formatTopicContent(content);
+                contentText.innerHTML = formattedContent;
+                console.log('Content loaded to DOM for topic:', topic.title);
+                console.log('Formatted content length:', formattedContent.length);
+            }
+            
+            console.log('Topic completed and ready for click:', topic.title);
+            console.log('CompletedTopics updated:', Object.keys(this.completedTopics));
+            break;
+            
+        default:
+            if (icons.pending) icons.pending.style.display = 'inline-block';
+            if (statusText) statusText.textContent = 'Sırada bekliyor...';
+            topicElement.classList.add('pending');
+    }
+}
+
+toggleSubTopicDetails(topicId) {
+    console.log('toggleSubTopicDetails called for:', topicId);
+    
+    const topicElement = document.getElementById(`subtopic-${topicId}`);
+    if (!topicElement) {
+        console.error('Topic element not found:', `subtopic-${topicId}`);
+        return;
+    }
+
+    const detailsDiv = topicElement.querySelector('.subtopic-details');
+    const expandIcon = topicElement.querySelector('.expand-icon i');
+    const contentText = topicElement.querySelector('.subtopic-content-text');
+    
+    if (!detailsDiv || !expandIcon) {
+        console.error('Required elements not found for topic:', topicId);
+        return;
+    }
+    
+    // Topic nesnesini bul
+    const topic = this.researchProgress.subTopics.find(t => t.id === topicId);
+    const completedTopic = this.completedTopics[topicId];
+    
+    console.log('Topic object:', topic);
+    console.log('Completed topic data:', completedTopic);
+    console.log('Current display style:', detailsDiv.style.display);
+    
+    if (this.expandedTopics.has(topicId)) {
+        // Kapat
+        detailsDiv.style.display = 'none';
+        expandIcon.className = 'fas fa-chevron-down';
+        this.expandedTopics.delete(topicId);
+        topicElement.classList.remove('expanded');
+        console.log('✅ Topic closed:', topicId);
+    } else {
+        // Aç - içerik kontrolü yap
+        let contentToShow = "İçerik mevcut değil.";
+        
+        if (completedTopic && completedTopic.content) {
+            contentToShow = this.formatTopicContent(completedTopic.content);
+        } else if (topic && topic.content) {
+            contentToShow = this.formatTopicContent(topic.content);
+        }
+        
+        // İçeriği güncelle
+        if (contentText) {
+            contentText.innerHTML = contentToShow;
+        }
+        
+        // Göster
+        detailsDiv.style.display = 'block';
+        expandIcon.className = 'fas fa-chevron-up';
+        this.expandedTopics.add(topicId);
+        topicElement.classList.add('expanded');
+        
+        console.log('✅ Topic opened:', topicId);
+        console.log('Content shown length:', contentToShow.length);
+    }
+}
+
+// İçerik formatlamada da küçük bir düzeltme
+formatTopicContent(content) {
+    if (!content || typeof content !== 'string') {
+        return '<p>İçerik mevcut değil.</p>';
+    }
+    
+    return content
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`(.*?)`/g, '<code>$1</code>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>')
+        .replace(/^(.*)$/, '<p>$1</p>');
+}
+
+// Debugging için yardımcı fonksiyon
+debugSubTopicStatus(topicId = null) {
+    if (topicId) {
+        const topic = this.researchProgress.subTopics.find(t => t.id === topicId);
+        const completed = this.completedTopics[topicId];
+        console.log(`Debug for ${topicId}:`, {
+            topic: topic,
+            completed: completed,
+            expanded: this.expandedTopics.has(topicId)
+        });
+    } else {
+        console.log('All topics debug:', {
+            subTopics: this.researchProgress.subTopics,
+            completedTopics: this.completedTopics,
+            expandedTopics: Array.from(this.expandedTopics)
+        });
+    }
+}
+
+    showViewReportButton() {
+        // Daha önce eklenmiş butonu kontrol et
+        if (document.getElementById('viewReportButton')) return;
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'view-report-container';
+        buttonContainer.id = 'viewReportContainer';
+        
+        buttonContainer.innerHTML = `
+            <div class="report-ready-message">
+                <i class="fas fa-check-circle"></i>
+                <span>Araştırma raporu hazır!</span>
+            </div>
+            <button class="view-report-btn" id="viewReportButton">
+                <i class="fas fa-external-link-alt"></i>
+                Detaylı Raporu Görüntüle
+            </button>
+        `;
+        
+        const button = buttonContainer.querySelector('#viewReportButton');
+        button.addEventListener('click', () => {
+            this.openDetailedReport();
+        });
+        
+        this.messagesContainer.appendChild(buttonContainer);
+        this.scrollToBottom();
+    }
+
+    sendFollowUpMessage() {
+        // Biraz bekleme süresi ekle
+        setTimeout(() => {
+            const followUpMessage = "🎯 Harika! Araştırma raporunuz hazır. Yukarıdaki **'Detaylı Raporu Görüntüle'** butonuna tıklayarak tüm bulgularımızı inceleyebilirsiniz. \n\n💡 Takıldığınız yerler olursa benimle birlikte raporu inceleyelim! Herhangi bir konuyu daha detayına inmek isterseniz, sadece sorun - birlikte çalışabiliriz! 🤝";
+            
+            this.addMessage(followUpMessage, 'ai');
+        }, 1500);
+    }
+
+    openDetailedReport() {
+        const reportWindow = window.open('', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        
+        const reportHTML = this.generateReportHTML();
+        reportWindow.document.write(reportHTML);
+        reportWindow.document.close();
+        
+        // PDF export fonksiyonunu yeni pencereye ekle
+        reportWindow.exportToPDF = () => {
+            reportWindow.print();
+        };
+    }
+
+    generateReportHTML() {
+        const currentDate = new Date().toLocaleDateString('tr-TR');
+        const currentTime = new Date().toLocaleTimeString('tr-TR');
+        
+        let topicsHTML = '';
+        this.researchProgress.subTopics.forEach((topic, index) => {
+            const topicData = this.completedTopics[topic.id];
+            const content = topicData ? this.formatTopicContent(topicData.content) : 
+                           topic.content ? this.formatTopicContent(topic.content) : 'İçerik mevcut değil.';
+            
+            topicsHTML += `
+                <div class="report-section">
+                    <div class="section-header">
+                        <span class="section-number">${index + 1}</span>
+                        <h2 class="section-title">${topic.title}</h2>
+                    </div>
+                    <div class="section-content">
+                        ${content}
+                    </div>
+                </div>
+            `;
+        });
+
+        return `
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Araştırma Raporu - CrewAI Multi-Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+        
+        .report-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            min-height: 100vh;
+        }
+        
+        .report-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .report-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .report-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .report-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .report-content {
+            padding: 2rem;
+        }
+        
+        .report-section {
+            margin-bottom: 3rem;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem 2rem;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .section-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .section-title {
+            color: #495057;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .section-content {
+            padding: 2rem;
+            background: white;
+        }
+        
+        .section-content p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+        
+        .section-content strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .section-content em {
+            font-style: italic;
+            color: #6c757d;
+        }
+        
+        .section-content code {
+            background: #f8f9fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .export-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .export-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+        }
+        
+        .export-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40,167,69,0.4);
+        }
+        
+        .close-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+        
+        @media print {
+            .export-controls {
+                display: none;
+            }
+            
+            .report-container {
+                box-shadow: none;
+            }
+            
+            .report-section {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .report-header {
+                padding: 2rem 1rem;
+            }
+            
+            .report-title {
+                font-size: 2rem;
+            }
+            
+            .report-content {
+                padding: 1rem;
+            }
+            
+            .section-header {
+                padding: 1rem;
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .section-content {
+                padding: 1rem;
+            }
+            
+            .export-controls {
+                position: static;
+                justify-content: center;
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="export-controls">
+        <button class="export-btn" onclick="exportToPDF()">
+            📄 PDF Olarak Kaydet
+        </button>
+        <button class="close-btn" onclick="window.close()">
+            ✕ Kapat
+        </button>
+    </div>
+    
+    <div class="report-container">
+        <div class="report-header">
+            <h1 class="report-title">🔍 Araştırma Raporu</h1>
+            <p class="report-subtitle">CrewAI Multi-Agent Sistemi ile Hazırlanmıştır</p>
+            <div class="report-meta">
+                <div class="meta-item">
+                    <span>📅</span>
+                    <span>${currentDate}</span>
+                </div>
+                <div class="meta-item">
+                    <span>🕐</span>
+                    <span>${currentTime}</span>
+                </div>
+                <div class="meta-item">
+                    <span>🤖</span>
+                    <span>${this.researchProgress.subTopics.length} Alt Başlık</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="report-content">
+            ${topicsHTML}
+        </div>
+    </div>
+</body>
+</html>
+        `;
     }
 
     formatTopicContent(content) {
@@ -604,30 +1085,11 @@ class LangGraphChatWithProgress {
         this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
     }
 
-    saveToHistory(message, sender) { /* ... (Implementation needed) ... */ }
-    loadChatHistory() { /* ... (Implementation needed) ... */ }
-    getSetting(key) { return true; /* Default to true for notifications */ }
-    playNotificationSound() { /* ... (Implementation needed) ... */ }
-    closeModal() { /* ... (Implementation needed) ... */ }
-}
-
-function closeTopicModal() {
-    const modal = document.getElementById('topicDetailModal');
-    if (modal) modal.remove();
-}
-
-function exportTopicContent(topicId) {
-    const topic = chat.completedTopics[topicId];
-    if (!topic) return;
-    
-    const content = `# ${topic.title}\n\n${topic.content}`;
-    const blob = new Blob([content], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${topic.title.replace(/[^a-z0-9]/gi, '_')}.md`;
-    a.click();
-    URL.revokeObjectURL(url);
+    saveToHistory(message, sender) { /* Implementation needed */ }
+    loadChatHistory() { /* Implementation needed */ }
+    getSetting(key) { return true; }
+    playNotificationSound() { /* Implementation needed */ }
+    closeModal() { /* Implementation needed */ }
 }
 
 let chat;

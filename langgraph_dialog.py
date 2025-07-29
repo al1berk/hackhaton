@@ -18,6 +18,7 @@ class ConversationState(TypedDict):
     research_data: dict
     websocket_callback: object
     pending_action: str
+    research_completed: bool
 
 class AsyncLangGraphDialog:
     def __init__(self, websocket_callback=None):
@@ -41,7 +42,8 @@ class AsyncLangGraphDialog:
             conversation_summary="",
             research_data={},
             websocket_callback=websocket_callback,
-            pending_action=""
+            pending_action="",
+            research_completed=False
         )
     
     def create_conversation_graph(self):
@@ -53,6 +55,7 @@ class AsyncLangGraphDialog:
         workflow.add_node("research_presentation", self.research_presentation_node)
         workflow.add_node("gemini_response", self.gemini_response_node)
         workflow.add_node("ask_confirmation", self.ask_confirmation_node)
+        workflow.add_node("research_followup", self.research_followup_node)
         
         workflow.set_conditional_entry_point(
             self.route_initial_input,
@@ -72,7 +75,8 @@ class AsyncLangGraphDialog:
         )
         
         workflow.add_edge("crew_research_agent", "research_presentation")
-        workflow.add_edge("research_presentation", END)
+        workflow.add_edge("research_presentation", "research_followup")
+        workflow.add_edge("research_followup", END)
         workflow.add_edge("gemini_response", END)
         workflow.add_edge("ask_confirmation", END)
 
@@ -120,6 +124,17 @@ class AsyncLangGraphDialog:
         last_message = state["messages"][-1].content.strip().lower()
         original_message = state["messages"][-1].content.strip()
         
+        # Eğer araştırma tamamlanmışsa ve kullanıcı araştırmayla ilgili soru soruyorsa
+        if state.get("research_completed", False) and state.get("research_data"):
+            # Araştırma ile ilgili anahtar kelimeler kontrol et
+            research_keywords = ["araştırma", "rapor", "bulgu", "sonuç", "detay", "açıkla", "anlatır mısın", 
+                               "nedir", "nasıl", "ne demek", "anlat", "açıklayabilir", "daha fazla bilgi"]
+            
+            if any(keyword in last_message for keyword in research_keywords):
+                state["current_intent"] = "research_question"
+                state["needs_crew_ai"] = False
+                return state
+        
         research_keywords_strong = ["araştır", "araştırma yap", "incele", "analiz et"]
         research_keywords_weak = ["hakkında bilgi", "nedir", "kimdir", "nasıl çalışır", "son gelişmeler"]
         
@@ -157,6 +172,7 @@ class AsyncLangGraphDialog:
             
             research_result = await self.crew_handler.research_workflow(research_query)
             state["research_data"] = research_result
+            state["research_completed"] = True
             
         except Exception as e:
             error_msg = f"CrewAI araştırma hatası: {str(e)}"
@@ -180,13 +196,72 @@ class AsyncLangGraphDialog:
         state["messages"].append(AIMessage(content=response))
         return state
 
+    async def research_followup_node(self, state: ConversationState) -> ConversationState:
+        """Araştırma tamamlandığında takip mesajı gönder"""
+        if state.get("research_completed", False) and not "error" in state.get("research_data", {}):
+            # Websocket callback ile frontend'e araştırma tamamlandı sinyali gönder
+            if self.websocket_callback:
+                await self.websocket_callback(json.dumps({
+                    "type": "research_completed", 
+                    "message": "Araştırma başarıyla tamamlandı!", 
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "research_data": state["research_data"]
+                }))
+            
+            # Biraz bekle ki UI güncellensin
+            await asyncio.sleep(1)
+            
+            # Takip mesajı ekle
+            followup_message = ("🎯 Harika! Araştırma raporunuz hazır. Yukarıdaki **'Detaylı Raporu Görüntüle'** butonuna "
+                              "tıklayarak tüm bulgularımızı inceleyebilirsiniz.\n\n"
+                              "💡 Takıldığınız yerler olursa benimle birlikte raporu inceleyelim! Herhangi bir konuyu "
+                              "daha detayına inmek isterseniz, sadece sorun - birlikte çalışabiliriz! 🤝")
+            
+            state["messages"].append(AIMessage(content=followup_message))
+        
+        return state
+
     async def gemini_response_node(self, state: ConversationState) -> ConversationState:
         try:
             messages_for_llm = state["messages"]
-            if messages_for_llm and "araştırma başlatılmadı" in messages_for_llm[-1].content:
-                 messages_for_llm = messages_for_llm[:-1]
             
-            response = await self.llm.ainvoke(messages_for_llm)
+            # Eğer araştırma sorusu ise, araştırma verilerini context olarak ekle
+            if state.get("current_intent") == "research_question" and state.get("research_data"):
+                research_context = self.format_research_context(state["research_data"])
+                
+                # Son kullanıcı mesajını al
+                user_question = messages_for_llm[-1].content
+                
+                # Context'li prompt oluştur
+                contextual_prompt = f"""
+Kullanıcının sorusu: {user_question}
+
+Aşağıda CrewAI Multi-Agent sistemi ile yapılan bir araştırmanın sonuçları var. 
+Bu araştırma verilerini kullanarak kullanıcının sorusuna doğru ve detaylı bir şekilde cevap ver.
+
+ARAŞTIRMA VERİLERİ:
+{research_context}
+
+Cevabında:
+1. Araştırma verilerinden elde edilen bilgileri kullan
+2. Spesifik detayları belirt
+3. Kaynaklı bilgiler ver
+4. Eğer araştırmada olmayan bir şey soruyorsa, bunu belirt
+5. Gerekirse daha detaylı açıklama öner
+
+Kullanıcı dostu ve bilgilendirici bir ton kullan.
+"""
+                
+                # Yeni mesaj listesi oluştur (context'li)
+                contextual_messages = messages_for_llm[:-1] + [HumanMessage(content=contextual_prompt)]
+                response = await self.llm.ainvoke(contextual_messages)
+                
+            else:
+                # Normal Gemini yanıtı
+                if messages_for_llm and "araştırma başlatılmadı" in messages_for_llm[-1].content:
+                    messages_for_llm = messages_for_llm[:-1]
+                response = await self.llm.ainvoke(messages_for_llm)
+            
             state["messages"].append(AIMessage(content=response.content))
             
         except Exception as e:
@@ -194,6 +269,21 @@ class AsyncLangGraphDialog:
             state["messages"].append(AIMessage(content=error_message))
         
         return state
+
+    def format_research_context(self, research_data: dict) -> str:
+        """Araştırma verilerini LLM için uygun formatta hazırla"""
+        context = f"KONU: {research_data.get('topic', 'Belirtilmemiş')}\n\n"
+        
+        detailed_research = research_data.get('detailed_research', [])
+        if detailed_research:
+            context += "ALT BAŞLIKLAR VE DETAYLAR:\n"
+            for i, section in enumerate(detailed_research, 1):
+                title = section.get('alt_baslik', f'Konu {i}')
+                content = section.get('aciklama', 'İçerik mevcut değil')
+                context += f"\n{i}. {title}:\n{content}\n"
+        
+        context += f"\nARAŞTIRMA TARİHİ: {research_data.get('timestamp', 'Belirtilmemiş')}"
+        return context
     
     async def process_user_message(self, user_message: str) -> str:
         try:
@@ -241,5 +331,6 @@ class AsyncLangGraphDialog:
             "has_research_data": bool(self.conversation_state.get("research_data")),
             "last_research": self.conversation_state.get("research_data", {}).get("topic", ""),
             "crew_ai_enabled": True,
-            "async_mode": True
+            "async_mode": True,
+            "research_completed": self.conversation_state.get("research_completed", False)
         }
