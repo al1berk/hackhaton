@@ -61,7 +61,7 @@ class AsyncCrewAIResearchTool:
                 temperature=0.6
             )
             self.gemini_llm_pro = LLM(
-                model="gemini/gemini-2.5-pro",
+                model="gemini/gemini-2.5-flash",
                 api_key=Config.GOOGLE_API_KEY,
                 temperature=0.6
             )

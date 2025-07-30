@@ -49,16 +49,44 @@ class App {
 
         DOM.sendBtn.addEventListener('click', () => this.sendMessage());
 
-        // Dinamik olarak oluşturulan rapor butonu için Event Listener
-        // Olay delegasyonu (event delegation) kullanarak her zaman çalışmasını sağlarız
+        // Event delegation for dynamically created buttons
         document.body.addEventListener('click', (e) => {
-            if (e.target && e.target.id === 'viewReportButton') {
-                this.ui.progressUI.openDetailedReport(this.researchState.subTopics);
+            // Detaylı rapor butonu
+            if (e.target && (e.target.id === 'viewReportButton' || e.target.closest('#viewReportButton'))) {
+                e.preventDefault();
+                this.handleViewReportClick();
+            }
+            
+            // PDF indirme butonu
+            if (e.target && (e.target.id === 'downloadPdfButton' || e.target.closest('#downloadPdfButton'))) {
+                e.preventDefault();
+                this.handleDownloadPdfClick();
             }
         });
 
         // Initial state
         this.updateSendButton();
+    }
+
+    // Report button handlers
+    handleViewReportClick() {
+        console.log("🔍 Detaylı rapor görüntüleme talep edildi");
+        if (this.ui.progressUI && typeof this.ui.progressUI.openDetailedReport === 'function') {
+            this.ui.progressUI.openDetailedReport();
+        } else {
+            console.error("❌ openDetailedReport fonksiyonu bulunamadı");
+            alert('Rapor görüntüleme özelliği şu anda kullanılamıyor.');
+        }
+    }
+
+    handleDownloadPdfClick() {
+        console.log("📄 PDF indirme talep edildi");
+        if (this.ui.progressUI && typeof this.ui.progressUI.downloadPDF === 'function') {
+            this.ui.progressUI.downloadPDF();
+        } else {
+            console.error("❌ downloadPDF fonksiyonu bulunamadı");
+            alert('PDF indirme özelliği şu anda kullanılamıyor.');
+        }
     }
 
     // UI Helper Methods
@@ -273,6 +301,11 @@ class App {
     handleResearchCompleted(data) {
         this.researchState.isResearchCompleted = true;
         this.researchState.currentState = 'completed';
+        
+        // Research data'yı ProgressUI'ye aktar
+        if (data.research_data) {
+            this.ui.progressUI.setResearchData(data.research_data);
+        }
         
         // Update final step status
         this.ui.progressUI.updateMainStepStatus('step3', 'completed');
