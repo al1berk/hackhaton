@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LangGraph AI Assistant</title>
     <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/components/chat_history.css">
+    <link rel="stylesheet" href="/static/css/components/toast.css">
+    <link rel="stylesheet" href="/static/css/components/error_fallback.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -25,7 +28,7 @@
                 </button>
             </div>
             
-            <!-- GÜNCELLENEN SATIRLAR 26-50: PDF yönetim bölümü eklendi -->
+            <!-- PDF yönetim bölümü -->
             <div class="pdf-section">
                 <div class="pdf-header">
                     <h3><i class="fas fa-file-pdf"></i> PDF Dokümanlar</h3>
@@ -52,6 +55,7 @@
             <!-- Gizli file input -->
             <input type="file" id="pdfFileInput" accept=".pdf" style="display: none;">
             
+            <!-- Sohbet geçmişi -->
             <div class="chat-history">
                 <div class="chat-history-header">
                     <h3>Sohbet Geçmişi</h3>
@@ -67,7 +71,7 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="user-details">
-                        <span class="username">al1berk</span>
+                        <span class="username">Kullanıcı</span>
                         <span class="status">Çevrimiçi</span>
                     </div>
                 </div>
@@ -80,7 +84,6 @@
             <div class="chat-header">
                 <div class="header-left">
                     <h1>LangGraph AI Assistant</h1>
-                    <!-- GÜNCELLENEN SATIR 71: Subtitle güncellendi -->
                     <span class="subtitle">CrewAI + RAG ile Güçlendirilmiş Akıllı Asistan</span>
                 </div>
                 <div class="header-right">
@@ -101,13 +104,22 @@
                         <i class="fas fa-robot"></i>
                     </div>
                     <h2>Merhaba! 👋</h2>
-                    <!-- GÜNCELLENEN SATIRLAR 90-96: Welcome mesajı genişletildi -->
                     <p>Size nasıl yardımcı olabilirim? Aşağıdaki konularda uzmanım:</p>
                     <div class="feature-list">
                         <div class="feature-item"><i class="fas fa-search"></i> Web araştırması</div>
                         <div class="feature-item"><i class="fas fa-file-pdf"></i> PDF doküman analizi</div>
                         <div class="feature-item"><i class="fas fa-brain"></i> Akıllı soru-cevap</div>
                         <div class="feature-item"><i class="fas fa-chart-line"></i> Veri analizi</div>
+                    </div>
+                    <div class="welcome-actions">
+                        <button class="action-btn" onclick="startNewChat()">
+                            <i class="fas fa-plus"></i>
+                            Yeni Sohbet Başlat
+                        </button>
+                        <button class="action-btn" onclick="document.getElementById('pdfFileInput').click()">
+                            <i class="fas fa-file-upload"></i>
+                            PDF Yükle
+                        </button>
                     </div>
                 </div>
             </div>
@@ -123,7 +135,6 @@
                             maxlength="2000"
                         ></textarea>
                         <div class="input-actions">
-                            <!-- GÜNCELLENEN SATIRLAR 110-113: PDF upload butonu eklendi -->
                             <button class="attach-btn" title="PDF Yükle" onclick="document.getElementById('pdfFileInput').click()">
                                 <i class="fas fa-file-pdf"></i>
                             </button>
@@ -174,7 +185,6 @@
                     <label>Ses Bildirimleri</label>
                     <input type="checkbox" id="soundNotifications" checked>
                 </div>
-                <!-- YENI SATIRLAR 154-159: RAG ayarları eklendi -->
                 <div class="setting-group">
                     <label>PDF Araştırması (RAG)</label>
                     <input type="checkbox" id="ragEnabled" checked>
@@ -184,7 +194,7 @@
         </div>
     </div>
 
-    <!-- YENI SATIRLAR 162-188: PDF Upload Progress Modal -->
+    <!-- PDF Upload Progress Modal -->
     <div class="modal-overlay" id="uploadModal" style="display: none;">
         <div class="modal upload-modal">
             <div class="modal-header">
@@ -218,7 +228,5 @@
     </div>
 
     <script type="module" src="/static/js/main.js"></script>
-    <!-- YENI SATIR 191: PDF yönetimi için script -->
-    <script type="module" src="/static/js/pdf-manager.js"></script>
 </body>
 </html>

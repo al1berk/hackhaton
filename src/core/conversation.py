@@ -8,10 +8,8 @@ import asyncio
 import json
 from datetime import datetime
 
-# --- GÜNCELLENMİŞ IMPORT YOLLARI ---
 from core.config import Config
 from agents.research_crew import AsyncCrewAIA2AHandler
-# YENI SATIR 15: Vector store import'u eklendi
 from core.vector_store import VectorStore
 
 class ConversationState(TypedDict):
@@ -25,12 +23,13 @@ class ConversationState(TypedDict):
     websocket_callback: object
     pending_action: str
     research_completed: bool
-    # YENI SATIRLAR 27-28: RAG ile ilgili state alanları eklendi
     rag_context: str
     has_pdf_context: bool
+    chat_id: str
+    chat_manager: object  # Chat manager referansı
 
 class AsyncLangGraphDialog:
-    def __init__(self, websocket_callback=None):
+    def __init__(self, websocket_callback=None, chat_id=None, chat_manager=None):
         self.llm = ChatGoogleGenerativeAI(
             model=Config.GEMINI_MODEL,
             google_api_key=Config.GOOGLE_API_KEY,
@@ -38,9 +37,12 @@ class AsyncLangGraphDialog:
         )
         
         self.websocket_callback = websocket_callback
+        self.chat_id = chat_id
+        self.chat_manager = chat_manager
         self.crew_handler = AsyncCrewAIA2AHandler(websocket_callback)
-        # YENI SATIRLAR 40-41: Vector store başlatılması
-        self.vector_store = VectorStore(Config.VECTOR_STORE_PATH)
+        
+        # Chat-specific vector store oluştur
+        self.vector_store = VectorStore(Config.VECTOR_STORE_PATH, chat_id=chat_id)
         
         self.graph = self.create_conversation_graph()
         
@@ -55,9 +57,10 @@ class AsyncLangGraphDialog:
             websocket_callback=websocket_callback,
             pending_action="",
             research_completed=False,
-            # YENI SATIRLAR 54-55: RAG state başlangıç değerleri
             rag_context="",
-            has_pdf_context=False
+            has_pdf_context=False,
+            chat_id=chat_id or "",
+            chat_manager=chat_manager
         )
     
     def create_conversation_graph(self):
@@ -66,7 +69,7 @@ class AsyncLangGraphDialog:
         workflow.add_node("handle_confirmation", self.handle_confirmation_node)
         workflow.add_node("intent_analysis", self.intent_analysis_node)
         workflow.add_node("rag_search", self.rag_search_node)
-        workflow.add_node("no_pdf_available", self.no_pdf_available_node)  # YENİ NODE
+        workflow.add_node("no_pdf_available", self.no_pdf_available_node)
         workflow.add_node("crew_research_agent", self.crew_research_agent_node)
         workflow.add_node("research_presentation", self.research_presentation_node)
         workflow.add_node("gemini_response", self.gemini_response_node)
@@ -78,15 +81,14 @@ class AsyncLangGraphDialog:
             {"continue_to_intent": "intent_analysis", "handle_confirmation": "handle_confirmation"}
         )
         
-        # Güncellenmiş routing
         workflow.add_conditional_edges(
             "intent_analysis",
-            self.should_call_crew_or_ask_or_rag_or_no_pdf,  # YENİ FUNCTION
+            self.should_call_crew_or_ask_or_rag_or_no_pdf,
             {
                 "crew_research": "crew_research_agent", 
                 "ask_confirmation": "ask_confirmation", 
                 "rag_search": "rag_search", 
-                "no_pdf_available": "no_pdf_available",  # YENİ ROUTE
+                "no_pdf_available": "no_pdf_available",
                 "gemini": "gemini_response"
             }
         )
@@ -98,7 +100,7 @@ class AsyncLangGraphDialog:
         )
         
         workflow.add_edge("rag_search", "gemini_response")
-        workflow.add_edge("no_pdf_available", END)  # YENİ EDGE
+        workflow.add_edge("no_pdf_available", END)
         workflow.add_edge("crew_research_agent", "research_presentation")
         workflow.add_edge("research_presentation", "research_followup")
         workflow.add_edge("research_followup", END)
@@ -107,7 +109,6 @@ class AsyncLangGraphDialog:
 
         return workflow.compile()
 
-# Güncellenmiş routing function
     def should_call_crew_or_ask_or_rag_or_no_pdf(self, state: ConversationState) -> Literal["crew_research", "ask_confirmation", "rag_search", "no_pdf_available", "gemini"]:
         intent = state["current_intent"]
         if intent in ["web_research", "ask_confirmation", "rag_search", "no_pdf_available"]:
@@ -146,13 +147,13 @@ class AsyncLangGraphDialog:
             await self.websocket_callback(json.dumps({
                 "type": "confirmation_request", 
                 "content": message_content, 
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.utcnow().isoformat(),
+                "chat_id": self.chat_id
             }))
         
         state["pending_action"] = "web_research"
         return state
 
-    # YENI FONKSIYON: RAG search node'u (SATIRLAR 127-154)
     async def rag_search_node(self, state: ConversationState) -> ConversationState:
         """PDF dokümanlarında arama yapar"""
         try:
@@ -180,8 +181,9 @@ class AsyncLangGraphDialog:
                     if self.websocket_callback:
                         await self.websocket_callback(json.dumps({
                             "type": "rag_found",
-                            "message": f"📚 {len(relevant_results)} ilgili doküman parçası bulundu",
-                            "timestamp": datetime.utcnow().isoformat()
+                            "message": f"📚 {len(relevant_results)} ilgili doküman parçası bulundu (Sohbet: {self.chat_id})",
+                            "timestamp": datetime.utcnow().isoformat(),
+                            "chat_id": self.chat_id
                         }))
                 else:
                     state["rag_context"] = ""
@@ -191,7 +193,7 @@ class AsyncLangGraphDialog:
                 state["has_pdf_context"] = False
                 
         except Exception as e:
-            print(f"❌ RAG search error: {e}")
+            print(f"❌ RAG search error (Chat: {self.chat_id}): {e}")
             state["rag_context"] = ""
             state["has_pdf_context"] = False
         
@@ -211,7 +213,7 @@ class AsyncLangGraphDialog:
                 state["needs_crew_ai"] = False
                 return state
         
-        # **ÖNCE RAG KONTROL ET** - PDF dosyası referansları
+        # RAG kontrolü
         if Config.RAG_ENABLED:
             # PDF dosyası mevcut mu kontrol et
             vector_stats = self.vector_store.get_stats()
@@ -223,7 +225,7 @@ class AsyncLangGraphDialog:
                 "metin", "kitap", "makale", "döküman", "dökuman"
             ]
             
-            # Dosya ismi referansları (yüklenen PDF'leri kontrol et)
+            # Dosya ismi referansları
             uploaded_files = vector_stats.get("documents", [])
             file_references = []
             for doc in uploaded_files:
@@ -240,7 +242,7 @@ class AsyncLangGraphDialog:
                 "hakkında bilgi", "ne diyor", "nasıl açıklıyor", "hangi konular"
             ]
             
-            # Bu doküman, bu dosya gibi direkt referanslar
+            # Direkt referanslar
             direct_references = [
                 "bu doküman", "bu dokuman", "bu dosya", "bu pdf", "bu rapor",
                 "bu belge", "yüklediğim", "yukledıgım", "gönderdiğim", "gonderdigim"
@@ -304,7 +306,6 @@ class AsyncLangGraphDialog:
         # Zayıf araştırma ifadeleri - onay iste
         if detected_intent != "web_research":
             if len(last_message.split()) > 5 and any(keyword in last_message for keyword in research_keywords_weak):
-                # Ama PDF referansı yoksa onay iste
                 if not any(pdf_ref in last_message for pdf_ref in ["doküman", "dokuman", "dosya", "pdf"]):
                     detected_intent = "ask_confirmation"
 
@@ -314,16 +315,10 @@ class AsyncLangGraphDialog:
         
         return state
 
-    # GÜNCELLENEN FONKSIYON: should_call_crew_or_ask fonksiyonu genişletildi (SATIRLAR 207-209)
-    def should_call_crew_or_ask_or_rag(self, state: ConversationState) -> Literal["crew_research", "ask_confirmation", "rag_search", "gemini"]:
-        intent = state["current_intent"]
-        if intent in ["web_research", "ask_confirmation", "rag_search"]:
-            return intent
-        return "gemini"
     async def no_pdf_available_node(self, state: ConversationState) -> ConversationState:
         """PDF referansı yapıldı ama hiç PDF yüklenmemiş"""
         
-        response = ("📄 Henüz herhangi bir PDF dokümanı yüklenmemiş. "
+        response = ("📄 Bu sohbette henüz herhangi bir PDF dokümanı yüklenmemiş. "
                 "Bir doküman hakkında soru sorabilmem için önce PDF dosyanızı yüklemeniz gerekiyor.\n\n"
                 "💡 **Nasıl PDF yükleyebilirim?**\n"
                 "• Ekranın sol üstündeki **'PDF Yükle'** butonuna tıklayın\n"
@@ -332,7 +327,8 @@ class AsyncLangGraphDialog:
                 "🔍 **PDF yükledikten sonra neler yapabilirim?**\n"
                 "• Dokümanın özetini isteyebilirsiniz\n"
                 "• Belirli konular hakkında sorular sorabilirsiniz\n"
-                "• İçerikten alıntılar ve detaylar alabilirsiniz")
+                "• İçerikten alıntılar ve detaylar alabilirsiniz\n\n"
+                f"📝 **Not:** Bu PDF'ler sadece bu sohbete ({self.chat_id}) özeldir.")
         
         state["messages"].append(AIMessage(content=response))
         return state
@@ -344,16 +340,14 @@ class AsyncLangGraphDialog:
                 await self.websocket_callback(json.dumps({
                     "type": "crew_research_start", 
                     "message": f"🤖 CrewAI Asenkron Multi-Agent sistemi '{research_query}' konusunu araştırıyor...", 
-                    "timestamp": datetime.utcnow().isoformat()
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "chat_id": self.chat_id
                 }))
             
-            # Araştırma başlangıcında kısa bir bekleme
             await asyncio.sleep(0.5)
             
-            # CrewAI araştırmasını başlat
             research_result = await self.crew_handler.research_workflow(research_query)
             
-            # Sonuçları kontrol et
             if research_result and not research_result.get("error"):
                 state["research_data"] = research_result
                 state["research_completed"] = True
@@ -363,6 +357,7 @@ class AsyncLangGraphDialog:
                         "type": "crew_research_success", 
                         "message": f"✅ '{research_query}' araştırması başarıyla tamamlandı!", 
                         "timestamp": datetime.utcnow().isoformat(),
+                        "chat_id": self.chat_id,
                         "research_data": {
                             "topic": research_result.get("topic", research_query),
                             "subtopics_count": len(research_result.get("detailed_research", [])),
@@ -370,7 +365,6 @@ class AsyncLangGraphDialog:
                         }
                     }))
             else:
-                # Hata durumu
                 error_msg = research_result.get("error", "Bilinmeyen araştırma hatası") if research_result else "Araştırma sonucu alınamadı"
                 state["research_data"] = {"error": error_msg}
                 
@@ -378,7 +372,8 @@ class AsyncLangGraphDialog:
                     await self.websocket_callback(json.dumps({
                         "type": "crew_research_error", 
                         "message": f"❌ Araştırma hatası: {error_msg}", 
-                        "timestamp": datetime.utcnow().isoformat()
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "chat_id": self.chat_id
                     }))
                 
         except Exception as e:
@@ -388,9 +383,10 @@ class AsyncLangGraphDialog:
                 await self.websocket_callback(json.dumps({
                     "type": "crew_research_error", 
                     "message": f"❌ {error_msg}", 
-                    "timestamp": datetime.utcnow().isoformat()
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "chat_id": self.chat_id
                 }))
-            print(f"❌ Crew research node error: {e}")
+            print(f"❌ Crew research node error (Chat: {self.chat_id}): {e}")
             
         return state
 
@@ -413,6 +409,7 @@ class AsyncLangGraphDialog:
                     "type": "research_completed", 
                     "message": "Araştırma başarıyla tamamlandı!", 
                     "timestamp": datetime.utcnow().isoformat(),
+                    "chat_id": self.chat_id,
                     "research_data": state["research_data"]
                 }))
             
@@ -431,7 +428,6 @@ class AsyncLangGraphDialog:
         try:
             messages_for_llm = state["messages"]
             
-            # GÜNCELLENEN SATIRLAR 304-329: RAG context desteği eklendi
             if state.get("has_pdf_context") and state.get("rag_context"):
                 # RAG context'i kullan
                 user_question = messages_for_llm[-1].content
@@ -440,7 +436,7 @@ class AsyncLangGraphDialog:
                 contextual_prompt = f"""
 Kullanıcının sorusu: {user_question}
 
-Aşağıda yüklenmiş PDF dokümanlarından bulunan ilgili bilgiler var. 
+Aşağıda bu sohbette yüklenmiş PDF dokümanlarından bulunan ilgili bilgiler var. 
 Bu bilgileri kullanarak kullanıcının sorusuna doğru ve detaylı bir şekilde cevap ver.
 
 PDF DOKÜMANLARINDAN BULUNAN BİLGİLER:
@@ -453,7 +449,8 @@ Cevabında:
 4. Eğer PDF'lerde olmayan bir şey soruyorsa, web araştırması önerebilirsin
 5. Kullanıcı dostu ve bilgilendirici bir ton kullan
 
-NOT: Bu bilgiler kullanıcının yüklediği PDF dokümanlarından geliyor.
+NOT: Bu bilgiler kullanıcının bu sohbete yüklediği PDF dokümanlarından geliyor.
+Sohbet ID: {self.chat_id}
 """
                 
                 contextual_messages = messages_for_llm[:-1] + [HumanMessage(content=contextual_prompt)]
@@ -496,13 +493,13 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
         except Exception as e:
             error_message = f"Üzgünüm, bir hata oluştu: {str(e)}"
             state["messages"].append(AIMessage(content=error_message))
+            print(f"❌ Gemini response error (Chat: {self.chat_id}): {e}")
         
         return state
 
-    # YENI FONKSIYON: RAG context formatı (SATIRLAR 366-385)
     def format_rag_context(self, search_results: List[dict]) -> str:
         """RAG arama sonuçlarını LLM için uygun formatta hazırla"""
-        context = "YÜKLENEN PDF DOKÜMANLARINDAN BULUNAN BİLGİLER:\n\n"
+        context = f"YÜKLENEN PDF DOKÜMANLARINDAN BULUNAN BİLGİLER (Sohbet: {self.chat_id}):\n\n"
         
         for i, result in enumerate(search_results, 1):
             filename = result['metadata'].get('filename', 'Bilinmeyen dosya')
@@ -535,24 +532,57 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
     
     async def process_user_message(self, user_message: str) -> str:
         try:
+            # Kullanıcı mesajını conversation state'e ekle
             self.conversation_state["messages"].append(HumanMessage(content=user_message))
             self.conversation_state["websocket_callback"] = self.websocket_callback
             
+            # Mesajı chat manager'a kaydet
+            if self.chat_manager and self.chat_id:
+                self.chat_manager.save_message(self.chat_id, {
+                    "type": "user",
+                    "content": user_message
+                })
+                
+                # İlk mesajsa otomatik başlık oluştur
+                chat_info = self.chat_manager.get_chat_info(self.chat_id)
+                if chat_info and chat_info.get("message_count", 0) == 1:
+                    self.chat_manager.auto_generate_title(self.chat_id, user_message)
+            
+            # Graph'ı çalıştır
             final_state = await self.graph.ainvoke(self.conversation_state)
             self.conversation_state = final_state
             
+            # Pending action varsa mesaj döndürme
             if final_state.get('pending_action'):
-                 return ""
+                return ""
             
+            # AI mesajlarını al
             ai_messages = [msg for msg in final_state["messages"] if isinstance(msg, AIMessage)]
             if ai_messages:
-                return ai_messages[-1].content
+                ai_response = ai_messages[-1].content
+                
+                # AI mesajını da chat manager'a kaydet
+                if self.chat_manager and self.chat_id and ai_response:
+                    self.chat_manager.save_message(self.chat_id, {
+                        "type": "ai",
+                        "content": ai_response
+                    })
+                
+                return ai_response
             return ""
             
         except Exception as e:
             error_response = f"Bir hata oluştu: {str(e)}"
-            print(f"Process message error: {e}")
+            print(f"❌ Process message error (Chat: {self.chat_id}): {e}")
             self.conversation_state["pending_action"] = ""
+            
+            # Hata mesajını da kaydet
+            if self.chat_manager and self.chat_id:
+                self.chat_manager.save_message(self.chat_id, {
+                    "type": "system",
+                    "content": error_response
+                })
+            
             return error_response
 
     def get_conversation_history(self) -> List[dict]:
@@ -571,7 +601,6 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
         user_messages = sum(1 for msg in messages if isinstance(msg, HumanMessage))
         ai_messages = sum(1 for msg in messages if isinstance(msg, AIMessage))
         
-        # GÜNCELLENEN SATIRLAR 442-454: Vector store istatistikleri eklendi
         vector_stats = self.vector_store.get_stats()
         
         return {
@@ -585,5 +614,59 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
             "async_mode": True,
             "research_completed": self.conversation_state.get("research_completed", False),
             "rag_enabled": Config.RAG_ENABLED,
-            "vector_store_stats": vector_stats
+            "vector_store_stats": vector_stats,
+            "chat_id": self.chat_id or "default"
         }
+
+    def load_conversation_from_messages(self, messages: List[dict]):
+        """Daha önce kaydedilmiş mesajları yükle"""
+        try:
+            # SystemMessage'ı koru, diğerlerini temizle
+            system_messages = [msg for msg in self.conversation_state["messages"] if isinstance(msg, SystemMessage)]
+            self.conversation_state["messages"] = system_messages
+            
+            # Kaydedilmiş mesajları ekle
+            for msg in messages:
+                if msg.get("type") == "user":
+                    self.conversation_state["messages"].append(HumanMessage(content=msg["content"]))
+                elif msg.get("type") == "ai":
+                    self.conversation_state["messages"].append(AIMessage(content=msg["content"]))
+                    
+        except Exception as e:
+            print(f"❌ Load conversation error (Chat: {self.chat_id}): {e}")
+
+    def reset_conversation(self):
+        """Konuşmayı sıfırla"""
+        self.conversation_state = ConversationState(
+            messages=[SystemMessage(content=Config.SYSTEM_PROMPT)],
+            current_intent="",
+            needs_crew_ai=False,
+            crew_ai_task="",
+            user_context={},
+            conversation_summary="",
+            research_data={},
+            websocket_callback=self.websocket_callback,
+            pending_action="",
+            research_completed=False,
+            rag_context="",
+            has_pdf_context=False,
+            chat_id=self.chat_id or "",
+            chat_manager=self.chat_manager
+        )
+
+    def update_chat_manager(self, chat_manager):
+        """Chat manager referansını güncelle"""
+        self.chat_manager = chat_manager
+        self.conversation_state["chat_manager"] = chat_manager
+
+    def get_chat_id(self) -> str:
+        """Mevcut chat ID'yi döner"""
+        return self.chat_id or ""
+
+    def set_chat_id(self, chat_id: str):
+        """Chat ID'yi güncelle ve vector store'u yeniden başlat"""
+        self.chat_id = chat_id
+        self.conversation_state["chat_id"] = chat_id
+        
+        # Vector store'u yeni chat ID ile yeniden başlat
+        self.vector_store = VectorStore(Config.VECTOR_STORE_PATH, chat_id=chat_id)

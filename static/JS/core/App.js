@@ -3,6 +3,7 @@ import { DOM } from '../ui/DOM.js';
 import { UIManager } from '../ui/UIManager.js';
 import { WebSocketHandler } from './WebSocketHandler.js';
 import PDFManager from '../pdf-manager.js';
+import ChatHistoryManager from './ChatHistoryManager.js'; // YENİ İMPORT
 
 class App {
     constructor() {
@@ -14,6 +15,7 @@ class App {
             onError: this.handleWsError.bind(this)
         });
         this.pdfManager = new PDFManager(this);
+        this.chatHistory = new ChatHistoryManager(this); // YENİ: Chat history manager
 
         // Tüm uygulama durumu (state) burada yönetilir
         this.researchState = {
@@ -29,17 +31,17 @@ class App {
             pendingResearchTopic: null
         };
         
-        // YENI SATIRLAR 26-30: PDF ve RAG state eklendi
         this.pdfState = {
             totalDocuments: 0,
             totalChunks: 0,
             ragEnabled: true,
-            isProcessingPdf: false
+            isProcessingPdf: false,
+            currentChatId: null // YENİ: Mevcut chat ID
         };
         
         this.initializeEventListeners();
         
-        // YENI SATIR 34: Global erişim için window'a ekle
+        // Global erişim için window'a ekle
         window.app = this;
     }
 
@@ -140,9 +142,21 @@ class App {
         switch(data.type) {
             case 'connection_established':
                 console.log('✅ Server bağlantısı onaylandı');
-                // YENI SATIRLAR 109-113: Vector store istatistiklerini güncelle
+                
+                // YENİ: Chat ID'yi güncelle
+                if (data.chat_id) {
+                    this.pdfState.currentChatId = data.chat_id;
+                    console.log(`📝 Aktif sohbet: ${data.chat_id}`);
+                }
+                
+                // Vector store istatistiklerini güncelle
                 if (data.vector_store_stats) {
                     this.updatePDFStats(data.vector_store_stats);
+                }
+                
+                // Chat bilgilerini güncelle
+                if (data.chat_info) {
+                    console.log('💬 Chat bilgileri:', data.chat_info);
                 }
                 break;
 
@@ -158,7 +172,6 @@ class App {
                 }
                 break;
 
-            // YENI CASE: RAG mesajları (SATIRLAR 125-130)
             case 'rag_found':
                 if (data.message) {
                     this.ui.addMessage(data.message, 'system');
@@ -222,10 +235,11 @@ class App {
         }
     }
 
-    // YENI FONKSIYON: PDF istatistiklerini güncelle (SATIRLAR 175-188)
+    // PDF Stats Güncelleme
     updatePDFStats(stats) {
         this.pdfState.totalDocuments = stats.total_documents || 0;
         this.pdfState.totalChunks = stats.total_chunks || 0;
+        this.pdfState.currentChatId = stats.chat_id || this.pdfState.currentChatId;
         
         // Sidebar'daki istatistikleri güncelle
         const totalPdfsElement = document.getElementById('totalPdfs');
@@ -234,7 +248,42 @@ class App {
         if (totalPdfsElement) totalPdfsElement.textContent = this.pdfState.totalDocuments;
         if (totalChunksElement) totalChunksElement.textContent = this.pdfState.totalChunks;
         
-        console.log(`📚 PDF Stats güncellendi: ${this.pdfState.totalDocuments} PDF, ${this.pdfState.totalChunks} parça`);
+        // Chat history'deki PDF sayısını güncelle
+        if (this.pdfState.currentChatId) {
+            this.chatHistory.updateChatStats(
+                this.pdfState.currentChatId, 
+                null, // message count - burada güncellenmeyecek
+                this.pdfState.totalDocuments
+            );
+        }
+        
+        console.log(`📚 PDF Stats güncellendi: ${this.pdfState.totalDocuments} PDF, ${this.pdfState.totalChunks} parça (Chat: ${this.pdfState.currentChatId})`);
+    }
+
+    // YENİ FONKSIYON: PDF yükleme başarısı
+    onPDFUploadSuccess(uploadData) {
+        // PDF stats'i güncelle
+        if (uploadData.stats) {
+            this.updatePDFStats(uploadData.stats);
+        }
+        
+        // Chat history güncelle
+        if (uploadData.chat_id) {
+            this.chatHistory.updateChatStats(
+                uploadData.chat_id,
+                null, // message count değişmedi
+                uploadData.stats?.total_documents || 0
+            );
+        }
+        
+        // WebSocket'e bilgi gönder
+        if (this.ws.isConnected) {
+            this.ws.send({
+                type: 'pdf_uploaded',
+                filename: uploadData.filename,
+                chat_id: uploadData.chat_id
+            });
+        }
     }
 
     // Specialized Message Handlers
@@ -407,7 +456,23 @@ class App {
         }
     }
 
-    // YENI FONKSIYON: PDF durumunu al (SATIRLAR 339-348)
+    // YENİ FONKSIYON: Chat değiştirme
+    switchToChat(chatId) {
+        console.log(`🔄 Sohbet değiştiriliyor: ${chatId}`);
+        
+        // Mevcut state'i temizle
+        this.researchState.currentState = 'idle';
+        this.researchState.isResearchCompleted = false;
+        this.researchState.research_data = {};
+        
+        // PDF state'i güncelle
+        this.pdfState.currentChatId = chatId;
+        
+        // WebSocket'i yeni chat ile yeniden bağla
+        this.ws.reconnectWithChatId(chatId);
+    }
+
+    // PDF durumunu al
     getPDFState() {
         return {
             ...this.pdfState,
@@ -422,10 +487,16 @@ class App {
     getState() {
         return {
             researchState: this.researchState,
-            pdfState: this.pdfState, // YENI SATIR: PDF state eklendi
+            pdfState: this.pdfState,
             isConnected: this.ws.isConnected,
-            subTopics: this.ui.progressUI.subTopics
+            subTopics: this.ui.progressUI.subTopics,
+            currentChatId: this.pdfState.currentChatId
         };
+    }
+
+    // YENİ FONKSIYON: Chat history manager'a erişim
+    getChatHistory() {
+        return this.chatHistory;
     }
 }
 

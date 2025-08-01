@@ -1,0 +1,38 @@
+{
+  "7ceafcb0-3484-4162-a8ed-94783a208a15": {
+    "id": "7ceafcb0-3484-4162-a8ed-94783a208a15",
+    "title": "Sohbet 1",
+    "created_at": "2025-08-02T01:53:07.156492",
+    "updated_at": "2025-08-02T01:53:07.156492",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "cd030565-6895-46bb-a4aa-c8b30ee600d5": {
+    "id": "cd030565-6895-46bb-a4aa-c8b30ee600d5",
+    "title": "eklediğim pdf i gördün mğ",
+    "created_at": "2025-08-02T01:53:39.632100",
+    "updated_at": "2025-08-02T02:00:08.495131",
+    "message_count": 12,
+    "pdf_count": 2,
+    "last_message": "yüklediğim diğer pdf i de incele ve başlıkları yaz"
+  },
+  "35dc05d8-3467-4948-8c01-121518efa8e0": {
+    "id": "35dc05d8-3467-4948-8c01-121518efa8e0",
+    "title": "Sohbet 3",
+    "created_at": "2025-08-02T01:54:57.435981",
+    "updated_at": "2025-08-02T01:54:57.435981",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "29a31638-c0b8-4926-9f91-8d2232230575": {
+    "id": "29a31638-c0b8-4926-9f91-8d2232230575",
+    "title": "Sohbet 4",
+    "created_at": "2025-08-02T02:00:58.863747",
+    "updated_at": "2025-08-02T02:00:58.863747",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  }
+}

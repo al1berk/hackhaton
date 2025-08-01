@@ -15,13 +15,20 @@ import hashlib
 logger = logging.getLogger(__name__)
 
 class VectorStore:
-    def __init__(self, persist_directory: str = "chroma_db"):
-        """ChromaDB tabanlı vektör deposu başlatır"""
-        self.persist_directory = persist_directory
+    def __init__(self, persist_directory: str = "chroma_db", chat_id: str = None):
+        """ChromaDB tabanlı vektör deposu başlatır - Chat ID ile izole edilmiş"""
+        self.chat_id = chat_id
+        self.persist_directory = Path(persist_directory)
+        
+        # Chat ID varsa, ona özel alt dizin kullan
+        if chat_id:
+            self.persist_directory = self.persist_directory / chat_id
+        
+        self.persist_directory.mkdir(parents=True, exist_ok=True)
         
         # ChromaDB istemcisini başlat
         self.client = chromadb.PersistentClient(
-            path=persist_directory,
+            path=str(self.persist_directory),
             settings=Settings(
                 anonymized_telemetry=False,
                 allow_reset=True
@@ -31,13 +38,16 @@ class VectorStore:
         # Sentence transformer modelini yükle
         self.embedding_model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
         
+        # Collection adı - chat ID varsa ona göre
+        collection_name = f"pdf_documents_{chat_id}" if chat_id else "pdf_documents"
+        
         # Koleksiyonu al veya oluştur
         self.collection = self.client.get_or_create_collection(
-            name="pdf_documents",
+            name=collection_name,
             metadata={"hnsw:space": "cosine"}
         )
         
-        logger.info(f"✅ VectorStore başlatıldı. Koleksiyon: {self.collection.count()} doküman")
+        logger.info(f"✅ VectorStore başlatıldı (Chat: {chat_id or 'global'}). Koleksiyon: {self.collection.count()} doküman")
 
     def extract_text_from_pdf(self, pdf_file) -> str:
         """PDF dosyasından metin çıkarır"""
@@ -117,6 +127,7 @@ class VectorStore:
             doc_metadata = {
                 "filename": filename,
                 "file_hash": file_hash,
+                "chat_id": self.chat_id,  # Chat ID'yi ekle
                 "upload_date": datetime.now().isoformat(),
                 "chunk_count": len(chunks),
                 **(metadata or {})
@@ -146,7 +157,7 @@ class VectorStore:
                 metadatas=metadatas
             )
             
-            logger.info(f"✅ PDF eklendi: {filename} ({len(chunks)} parça)")
+            logger.info(f"✅ PDF eklendi: {filename} ({len(chunks)} parça) - Chat: {self.chat_id}")
             return True
             
         except Exception as e:
@@ -174,7 +185,7 @@ class VectorStore:
                 }
                 search_results.append(result)
             
-            logger.info(f"🔍 Arama tamamlandı: {len(search_results)} sonuç bulundu")
+            logger.info(f"🔍 Arama tamamlandı: {len(search_results)} sonuç bulundu - Chat: {self.chat_id}")
             return search_results
             
         except Exception as e:
@@ -197,7 +208,8 @@ class VectorStore:
                         "filename": filename,
                         "upload_date": metadata.get('upload_date'),
                         "chunk_count": metadata.get('chunk_count', 0),
-                        "file_hash": metadata.get('file_hash')
+                        "file_hash": metadata.get('file_hash'),
+                        "chat_id": metadata.get('chat_id', self.chat_id)
                     }
             
             return list(documents.values())
@@ -221,7 +233,7 @@ class VectorStore:
             # Tüm parçaları sil
             self.collection.delete(ids=results['ids'])
             
-            logger.info(f"🗑️ Doküman silindi: {file_hash}")
+            logger.info(f"🗑️ Doküman silindi: {file_hash} - Chat: {self.chat_id}")
             return True
             
         except Exception as e:
@@ -238,9 +250,29 @@ class VectorStore:
                 "total_documents": len(documents),
                 "total_chunks": total_chunks,
                 "average_chunks_per_doc": total_chunks / len(documents) if documents else 0,
-                "documents": documents
+                "documents": documents,
+                "chat_id": self.chat_id
             }
             
         except Exception as e:
             logger.error(f"❌ İstatistik alma hatası: {e}")
-            return {"error": str(e)}
+            return {"error": str(e), "chat_id": self.chat_id}
+
+    def clear_all_documents(self) -> bool:
+        """Bu chat'e ait tüm dokümanları siler"""
+        try:
+            # Tüm collection'ı sıfırla
+            self.client.delete_collection(self.collection.name)
+            
+            # Yeniden oluştur
+            self.collection = self.client.get_or_create_collection(
+                name=self.collection.name,
+                metadata={"hnsw:space": "cosine"}
+            )
+            
+            logger.info(f"🧹 Tüm dokümanlar temizlendi - Chat: {self.chat_id}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"❌ Doküman temizleme hatası: {e}")
+            return False

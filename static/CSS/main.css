@@ -17,5 +17,6 @@
 
 /* En sonda yer alması gereken responsive stiller */
 @import url('responsive.css');
+
 @import url('pdf-manager.css');
 

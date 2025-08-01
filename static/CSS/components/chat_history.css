@@ -3,10 +3,12 @@
 .chat-history {
     flex: 1;
     overflow-y: auto;
+    padding: 0;
 }
 
 .chat-history-header {
     padding: 1rem 1.5rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .chat-history-header h3 {
@@ -15,10 +17,11 @@
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    margin: 0;
 }
 
 .chat-list {
-    padding: 0 1rem;
+    padding: 0.5rem;
 }
 
 .chat-item {
@@ -28,16 +31,33 @@
     cursor: pointer;
     transition: all 0.2s ease;
     border: 1px solid transparent;
+    background: var(--background-secondary);
+    position: relative;
 }
 
 .chat-item:hover {
     background: var(--background-color);
     border-color: var(--border-color);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .chat-item.active {
     background: var(--primary-color);
+    border-color: var(--primary-color);
     color: white;
+}
+
+.chat-item.active:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.chat-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
 }
 
 .chat-item-title {
@@ -47,6 +67,57 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    flex: 1;
+    margin-right: 0.5rem;
+}
+
+.chat-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.chat-item-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.chat-item.active .chat-item-time {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.delete-chat-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+.chat-item:hover .delete-chat-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.delete-chat-btn:hover {
+    background: rgba(255, 0, 0, 0.1);
+    color: var(--error-color);
+}
+
+.chat-item.active .delete-chat-btn {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.chat-item.active .delete-chat-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
 }
 
 .chat-item-preview {
@@ -55,8 +126,312 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-bottom: 0.5rem;
 }
 
 .chat-item.active .chat-item-preview {
     color: rgba(255, 255, 255, 0.8);
+}
+
+.chat-item-stats {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: var(--background-color);
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-sm);
+}
+
+.chat-item.active .stat-item {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.stat-item i {
+    font-size: 0.6rem;
+}
+
+/* Empty states */
+.empty-chat-list {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+}
+
+.empty-chat-list i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+}
+
+.empty-chat-list p {
+    margin: 0 0 0.25rem 0;
+    font-weight: 500;
+}
+
+.empty-chat-list small {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+/* Loading state */
+.loading-chat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+}
+
+.loading-spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid var(--border-color);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* PDF Section Styles */
+.pdf-section {
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.pdf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem 0.5rem;
+}
+
+.pdf-header h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.pdf-header h3 i {
+    color: var(--error-color);
+}
+
+.upload-pdf-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.upload-pdf-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.pdf-stats {
+    padding: 0 1.5rem 0.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: var(--background-color);
+    padding: 0.2rem 0.4rem;
+    border-radius: var(--radius-sm);
+    min-width: 1.5rem;
+    text-align: center;
+}
+
+.pdf-list {
+    padding: 0 0.5rem 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.pdf-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    margin-bottom: 0.25rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    background: var(--background-secondary);
+    border: 1px solid transparent;
+}
+
+.pdf-item:hover {
+    background: var(--background-color);
+    border-color: var(--border-color);
+}
+
+.pdf-icon {
+    color: var(--error-color);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.pdf-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.pdf-name {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0.125rem;
+}
+
+.pdf-meta {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+}
+
+.pdf-chunks {
+    background: var(--success-light);
+    color: var(--success-color);
+    padding: 0.1rem 0.3rem;
+    border-radius: var(--radius-xs);
+}
+
+.pdf-actions {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.delete-pdf-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    font-size: 0.7rem;
+    opacity: 0;
+}
+
+.pdf-item:hover .delete-pdf-btn {
+    opacity: 1;
+}
+
+.delete-pdf-btn:hover {
+    background: rgba(255, 0, 0, 0.1);
+    color: var(--error-color);
+}
+
+/* Empty PDF list */
+.empty-pdf-list {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    color: var(--text-muted);
+}
+
+.empty-pdf-list i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+    color: var(--error-color);
+}
+
+.empty-pdf-list p {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.empty-pdf-list small {
+    font-size: 0.65rem;
+    opacity: 0.8;
+}
+
+/* PDF error state */
+.pdf-error {
+    text-align: center;
+    padding: 1rem;
+    color: var(--error-color);
+    background: var(--error-light);
+    border-radius: var(--radius-sm);
+    margin: 0.5rem;
+}
+
+.pdf-error i {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.pdf-error p {
+    margin: 0 0 0.25rem 0;
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+.pdf-error small {
+    font-size: 0.65rem;
+    opacity: 0.8;
+}
+
+/* Scrollbar styles for PDF list */
+.pdf-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.pdf-list::-webkit-scrollbar-track {
+    background: var(--background-secondary);
+    border-radius: 2px;
+}
+
+.pdf-list::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.pdf-list::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
 }

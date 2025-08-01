@@ -1,103 +1,160 @@
 // static/js/core/WebSocketHandler.js
+
 export class WebSocketHandler {
-    constructor(callbacks) {
+    constructor(callbacks = {}) {
+        this.callbacks = {
+            onOpen: callbacks.onOpen || (() => {}),
+            onMessage: callbacks.onMessage || (() => {}),
+            onClose: callbacks.onClose || (() => {}),
+            onError: callbacks.onError || (() => {})
+        };
+        
         this.ws = null;
         this.isConnected = false;
-        this.callbacks = callbacks; // { onOpen, onMessage, onClose, onError }
         this.reconnectAttempts = 0;
         this.maxReconnectAttempts = 5;
-        this.reconnectDelay = 1000; // Start with 1 second
+        this.reconnectDelay = 1000;
+        this.currentChatId = null; // YENİ: Mevcut chat ID
+        
         this.connect();
     }
-
-    connect() {
-        // WebSocket URL'sini daha güvenli şekilde oluştur
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const host = window.location.hostname;
-        const port = window.location.port;
-        const wsUrl = `${protocol}//${host}${port ? ':' + port : ''}/ws`;
-        
-        console.log(`WebSocket bağlantı denemesi: ${wsUrl}`);
-        
+    
+    connect(chatId = null) {
         try {
+            // Chat ID'yi güncelle
+            this.currentChatId = chatId;
+            
+            // WebSocket URL'sini belirle
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = window.location.host;
+            
+            let wsUrl;
+            if (chatId) {
+                wsUrl = `${protocol}//${host}/ws/${chatId}`;
+            } else {
+                wsUrl = `${protocol}//${host}/ws`;
+            }
+            
+            console.log(`🔌 WebSocket bağlantısı kuruluyor: ${wsUrl}`);
+            
             this.ws = new WebSocket(wsUrl);
             
-            this.ws.onopen = () => {
-                console.log('✅ WebSocket bağlantısı başarıyla kuruldu');
+            this.ws.onopen = (event) => {
+                console.log('✅ WebSocket bağlantısı açıldı');
                 this.isConnected = true;
-                this.reconnectAttempts = 0; // Reset attempts on successful connection
-                this.reconnectDelay = 1000; // Reset delay
-                if (this.callbacks.onOpen) this.callbacks.onOpen();
+                this.reconnectAttempts = 0;
+                this.callbacks.onOpen(event);
             };
-
+            
             this.ws.onmessage = (event) => {
                 try {
                     const data = JSON.parse(event.data);
-                    console.log('📨 WebSocket mesaj alındı:', data);
-                    if (this.callbacks.onMessage) this.callbacks.onMessage(data);
+                    this.callbacks.onMessage(data);
                 } catch (error) {
-                    console.error('❌ JSON parse hatası:', error, 'Raw data:', event.data);
+                    console.error('❌ WebSocket mesaj parse hatası:', error);
+                    console.log('Raw message:', event.data);
                 }
             };
-
+            
             this.ws.onclose = (event) => {
-                console.log(`🔌 WebSocket bağlantısı kapandı. Code: ${event.code}, Reason: ${event.reason}`);
+                console.log('🔌 WebSocket bağlantısı kapandı:', event.code, event.reason);
                 this.isConnected = false;
-                if (this.callbacks.onClose) this.callbacks.onClose();
+                this.callbacks.onClose(event);
                 
-                // Reconnection logic with exponential backoff
+                // Otomatik yeniden bağlanma
                 if (this.reconnectAttempts < this.maxReconnectAttempts) {
-                    this.reconnectAttempts++;
-                    console.log(`🔄 Yeniden bağlanma denemesi ${this.reconnectAttempts}/${this.maxReconnectAttempts} - ${this.reconnectDelay}ms sonra`);
-                    setTimeout(() => this.connect(), this.reconnectDelay);
-                    this.reconnectDelay = Math.min(this.reconnectDelay * 2, 30000); // Max 30 seconds
-                } else {
-                    console.error('❌ Maksimum yeniden bağlanma denemesi aşıldı');
+                    this.scheduleReconnect();
                 }
             };
-
+            
             this.ws.onerror = (error) => {
                 console.error('❌ WebSocket hatası:', error);
-                if (this.callbacks.onError) this.callbacks.onError(error);
+                this.callbacks.onError(error);
             };
-
+            
         } catch (error) {
-            console.error('❌ WebSocket oluşturma hatası:', error);
-            if (this.callbacks.onError) this.callbacks.onError(error);
+            console.error('❌ WebSocket bağlantı hatası:', error);
+            this.callbacks.onError(error);
         }
     }
-
-    send(data) {
-        if (this.isConnected && this.ws.readyState === WebSocket.OPEN) {
-            try {
-                const jsonData = JSON.stringify(data);
-                console.log('📤 WebSocket mesaj gönderiliyor:', data);
-                this.ws.send(jsonData);
-                return true;
-            } catch (error) {
-                console.error('❌ Mesaj gönderme hatası:', error);
-                return false;
-            }
-        } else {
-            console.error("❌ WebSocket bağlı değil veya hazır değil. ReadyState:", this.ws?.readyState);
-            return false;
-        }
-    }
-
-    // Manual reconnect method
-    reconnect() {
+    
+    reconnectWithChatId(chatId) {
+        console.log(`🔄 WebSocket yeniden bağlanıyor (Chat ID: ${chatId})`);
+        
+        // Mevcut bağlantıyı kapat
         if (this.ws) {
             this.ws.close();
         }
-        this.reconnectAttempts = 0;
-        this.connect();
+        
+        // Yeni chat ID ile bağlan
+        this.connect(chatId);
     }
-
-    // Graceful disconnect
-    disconnect() {
-        this.reconnectAttempts = this.maxReconnectAttempts; // Prevent reconnection
-        if (this.ws) {
-            this.ws.close(1000, 'Manual disconnect');
+    
+    scheduleReconnect() {
+        this.reconnectAttempts++;
+        const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1); // Exponential backoff
+        
+        console.log(`🔄 Yeniden bağlanma denemesi ${this.reconnectAttempts}/${this.maxReconnectAttempts} - ${delay}ms sonra`);
+        
+        setTimeout(() => {
+            if (!this.isConnected) {
+                this.connect(this.currentChatId);
+            }
+        }, delay);
+    }
+    
+    send(data) {
+        if (!this.isConnected || !this.ws || this.ws.readyState !== WebSocket.OPEN) {
+            console.warn('⚠️ WebSocket bağlı değil, mesaj gönderilemedi');
+            return false;
         }
+        
+        try {
+            const jsonData = typeof data === 'string' ? data : JSON.stringify(data);
+            this.ws.send(jsonData);
+            return true;
+        } catch (error) {
+            console.error('❌ WebSocket mesaj gönderme hatası:', error);
+            return false;
+        }
+    }
+    
+    reconnect() {
+        console.log('🔄 Manuel yeniden bağlanma başlatılıyor...');
+        this.reconnectAttempts = 0;
+        
+        if (this.ws) {
+            this.ws.close();
+        }
+        
+        setTimeout(() => {
+            this.connect(this.currentChatId);
+        }, 1000);
+    }
+    
+    close() {
+        console.log('🔌 WebSocket bağlantısı kapatılıyor...');
+        if (this.ws) {
+            this.ws.close();
+        }
+        this.isConnected = false;
+    }
+    
+    // Getter methods
+    getConnectionState() {
+        if (!this.ws) return 'CLOSED';
+        
+        const states = {
+            [WebSocket.CONNECTING]: 'CONNECTING',
+            [WebSocket.OPEN]: 'OPEN', 
+            [WebSocket.CLOSING]: 'CLOSING',
+            [WebSocket.CLOSED]: 'CLOSED'
+        };
+        
+        return states[this.ws.readyState] || 'UNKNOWN';
+    }
+    
+    getCurrentChatId() {
+        return this.currentChatId;
     }
 }
