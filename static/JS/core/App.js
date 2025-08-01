@@ -2,6 +2,7 @@
 import { DOM } from '../ui/DOM.js';
 import { UIManager } from '../ui/UIManager.js';
 import { WebSocketHandler } from './WebSocketHandler.js';
+import PDFManager from '../pdf-manager.js';
 
 class App {
     constructor() {
@@ -12,6 +13,7 @@ class App {
             onClose: this.handleWsClose.bind(this),
             onError: this.handleWsError.bind(this)
         });
+        this.pdfManager = new PDFManager(this);
 
         // Tüm uygulama durumu (state) burada yönetilir
         this.researchState = {
@@ -27,7 +29,18 @@ class App {
             pendingResearchTopic: null
         };
         
+        // YENI SATIRLAR 26-30: PDF ve RAG state eklendi
+        this.pdfState = {
+            totalDocuments: 0,
+            totalChunks: 0,
+            ragEnabled: true,
+            isProcessingPdf: false
+        };
+        
         this.initializeEventListeners();
+        
+        // YENI SATIR 34: Global erişim için window'a ekle
+        window.app = this;
     }
 
     // Event Listeners
@@ -127,6 +140,10 @@ class App {
         switch(data.type) {
             case 'connection_established':
                 console.log('✅ Server bağlantısı onaylandı');
+                // YENI SATIRLAR 109-113: Vector store istatistiklerini güncelle
+                if (data.vector_store_stats) {
+                    this.updatePDFStats(data.vector_store_stats);
+                }
                 break;
 
             case 'message':
@@ -138,6 +155,13 @@ class App {
             case 'system':
                 if (data.content?.trim()) {
                     this.ui.addMessage(data.content, 'system');
+                }
+                break;
+
+            // YENI CASE: RAG mesajları (SATIRLAR 125-130)
+            case 'rag_found':
+                if (data.message) {
+                    this.ui.addMessage(data.message, 'system');
                 }
                 break;
 
@@ -196,6 +220,21 @@ class App {
                     this.ui.addMessage(data.content, 'ai');
                 }
         }
+    }
+
+    // YENI FONKSIYON: PDF istatistiklerini güncelle (SATIRLAR 175-188)
+    updatePDFStats(stats) {
+        this.pdfState.totalDocuments = stats.total_documents || 0;
+        this.pdfState.totalChunks = stats.total_chunks || 0;
+        
+        // Sidebar'daki istatistikleri güncelle
+        const totalPdfsElement = document.getElementById('totalPdfs');
+        const totalChunksElement = document.getElementById('totalChunks');
+        
+        if (totalPdfsElement) totalPdfsElement.textContent = this.pdfState.totalDocuments;
+        if (totalChunksElement) totalChunksElement.textContent = this.pdfState.totalChunks;
+        
+        console.log(`📚 PDF Stats güncellendi: ${this.pdfState.totalDocuments} PDF, ${this.pdfState.totalChunks} parça`);
     }
 
     // Specialized Message Handlers
@@ -368,10 +407,22 @@ class App {
         }
     }
 
+    // YENI FONKSIYON: PDF durumunu al (SATIRLAR 339-348)
+    getPDFState() {
+        return {
+            ...this.pdfState,
+            hasDocuments: this.pdfState.totalDocuments > 0,
+            averageChunksPerDoc: this.pdfState.totalDocuments > 0 
+                ? Math.round(this.pdfState.totalChunks / this.pdfState.totalDocuments)
+                : 0
+        };
+    }
+
     // Get current state for debugging
     getState() {
         return {
             researchState: this.researchState,
+            pdfState: this.pdfState, // YENI SATIR: PDF state eklendi
             isConnected: this.ws.isConnected,
             subTopics: this.ui.progressUI.subTopics
         };

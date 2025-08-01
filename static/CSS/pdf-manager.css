@@ -1,0 +1,335 @@
+/* static/css/components/pdf-manager.css */
+
+/* PDF Section Styles */
+.pdf-section {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.pdf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.pdf-header h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pdf-header h3 i {
+    color: var(--danger-color);
+}
+
+.upload-pdf-btn {
+    padding: 0.5rem 0.75rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.upload-pdf-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* PDF Stats */
+.pdf-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: var(--background-secondary);
+    border-radius: var(--radius-sm);
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* PDF List */
+.pdf-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: var(--radius-sm);
+}
+
+.pdf-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: var(--background-secondary);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+}
+
+.pdf-item:hover {
+    background: var(--border-color);
+    transform: translateX(2px);
+}
+
+.pdf-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.pdf-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.pdf-name i {
+    color: var(--danger-color);
+    font-size: 0.9rem;
+}
+
+.pdf-name span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pdf-meta small {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.delete-pdf-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-pdf-btn:hover {
+    background: var(--danger-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.no-pdfs {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* Upload Modal Styles */
+.upload-modal {
+    max-width: 500px;
+    width: 90%;
+}
+
+.upload-progress {
+    padding: 1rem 0;
+}
+
+.upload-info {
+    margin-bottom: 1.5rem;
+}
+
+.upload-filename {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    word-break: break-all;
+}
+
+.upload-status {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.upload-details {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 0;
+    padding: 0.75rem;
+    background: var(--background-secondary);
+    border-radius: var(--radius-sm);
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.detail-item span:first-child {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.detail-item span:last-child {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.upload-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.cancel-upload-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--text-muted);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.cancel-upload-btn:hover {
+    background: var(--danger-color);
+}
+
+/* Feature List Styles for Welcome Message */
+.feature-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: var(--background-secondary);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.feature-item:hover {
+    background: var(--border-color);
+    transform: translateY(-2px);
+}
+
+.feature-item i {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+/* PDF Icon in Input */
+.input-actions .attach-btn i.fa-file-pdf {
+    color: var(--danger-color);
+}
+
+.input-actions .attach-btn:hover i.fa-file-pdf {
+    color: var(--danger-color);
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .pdf-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .stat-item {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .upload-modal {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    .feature-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .pdf-item {
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .pdf-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .pdf-stats {
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .upload-details {
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .feature-item {
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .feature-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+}

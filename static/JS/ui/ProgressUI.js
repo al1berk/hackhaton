@@ -845,4 +845,4 @@ export class ProgressUI {
             hasResearchData: !!this.currentResearchData
         };
     }
-}
+}  
