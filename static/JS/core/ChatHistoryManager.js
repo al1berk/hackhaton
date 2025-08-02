@@ -23,18 +23,23 @@ class ChatHistoryManager {
         if (chatList) {
             chatList.addEventListener('click', (e) => {
                 const chatItem = e.target.closest('.chat-item');
+                
+                // Silme butonu için özel kontrol
+                if (e.target.closest('.delete-chat-btn')) {
+                    e.stopPropagation();
+                    const chatId = e.target.closest('.chat-item').dataset.chatId;
+                    if (chatId) {
+                        this.deleteChat(chatId);
+                    }
+                    return;
+                }
+                
+                // Chat item tıklaması
                 if (chatItem) {
                     const chatId = chatItem.dataset.chatId;
                     if (chatId) {
                         this.loadChat(chatId);
                     }
-                }
-
-                // Silme butonu
-                if (e.target.classList.contains('delete-chat-btn')) {
-                    e.stopPropagation();
-                    const chatId = e.target.closest('.chat-item').dataset.chatId;
-                    this.deleteChat(chatId);
                 }
             });
         }
@@ -66,6 +71,46 @@ class ChatHistoryManager {
             this.showError('Sohbet geçmişi yüklenirken hata oluştu');
         } finally {
             this.isLoading = false;
+        }
+    }
+
+    // YENİ FONKSIYON: İlk mesaj için yeni chat oluştur
+    async createNewChatForFirstMessage() {
+        try {
+            const response = await fetch('/chats/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Yeni sohbeti listeye ekle
+                this.chats.unshift(data.chat);
+                this.renderChatList();
+                
+                // Aktif chat olarak ayarla
+                this.currentChatId = data.chat.id;
+                this.updateActiveChatInList(data.chat.id);
+                
+                // WebSocket bağlantısını bu chat için kur
+                this.app.ws.reconnectWithChatId(data.chat.id);
+                
+                console.log('✅ İlk mesaj için yeni sohbet oluşturuldu:', data.chat.id);
+                return data.chat.id;
+            } else {
+                throw new Error(data.message || 'Sohbet oluşturulamadı');
+            }
+            
+        } catch (error) {
+            console.error('❌ İlk mesaj için sohbet oluşturma hatası:', error);
+            throw error;
         }
     }
 
@@ -125,7 +170,9 @@ class ChatHistoryManager {
             const data = await response.json();
             
             if (data.success) {
+                // Önce mevcut chat state'ini güncelle
                 this.currentChatId = chatId;
+                this.app.pdfState.currentChatId = chatId;
                 
                 // Sohbet listesindeki aktif durumu güncelle
                 this.updateActiveChatInList(chatId);
@@ -141,6 +188,9 @@ class ChatHistoryManager {
                 
                 // WebSocket bağlantısını bu chat için yeniden kur
                 this.app.ws.reconnectWithChatId(chatId);
+                
+                // isFirstLoad false yap
+                this.app.isFirstLoad = false;
                 
                 console.log('✅ Sohbet yüklendi:', chatId);
                 console.log('📊 Mesaj sayısı:', data.messages.length);

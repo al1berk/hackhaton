@@ -29,9 +29,11 @@ class PDFManager {
     setupEventListeners() {
         // File input change event
         if (this.fileInput) {
-            this.fileInput.addEventListener('change', (e) => {
+            this.fileInput.addEventListener('change', async (e) => {
                 if (e.target.files.length > 0) {
-                    this.handleFileSelect(e.target.files[0]);
+                    await this.handleFileSelect(e.target.files[0]);
+                    // Input'u temizle ki aynı dosya tekrar seçilebilsin
+                    e.target.value = '';
                 }
             });
         }
@@ -73,10 +75,32 @@ class PDFManager {
             return;
         }
 
-        // Aktif chat ID'yi al
+        // Aktif chat ID'yi al - app.chatHistory üzerinden
         const currentChatId = this.app.chatHistory.getCurrentChatId();
         if (!currentChatId) {
-            alert('Aktif bir sohbet bulunamadı. Lütfen önce bir sohbet başlatın.');
+            // Eğer aktif chat yoksa, yeni chat oluştur
+            try {
+                console.log('📁 PDF yükleme için yeni sohbet oluşturuluyor...');
+                const chatId = await this.app.chatHistory.createNewChatForFirstMessage();
+                
+                // WebSocket bağlantısının kurulmasını bekle
+                let retryCount = 0;
+                const maxRetries = 10;
+                
+                while (!this.app.ws.isConnected && retryCount < maxRetries) {
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    retryCount++;
+                }
+                
+                if (this.app.ws.isConnected) {
+                    this.startUpload(file, chatId);
+                } else {
+                    alert('Bağlantı kurulamadı. Lütfen sayfayı yenileyin.');
+                }
+            } catch (error) {
+                console.error('❌ PDF için chat oluşturma hatası:', error);
+                alert('Sohbet oluşturulamadı. Lütfen tekrar deneyin.');
+            }
             return;
         }
 
@@ -148,6 +172,12 @@ class PDFManager {
             
             // Success message göster
             this.showSuccessMessage(`"${response.filename}" başarıyla yüklendi!`);
+            
+            // YENİ: PDF yükleme mesajını chat'e ekle
+            this.app.ui.addMessage(
+                `📄 **PDF Yüklendi:** ${response.filename}\n✅ ${response.stats.total_chunks} parçaya bölündü ve vektörleştirildi.`,
+                'system'
+            );
             
             this.resetUpload();
         }, 1000);

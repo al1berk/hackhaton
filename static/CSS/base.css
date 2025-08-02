@@ -3,23 +3,47 @@
 :root {
     --primary-color: #2563eb;
     --primary-hover: #1d4ed8;
+    --primary-light: #3b82f6;
+    --primary-dark: #1e40af;
+    --primary-color-light: rgba(37, 99, 235, 0.1);
+    --primary-color-rgb: 37, 99, 235;
     --secondary-color: #64748b;
     --success-color: #059669;
+    --success-light: rgba(5, 150, 105, 0.1);
     --warning-color: #d97706;
     --danger-color: #dc2626;
+    --error-color: #dc2626;
+    --error-color-rgb: 220, 38, 38;
     --background-color: #f8fafc;
+    --background-secondary: #f1f5f9;
+    --background-tertiary: #e2e8f0;
     --surface-color: #ffffff;
     --border-color: #e2e8f0;
+    --border-dark: #334155;
     --text-primary: #1e293b;
     --text-secondary: #64748b;
     --text-muted: #94a3b8;
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --radius-xs: 0.25rem;
     --radius-sm: 0.375rem;
     --radius-md: 0.5rem;
     --radius-lg: 0.75rem;
     --radius-xl: 1rem;
+}
+
+/* Dark theme variables */
+[data-theme="dark"] {
+    --primary-color-dark: rgba(37, 99, 235, 0.8);
+    --background-color: #0f172a;
+    --background-secondary: #1e293b;
+    --background-tertiary: #334155;
+    --surface-color: #1e293b;
+    --border-color: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
 }
 
 * {

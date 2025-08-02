@@ -3,7 +3,7 @@ import { DOM } from '../ui/DOM.js';
 import { UIManager } from '../ui/UIManager.js';
 import { WebSocketHandler } from './WebSocketHandler.js';
 import PDFManager from '../pdf-manager.js';
-import ChatHistoryManager from './ChatHistoryManager.js'; // YENİ İMPORT
+import ChatHistoryManager from './ChatHistoryManager.js';
 
 class App {
     constructor() {
@@ -15,7 +15,7 @@ class App {
             onError: this.handleWsError.bind(this)
         });
         this.pdfManager = new PDFManager(this);
-        this.chatHistory = new ChatHistoryManager(this); // YENİ: Chat history manager
+        this.chatHistory = new ChatHistoryManager(this);
 
         // Tüm uygulama durumu (state) burada yönetilir
         this.researchState = {
@@ -25,7 +25,7 @@ class App {
                 { id: 'step3', title: 'Raporu Yapılandırma ve JSON Formatına Dönüştürme', status: 'pending', agent: 'ReportProcessor' }
             ],
             isResearchCompleted: false,
-            currentState: 'idle', // idle, waiting_confirmation, researching, completed
+            currentState: 'idle',
             subTopics: [],
             isWaitingForConfirmation: false,
             pendingResearchTopic: null
@@ -36,8 +36,11 @@ class App {
             totalChunks: 0,
             ragEnabled: true,
             isProcessingPdf: false,
-            currentChatId: null // YENİ: Mevcut chat ID
+            currentChatId: null
         };
+        
+        // YENİ: İlk açılış durumu
+        this.isFirstLoad = true;
         
         this.initializeEventListeners();
         
@@ -147,6 +150,11 @@ class App {
                 if (data.chat_id) {
                     this.pdfState.currentChatId = data.chat_id;
                     console.log(`📝 Aktif sohbet: ${data.chat_id}`);
+                    
+                    // İlk yüklemede hoş geldin mesajını göster, sonrasında gizle
+                    if (!this.isFirstLoad) {
+                        this.ui.hideWelcomeMessage();
+                    }
                 }
                 
                 // Vector store istatistiklerini güncelle
@@ -163,6 +171,8 @@ class App {
             case 'message':
                 if (data.content?.trim()) {
                     this.ui.addMessage(data.content, 'ai');
+                    // İlk AI mesajından sonra hoş geldin mesajını gizle
+                    this.ui.hideWelcomeMessage();
                 }
                 break;
 
@@ -274,6 +284,13 @@ class App {
                 null, // message count değişmedi
                 uploadData.stats?.total_documents || 0
             );
+        }
+        
+        // YENİ: İlk yüklemeden sonra artık mesaj gönderebilir
+        if (this.isFirstLoad && uploadData.chat_id) {
+            this.isFirstLoad = false;
+            this.pdfState.currentChatId = uploadData.chat_id;
+            console.log('✅ PDF yüklendikten sonra chat hazır:', uploadData.chat_id);
         }
         
         // WebSocket'e bilgi gönder
@@ -413,12 +430,82 @@ class App {
     // User Actions
     sendMessage() {
         const message = DOM.messageInput.value.trim();
-        if (!message || !this.ws.isConnected) {
-            console.warn('⚠️ Mesaj boş veya WebSocket bağlı değil');
+        if (!message) {
+            console.warn('⚠️ Mesaj boş');
             return;
         }
 
+        // Aktif sohbet varsa ve bağlıysa direkt gönder
+        if (this.pdfState.currentChatId && this.ws.isConnected) {
+            this.sendMessageToServer(message);
+            return;
+        }
+
+        // İlk mesajsa veya aktif sohbet yoksa yeni chat oluştur
+        if (this.isFirstLoad || !this.pdfState.currentChatId) {
+            this.createNewChatAndSendMessage(message);
+            return;
+        }
+
+        // WebSocket bağlı değilse hata mesajı
+        if (!this.ws.isConnected) {
+            console.warn('⚠️ WebSocket bağlı değil');
+            this.ui.addMessage('❌ Bağlantı yok. Lütfen bekleyin...', 'system');
+            return;
+        }
+
+        this.sendMessageToServer(message);
+    }
+
+    // YENİ FONKSIYON: Yeni chat oluştur ve mesaj gönder
+    async createNewChatAndSendMessage(message) {
+        try {
+            console.log('🆕 İlk mesaj - yeni chat oluşturuluyor...');
+            
+            // Loading state göster
+            this.ui.addMessage('🔄 Sohbet oluşturuluyor...', 'system');
+            
+            // Yeni chat oluştur
+            const chatId = await this.chatHistory.createNewChatForFirstMessage();
+            
+            // System mesajını temizle
+            const systemMessages = document.querySelectorAll('.message.system');
+            systemMessages.forEach(msg => {
+                if (msg.textContent.includes('Sohbet oluşturuluyor')) {
+                    msg.remove();
+                }
+            });
+            
+            // WebSocket bağlantısının kurulmasını bekle
+            let retryCount = 0;
+            const maxRetries = 10;
+            
+            while (!this.ws.isConnected && retryCount < maxRetries) {
+                await new Promise(resolve => setTimeout(resolve, 300));
+                retryCount++;
+            }
+            
+            if (this.ws.isConnected) {
+                this.sendMessageToServer(message);
+                this.isFirstLoad = false;
+            } else {
+                console.error('❌ WebSocket bağlantısı kurulamadı');
+                this.ui.addMessage('❌ Bağlantı kurulamadı. Sayfayı yenileyin.', 'system');
+            }
+            
+        } catch (error) {
+            console.error('❌ Yeni chat oluşturma hatası:', error);
+            this.ui.addMessage('❌ Sohbet oluşturulamadı. Lütfen tekrar deneyin.', 'system');
+        }
+    }
+
+    // YENİ FONKSIYON: Mesajı sunucuya gönder
+    sendMessageToServer(message) {
         console.log('📤 Mesaj gönderiliyor:', message);
+
+        // Web araştırması checkbox'ını kontrol et
+        const webResearchEnabled = document.getElementById('webResearchEnabled');
+        const forceWebResearch = webResearchEnabled && webResearchEnabled.checked;
 
         // Add user message to UI
         this.ui.addMessage(message, 'user');
@@ -427,16 +514,25 @@ class App {
         // Show typing indicator
         this.ui.showTypingIndicator();
 
-        // Send to WebSocket
-        const success = this.ws.send({ message: message });
+        // Send to WebSocket with research flag
+        const messageData = { 
+            message: message,
+            force_web_research: forceWebResearch
+        };
+
+        const success = this.ws.send(messageData);
         if (!success) {
             this.ui.removeTypingIndicator();
             this.ui.addMessage('❌ Mesaj gönderilemedi. Lütfen tekrar deneyin.', 'system');
             return;
         }
         
-        // Clear input
+        // Clear input and research checkbox
         DOM.messageInput.value = '';
+        if (webResearchEnabled) {
+            webResearchEnabled.checked = false;
+        }
+        
         this.ui.autoResizeTextarea(DOM.messageInput);
         this.updateCharCount();
         this.updateSendButton();

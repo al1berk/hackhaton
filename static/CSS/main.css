@@ -20,3 +20,110 @@
 
 @import url('pdf-manager.css');
 
+/* Web Araştırması Checkbox Stilleri */
+.research-options {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--background-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.research-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.875rem;
+    user-select: none;
+}
+
+.research-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.research-checkbox .checkmark {
+    height: 18px;
+    width: 18px;
+    background-color: var(--background-color);
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    margin-right: 0.5rem;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.research-checkbox:hover .checkmark {
+    border-color: var(--primary-color);
+}
+
+.research-checkbox input:checked ~ .checkmark {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.research-checkbox .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.research-checkbox input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.research-checkbox .label-text {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.research-checkbox input:checked ~ .label-text {
+    color: var(--primary-color);
+}
+
+/* Dark mode için */
+[data-theme="dark"] .research-options {
+    background: var(--background-tertiary);
+    border-color: var(--border-dark);
+}
+
+[data-theme="dark"] .research-checkbox .checkmark {
+    background-color: var(--background-secondary);
+    border-color: var(--border-dark);
+}
+
+[data-theme="dark"] .research-checkbox:hover .checkmark {
+    border-color: var(--primary-light);
+}
+
+/* Welcome Message İyileştirmeleri */
+.welcome-tip {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--background-tertiary);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary-color);
+}
+
+.welcome-tip p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.welcome-tip i {
+    color: var(--primary-color);
+    font-size: 1rem;
+}
+

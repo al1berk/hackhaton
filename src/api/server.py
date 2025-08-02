@@ -530,7 +530,12 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str):
             else:
                 # Normal mesajlar
                 user_message = message_data.get("message", "")
+                force_web_research = message_data.get("force_web_research", False)
+                
                 if user_message:
+                    # Force web research flag'ini conversation state'e ekle
+                    dialog.conversation_state["force_web_research"] = force_web_research
+                    
                     response = await dialog.process_user_message(user_message)
                     
                     if response:

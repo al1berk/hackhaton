@@ -203,6 +203,11 @@ class AsyncLangGraphDialog:
         last_message = state["messages"][-1].content.strip().lower()
         original_message = state["messages"][-1].content.strip()
         
+        # Force web research flag'ini kontrol et
+        force_web_research = state.get("force_web_research", False)
+        
+        print(f"🔍 Intent Analysis - Message: '{last_message[:50]}...', Force Web Research: {force_web_research}")
+        
         # Araştırma tamamlandıysa ve research data varsa
         if state.get("research_completed", False) and state.get("research_data"):
             research_keywords = ["araştırma", "rapor", "bulgu", "sonuç", "detay", "açıkla", "anlatır mısın", 
@@ -211,108 +216,107 @@ class AsyncLangGraphDialog:
             if any(keyword in last_message for keyword in research_keywords):
                 state["current_intent"] = "research_question"
                 state["needs_crew_ai"] = False
+                print(f"✅ Intent: research_question")
                 return state
         
-        # RAG kontrolü
+        # ÖNCE web araştırması flag'ini kontrol et
+        if force_web_research:
+            state["current_intent"] = "web_research"
+            state["crew_ai_task"] = original_message
+            state["needs_crew_ai"] = True
+            print(f"✅ Intent: web_research (forced)")
+            return state
+        
+        # RAG kontrolü - DAHA SPESIFIK KRITERLER
         if Config.RAG_ENABLED:
-            # PDF dosyası mevcut mu kontrol et
             vector_stats = self.vector_store.get_stats()
             has_documents = vector_stats.get("total_documents", 0) > 0
+            print(f"📚 PDF Documents: {has_documents}, Total: {vector_stats.get('total_documents', 0)}")
             
-            # PDF referans kelimeleri
-            pdf_reference_keywords = [
-                "doküman", "dokuman", "dosya", "pdf", "rapor", "belge", 
-                "metin", "kitap", "makale", "döküman", "dökuman"
-            ]
-            
-            # Dosya ismi referansları
-            uploaded_files = vector_stats.get("documents", [])
-            file_references = []
-            for doc in uploaded_files:
-                filename = doc.get("filename", "").lower()
-                if filename:
-                    # Dosya adının parçalarını ekle
-                    name_parts = filename.replace(".pdf", "").replace("-", " ").replace("_", " ").split()
-                    file_references.extend(name_parts)
-            
-            # PDF içeriği ile ilgili sorular
-            pdf_content_keywords = [
-                "içinde", "neler var", "özet", "özetle", "içerik", "bahsediyor", 
-                "yaziyor", "yazıyor", "anlatıyor", "gösteriyor", "içeriği nedir",
-                "hakkında bilgi", "ne diyor", "nasıl açıklıyor", "hangi konular"
-            ]
-            
-            # Direkt referanslar
-            direct_references = [
-                "bu doküman", "bu dokuman", "bu dosya", "bu pdf", "bu rapor",
-                "bu belge", "yüklediğim", "yukledıgım", "gönderdiğim", "gonderdigim"
-            ]
-            
-            # RAG için uygun mu kontrol et
-            should_use_rag = False
-            
-            # 1. Direkt PDF referansı var mı?
-            if any(ref in last_message for ref in direct_references):
-                should_use_rag = True
-            
-            # 2. PDF dosya ismi referansı var mı?
-            elif any(file_ref in last_message for file_ref in file_references if len(file_ref) > 2):
-                should_use_rag = True
-            
-            # 3. PDF referans kelimesi + içerik sorusu kombinasyonu
-            elif (any(pdf_ref in last_message for pdf_ref in pdf_reference_keywords) and 
-                any(content_q in last_message for content_q in pdf_content_keywords)):
-                should_use_rag = True
-            
-            # 4. Genel sorular ama PDF mevcut
-            elif has_documents:
-                general_question_keywords = [
-                    "nedir", "nasıl", "ne demek", "açıkla", "anlat", "bilgi ver",
-                    "kimdir", "hangi", "neden", "niçin", "ne zaman", "nerede",
-                    "özet", "özetle", "içerik", "hakkında"
+            if has_documents:
+                # Direkt PDF referansları
+                direct_pdf_references = [
+                    "bu doküman", "bu dokuman", "bu dosya", "bu pdf", "bu rapor",
+                    "bu belge", "yüklediğim", "yukledıgım", "gönderdiğim", "gonderdigim",
+                    "dokümanı", "dokumanı", "dosyayı", "pdf'i", "raporu", "belgeyi"
                 ]
                 
-                # Genel soru + PDF mevcut = RAG'a yönlendir
-                if any(keyword in last_message for keyword in general_question_keywords):
+                # PDF içerik soruları
+                pdf_content_questions = [
+                    "özet", "özetle", "içerik", "içinde", "neler var", "ne diyor",
+                    "bahsediyor", "yaziyor", "yazıyor", "anlatıyor", "gösteriyor",
+                    "açıklıyor", "hangi konular", "nasıl açıklıyor"
+                ]
+                
+                # Dosya ismi referansları
+                uploaded_files = vector_stats.get("documents", [])
+                file_name_matches = []
+                for doc in uploaded_files:
+                    filename = doc.get("filename", "").lower()
+                    if filename:
+                        # Dosya adının ana kısmını al (uzantısız)
+                        name_without_ext = filename.replace(".pdf", "").replace("-", " ").replace("_", " ")
+                        name_parts = [part for part in name_without_ext.split() if len(part) > 3]
+                        
+                        # Bu dosya isminin parçaları mesajda geçiyor mu?
+                        for part in name_parts:
+                            if part in last_message:
+                                file_name_matches.append(part)
+                
+                # RAG kullanım kriterleri
+                should_use_rag = False
+                reason = ""
+                
+                # 1. Direkt PDF referansı
+                if any(ref in last_message for ref in direct_pdf_references):
                     should_use_rag = True
-            
-            # RAG kullanılacaksa
-            if should_use_rag and has_documents:
-                state["current_intent"] = "rag_search"
-                state["crew_ai_task"] = original_message
-                state["needs_crew_ai"] = False
-                return state
+                    reason = "Direct PDF reference"
+                
+                # 2. Dosya ismi + içerik sorusu
+                elif file_name_matches and any(q in last_message for q in pdf_content_questions):
+                    should_use_rag = True
+                    reason = f"File name match ({file_name_matches}) + content question"
+                
+                # 3. PDF kelimesi + içerik sorusu 
+                elif ("pdf" in last_message or "doküman" in last_message or "dokuman" in last_message) and \
+                     any(q in last_message for q in pdf_content_questions):
+                    should_use_rag = True
+                    reason = "PDF keyword + content question"
+                
+                print(f"🎯 RAG Analysis: should_use={should_use_rag}, reason='{reason}'")
+                
+                if should_use_rag:
+                    state["current_intent"] = "rag_search"
+                    state["crew_ai_task"] = original_message
+                    state["needs_crew_ai"] = False
+                    print(f"✅ Intent: rag_search")
+                    return state
             
             # PDF mevcut değilse ve PDF referansı yapıldıysa uyar
-            elif should_use_rag and not has_documents:
+            elif not has_documents and any(ref in last_message for ref in ["pdf", "doküman", "dokuman", "dosya", "belge"]):
                 state["current_intent"] = "no_pdf_available"
                 state["needs_crew_ai"] = False
+                print(f"✅ Intent: no_pdf_available")
                 return state
     
-        # Web araştırması kontrolleri
-        research_keywords_strong = ["araştır", "araştırma yap", "incele", "analiz et", "web'de ara", "internette ara"]
-        research_keywords_weak = ["hakkında bilgi", "son gelişmeler", "güncel", "haberler"]
+        # Web araştırması otomatik algılama - SADECE kesin durumlar
+        research_keywords_explicit = ["araştır", "araştırma yap", "incele", "analiz et", "web'de ara", "internette ara"]
         
         detected_intent = "general_chat"
         task_topic = original_message
         
-        # Güçlü araştırma ifadeleri
-        for keyword in research_keywords_strong:
+        # Açık araştırma talepleri
+        for keyword in research_keywords_explicit:
             if keyword in last_message:
                 detected_intent = "web_research"
                 task_topic = original_message.replace(keyword, "", 1).strip()
                 break
         
-        # Zayıf araştırma ifadeleri - onay iste
-        if detected_intent != "web_research":
-            if len(last_message.split()) > 5 and any(keyword in last_message for keyword in research_keywords_weak):
-                if not any(pdf_ref in last_message for pdf_ref in ["doküman", "dokuman", "dosya", "pdf"]):
-                    detected_intent = "ask_confirmation"
-
         state["current_intent"] = detected_intent
         state["crew_ai_task"] = task_topic
         state["needs_crew_ai"] = detected_intent == "web_research"
         
+        print(f"✅ Final Intent: {detected_intent}")
         return state
 
     async def no_pdf_available_node(self, state: ConversationState) -> ConversationState:
