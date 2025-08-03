@@ -11,6 +11,8 @@ from pathlib import Path
 import json
 from datetime import datetime
 import hashlib
+from .document_processor import DocumentProcessor # YENİ: DocumentProcessor import edildi
+
 
 logger = logging.getLogger(__name__)
 
@@ -96,13 +98,14 @@ class VectorStore:
         
         return chunks
 
-    def add_pdf_document(self, pdf_file, filename: str, metadata: Optional[Dict] = None) -> bool:
-        """PDF dosyasını vektör deposuna ekler"""
+    def add_document_from_path(self, file_path: str, filename: str, metadata: Optional[Dict] = None) -> bool:
+        """Verilen yoldaki dökümanı işler ve vektör deposuna ekler"""
+
         try:
             # PDF'den metin çıkar
-            text = self.extract_text_from_pdf(pdf_file)
+            text = DocumentProcessor.read_document(file_path)
             if not text:
-                logger.error(f"❌ PDF'den metin çıkarılamadı: {filename}")
+                logger.error(f"❌ Dökümandan metin çıkarılamadı: {filename}")
                 return False
             
             # Dosya hash'i oluştur (tekrar kontrol için)

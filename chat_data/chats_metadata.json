@@ -7,5 +7,599 @@
     "message_count": 0,
     "pdf_count": 0,
     "last_message": null
+  },
+  "8906164b-0864-446e-baf8-5b3c5f97d8de": {
+    "id": "8906164b-0864-446e-baf8-5b3c5f97d8de",
+    "title": "Sohbet 2",
+    "created_at": "2025-08-04T02:06:10.829987",
+    "updated_at": "2025-08-04T02:06:10.829987",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "b01d38bd-8c9c-4e06-9e99-b06ef4c80612": {
+    "id": "b01d38bd-8c9c-4e06-9e99-b06ef4c80612",
+    "title": "Sohbet 3",
+    "created_at": "2025-08-04T02:06:12.684546",
+    "updated_at": "2025-08-04T02:06:12.684546",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "95da25e1-3bb2-4dab-9ab6-a0ac2aebc2b5": {
+    "id": "95da25e1-3bb2-4dab-9ab6-a0ac2aebc2b5",
+    "title": "Sohbet 4",
+    "created_at": "2025-08-04T02:06:14.160249",
+    "updated_at": "2025-08-04T02:06:14.160249",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "f8491898-fd38-41c2-a74f-fb89532f5910": {
+    "id": "f8491898-fd38-41c2-a74f-fb89532f5910",
+    "title": "Sohbet 5",
+    "created_at": "2025-08-04T02:06:15.683521",
+    "updated_at": "2025-08-04T02:06:15.683521",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "556afe71-5cad-4551-9f07-9ce4faff87de": {
+    "id": "556afe71-5cad-4551-9f07-9ce4faff87de",
+    "title": "Sohbet 6",
+    "created_at": "2025-08-04T02:06:17.180462",
+    "updated_at": "2025-08-04T02:06:17.180462",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "23ace48f-89d4-4ef4-8f06-11e1839f329b": {
+    "id": "23ace48f-89d4-4ef4-8f06-11e1839f329b",
+    "title": "Sohbet 7",
+    "created_at": "2025-08-04T02:06:19.024113",
+    "updated_at": "2025-08-04T02:06:19.024113",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "9458dfef-749c-49c7-9161-a69e4e2e8804": {
+    "id": "9458dfef-749c-49c7-9161-a69e4e2e8804",
+    "title": "Sohbet 8",
+    "created_at": "2025-08-04T02:06:20.480272",
+    "updated_at": "2025-08-04T02:06:20.480272",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "73acb116-f481-4715-af56-f1a865fa002f": {
+    "id": "73acb116-f481-4715-af56-f1a865fa002f",
+    "title": "Sohbet 9",
+    "created_at": "2025-08-04T02:06:22.026360",
+    "updated_at": "2025-08-04T02:06:22.026360",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "e227332c-5894-416c-bad1-2116eb122bbc": {
+    "id": "e227332c-5894-416c-bad1-2116eb122bbc",
+    "title": "Sohbet 10",
+    "created_at": "2025-08-04T02:06:23.476520",
+    "updated_at": "2025-08-04T02:06:23.476520",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "2a37ba96-c908-4538-ad86-0ab79d73ac89": {
+    "id": "2a37ba96-c908-4538-ad86-0ab79d73ac89",
+    "title": "Sohbet 11",
+    "created_at": "2025-08-04T02:06:24.902041",
+    "updated_at": "2025-08-04T02:06:24.902041",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "559c7e78-19db-44bc-ac7d-51aa7ecdfb5d": {
+    "id": "559c7e78-19db-44bc-ac7d-51aa7ecdfb5d",
+    "title": "Sohbet 12",
+    "created_at": "2025-08-04T02:06:26.434614",
+    "updated_at": "2025-08-04T02:06:26.434614",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "cf659fc2-327e-4b7a-b902-d06f6efbfa3c": {
+    "id": "cf659fc2-327e-4b7a-b902-d06f6efbfa3c",
+    "title": "Sohbet 13",
+    "created_at": "2025-08-04T02:06:27.920546",
+    "updated_at": "2025-08-04T02:06:27.920546",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "689d365b-4a02-4ce1-ba18-86d83ad53517": {
+    "id": "689d365b-4a02-4ce1-ba18-86d83ad53517",
+    "title": "Sohbet 14",
+    "created_at": "2025-08-04T02:06:29.424906",
+    "updated_at": "2025-08-04T02:06:29.424906",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "159e3765-178d-4eed-9607-3aab81d3dbc0": {
+    "id": "159e3765-178d-4eed-9607-3aab81d3dbc0",
+    "title": "Sohbet 15",
+    "created_at": "2025-08-04T02:06:30.992001",
+    "updated_at": "2025-08-04T02:06:30.992001",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "07ef9efe-da75-44a6-990d-757bc4fb6f18": {
+    "id": "07ef9efe-da75-44a6-990d-757bc4fb6f18",
+    "title": "Sohbet 16",
+    "created_at": "2025-08-04T02:06:32.588299",
+    "updated_at": "2025-08-04T02:06:32.588299",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "a50f7556-bd97-4208-be27-91c5daa6bed1": {
+    "id": "a50f7556-bd97-4208-be27-91c5daa6bed1",
+    "title": "Sohbet 17",
+    "created_at": "2025-08-04T02:06:34.166870",
+    "updated_at": "2025-08-04T02:06:34.166870",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "2e427ac8-ea20-41a3-8923-afd3e96bc498": {
+    "id": "2e427ac8-ea20-41a3-8923-afd3e96bc498",
+    "title": "Sohbet 18",
+    "created_at": "2025-08-04T02:06:35.822042",
+    "updated_at": "2025-08-04T02:06:35.822042",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "d4ec1c5c-5e92-4164-9a0b-7fdcca89d9d0": {
+    "id": "d4ec1c5c-5e92-4164-9a0b-7fdcca89d9d0",
+    "title": "Sohbet 19",
+    "created_at": "2025-08-04T02:06:37.324964",
+    "updated_at": "2025-08-04T02:06:37.324964",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "6f7f8058-4288-4212-9d71-bcdd0fcf9019": {
+    "id": "6f7f8058-4288-4212-9d71-bcdd0fcf9019",
+    "title": "Sohbet 20",
+    "created_at": "2025-08-04T02:06:38.898036",
+    "updated_at": "2025-08-04T02:06:38.898036",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "1af565a5-9b69-4033-b81c-8e0347e0531a": {
+    "id": "1af565a5-9b69-4033-b81c-8e0347e0531a",
+    "title": "Sohbet 21",
+    "created_at": "2025-08-04T02:06:40.446564",
+    "updated_at": "2025-08-04T02:06:40.446564",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "b020f6a0-832d-4f48-ba17-cbde4dd08fac": {
+    "id": "b020f6a0-832d-4f48-ba17-cbde4dd08fac",
+    "title": "Sohbet 22",
+    "created_at": "2025-08-04T02:06:41.983485",
+    "updated_at": "2025-08-04T02:06:41.983485",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "685fc410-2cb2-406c-b7e5-a13e0600f970": {
+    "id": "685fc410-2cb2-406c-b7e5-a13e0600f970",
+    "title": "Sohbet 23",
+    "created_at": "2025-08-04T02:06:43.546269",
+    "updated_at": "2025-08-04T02:06:43.546269",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "d89dc5a7-6f0f-45ad-8434-b4296461f82e": {
+    "id": "d89dc5a7-6f0f-45ad-8434-b4296461f82e",
+    "title": "Sohbet 24",
+    "created_at": "2025-08-04T02:06:45.199201",
+    "updated_at": "2025-08-04T02:06:45.199201",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "aa8d5874-ce26-471c-866d-80f5aee794c4": {
+    "id": "aa8d5874-ce26-471c-866d-80f5aee794c4",
+    "title": "Sohbet 25",
+    "created_at": "2025-08-04T02:06:46.740663",
+    "updated_at": "2025-08-04T02:06:46.740663",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "bd578b45-e532-43e6-b318-819133dbab5f": {
+    "id": "bd578b45-e532-43e6-b318-819133dbab5f",
+    "title": "Sohbet 26",
+    "created_at": "2025-08-04T02:06:48.272497",
+    "updated_at": "2025-08-04T02:06:48.272497",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "15bca1ab-dbe7-4f7d-b1b2-1f2eb166b1f2": {
+    "id": "15bca1ab-dbe7-4f7d-b1b2-1f2eb166b1f2",
+    "title": "Sohbet 27",
+    "created_at": "2025-08-04T02:06:49.792489",
+    "updated_at": "2025-08-04T02:06:49.792489",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "a5f3aa9e-5e00-406e-89fa-498b023c04ac": {
+    "id": "a5f3aa9e-5e00-406e-89fa-498b023c04ac",
+    "title": "Sohbet 28",
+    "created_at": "2025-08-04T02:06:51.343190",
+    "updated_at": "2025-08-04T02:06:51.343190",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "3f986350-f847-4e78-b61b-f1592517e840": {
+    "id": "3f986350-f847-4e78-b61b-f1592517e840",
+    "title": "Sohbet 29",
+    "created_at": "2025-08-04T02:06:52.889655",
+    "updated_at": "2025-08-04T02:06:52.889655",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "189f6da4-4601-4991-afd6-c070f43e2964": {
+    "id": "189f6da4-4601-4991-afd6-c070f43e2964",
+    "title": "Sohbet 30",
+    "created_at": "2025-08-04T02:06:54.457089",
+    "updated_at": "2025-08-04T02:06:54.457089",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "6c6c9c5e-3cd1-4da9-b6af-ea9b8d536e4d": {
+    "id": "6c6c9c5e-3cd1-4da9-b6af-ea9b8d536e4d",
+    "title": "Sohbet 31",
+    "created_at": "2025-08-04T02:06:55.976056",
+    "updated_at": "2025-08-04T02:06:55.976056",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "00c49d75-2048-4c8b-a943-9846c8217570": {
+    "id": "00c49d75-2048-4c8b-a943-9846c8217570",
+    "title": "Sohbet 32",
+    "created_at": "2025-08-04T02:06:57.604276",
+    "updated_at": "2025-08-04T02:06:57.604276",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "cef21cd9-88f8-483e-9238-9a9696594dac": {
+    "id": "cef21cd9-88f8-483e-9238-9a9696594dac",
+    "title": "Sohbet 33",
+    "created_at": "2025-08-04T02:06:59.105610",
+    "updated_at": "2025-08-04T02:06:59.105610",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "6f335776-97fe-429b-b9c8-dbac46ca24fc": {
+    "id": "6f335776-97fe-429b-b9c8-dbac46ca24fc",
+    "title": "Sohbet 34",
+    "created_at": "2025-08-04T02:07:00.714705",
+    "updated_at": "2025-08-04T02:07:00.714705",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "e3ecfa0d-1a0f-4c0d-bedc-74d964692281": {
+    "id": "e3ecfa0d-1a0f-4c0d-bedc-74d964692281",
+    "title": "Sohbet 35",
+    "created_at": "2025-08-04T02:07:02.290986",
+    "updated_at": "2025-08-04T02:07:02.290986",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "480d3cbb-5ec6-408f-bafd-30feed20404e": {
+    "id": "480d3cbb-5ec6-408f-bafd-30feed20404e",
+    "title": "Sohbet 36",
+    "created_at": "2025-08-04T02:07:03.890267",
+    "updated_at": "2025-08-04T02:07:03.890267",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "4f2c1532-6251-4547-9143-1ca40dd6fea3": {
+    "id": "4f2c1532-6251-4547-9143-1ca40dd6fea3",
+    "title": "Sohbet 37",
+    "created_at": "2025-08-04T02:07:12.301321",
+    "updated_at": "2025-08-04T02:07:12.301321",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "94a23ffb-670f-4201-bf1f-2d55ec61a52c": {
+    "id": "94a23ffb-670f-4201-bf1f-2d55ec61a52c",
+    "title": "Sohbet 38",
+    "created_at": "2025-08-04T02:07:44.400805",
+    "updated_at": "2025-08-04T02:07:44.400805",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "39b78aa4-16fb-40fa-bdf6-2df27717dd8a": {
+    "id": "39b78aa4-16fb-40fa-bdf6-2df27717dd8a",
+    "title": "Sohbet 39",
+    "created_at": "2025-08-04T02:07:49.976064",
+    "updated_at": "2025-08-04T02:07:49.976064",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "7508d358-7e01-44f8-b190-81b878df7fdb": {
+    "id": "7508d358-7e01-44f8-b190-81b878df7fdb",
+    "title": "soru üret",
+    "created_at": "2025-08-04T02:08:07.490989",
+    "updated_at": "2025-08-04T02:29:02.082942",
+    "message_count": 9,
+    "pdf_count": 1,
+    "last_message": "soru üret"
+  },
+  "b4160289-d9e1-40bc-82c6-ea82bb435fef": {
+    "id": "b4160289-d9e1-40bc-82c6-ea82bb435fef",
+    "title": "Sohbet 41",
+    "created_at": "2025-08-04T02:27:07.138048",
+    "updated_at": "2025-08-04T02:27:07.138048",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "8ccd6b1f-8ad2-4817-b8ad-b638909cea20": {
+    "id": "8ccd6b1f-8ad2-4817-b8ad-b638909cea20",
+    "title": "Sohbet 42",
+    "created_at": "2025-08-04T02:32:42.291953",
+    "updated_at": "2025-08-04T02:32:42.291953",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "420451e2-24a6-4aae-a720-1709fb5ac404": {
+    "id": "420451e2-24a6-4aae-a720-1709fb5ac404",
+    "title": "Sohbet 43",
+    "created_at": "2025-08-04T02:32:42.293791",
+    "updated_at": "2025-08-04T02:32:42.293791",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "ff117b57-a030-4727-ab4b-7b2d541320d1": {
+    "id": "ff117b57-a030-4727-ab4b-7b2d541320d1",
+    "title": "Sohbet 44",
+    "created_at": "2025-08-04T02:40:40.454234",
+    "updated_at": "2025-08-04T02:40:40.454234",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "32eb3341-7a5f-4448-a324-a1c218ff936d": {
+    "id": "32eb3341-7a5f-4448-a324-a1c218ff936d",
+    "title": "Sohbet 45",
+    "created_at": "2025-08-04T02:40:42.316061",
+    "updated_at": "2025-08-04T02:40:42.316061",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "6bbc96f5-f91a-45c4-bc71-f53dd59467ff": {
+    "id": "6bbc96f5-f91a-45c4-bc71-f53dd59467ff",
+    "title": "Sohbet 46",
+    "created_at": "2025-08-04T02:40:43.929849",
+    "updated_at": "2025-08-04T02:40:43.929849",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "e9350b52-194b-4c04-bc4f-4a257c707368": {
+    "id": "e9350b52-194b-4c04-bc4f-4a257c707368",
+    "title": "Sohbet 47",
+    "created_at": "2025-08-04T02:40:45.519793",
+    "updated_at": "2025-08-04T02:40:45.519793",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "6698b20c-17e6-4ca4-82b9-f3b4600e54c5": {
+    "id": "6698b20c-17e6-4ca4-82b9-f3b4600e54c5",
+    "title": "Sohbet 48",
+    "created_at": "2025-08-04T02:40:46.948501",
+    "updated_at": "2025-08-04T02:40:46.948501",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "501e68c5-0ac6-4016-94ba-deb99a521a11": {
+    "id": "501e68c5-0ac6-4016-94ba-deb99a521a11",
+    "title": "Sohbet 49",
+    "created_at": "2025-08-04T02:40:48.456268",
+    "updated_at": "2025-08-04T02:40:48.456268",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "021e3748-f34e-4a78-8394-55b97457473f": {
+    "id": "021e3748-f34e-4a78-8394-55b97457473f",
+    "title": "Sohbet 50",
+    "created_at": "2025-08-04T02:40:49.897668",
+    "updated_at": "2025-08-04T02:40:49.897668",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "23337c69-0f90-4119-a952-a7dc043ab969": {
+    "id": "23337c69-0f90-4119-a952-a7dc043ab969",
+    "title": "Sohbet 51",
+    "created_at": "2025-08-04T02:40:51.405175",
+    "updated_at": "2025-08-04T02:40:51.405175",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "808627ad-3660-44c2-b48d-80ac83e9b673": {
+    "id": "808627ad-3660-44c2-b48d-80ac83e9b673",
+    "title": "Sohbet 52",
+    "created_at": "2025-08-04T02:40:52.935994",
+    "updated_at": "2025-08-04T02:40:52.935994",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "c79c1361-e32a-4295-8dea-0fde435e7e6b": {
+    "id": "c79c1361-e32a-4295-8dea-0fde435e7e6b",
+    "title": "Sohbet 53",
+    "created_at": "2025-08-04T02:40:54.609624",
+    "updated_at": "2025-08-04T02:40:54.609624",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "e33de57e-7341-42dd-a085-57cf1338cfc3": {
+    "id": "e33de57e-7341-42dd-a085-57cf1338cfc3",
+    "title": "Sohbet 54",
+    "created_at": "2025-08-04T02:40:56.121248",
+    "updated_at": "2025-08-04T02:40:56.121248",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "be7cada9-5197-4ac1-8f64-6e4940ceb66e": {
+    "id": "be7cada9-5197-4ac1-8f64-6e4940ceb66e",
+    "title": "Sohbet 55",
+    "created_at": "2025-08-04T02:40:57.669398",
+    "updated_at": "2025-08-04T02:40:57.669398",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "fe382e3d-e3d3-44a5-ba08-afeec8cc3647": {
+    "id": "fe382e3d-e3d3-44a5-ba08-afeec8cc3647",
+    "title": "Sohbet 56",
+    "created_at": "2025-08-04T02:41:20.230860",
+    "updated_at": "2025-08-04T02:41:20.230860",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "3f3ef9fb-1617-4be8-9381-e58c6da78927": {
+    "id": "3f3ef9fb-1617-4be8-9381-e58c6da78927",
+    "title": "Sohbet 57",
+    "created_at": "2025-08-04T02:41:21.447993",
+    "updated_at": "2025-08-04T02:41:21.447993",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "6a5bf2ee-0d49-48aa-8eb9-93a01b1bbfef": {
+    "id": "6a5bf2ee-0d49-48aa-8eb9-93a01b1bbfef",
+    "title": "Sohbet 58",
+    "created_at": "2025-08-04T02:41:21.824150",
+    "updated_at": "2025-08-04T02:41:21.824150",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "48e8a9ce-f43f-4f0f-96d2-c7c3a4241c01": {
+    "id": "48e8a9ce-f43f-4f0f-96d2-c7c3a4241c01",
+    "title": "Sohbet 59",
+    "created_at": "2025-08-04T02:41:23.350282",
+    "updated_at": "2025-08-04T02:41:23.350282",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "84c4a41f-b720-4e2c-84b4-d0e1d8cd8693": {
+    "id": "84c4a41f-b720-4e2c-84b4-d0e1d8cd8693",
+    "title": "Sohbet 60",
+    "created_at": "2025-08-04T02:41:24.876317",
+    "updated_at": "2025-08-04T02:41:24.876317",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "5c9ab055-bc51-48a6-85e8-53ba19d7946b": {
+    "id": "5c9ab055-bc51-48a6-85e8-53ba19d7946b",
+    "title": "Sohbet 61",
+    "created_at": "2025-08-04T02:41:26.326278",
+    "updated_at": "2025-08-04T02:41:26.326278",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "9adb9d3f-dd3d-49a1-9971-3f0cfb2bf0a0": {
+    "id": "9adb9d3f-dd3d-49a1-9971-3f0cfb2bf0a0",
+    "title": "Sohbet 62",
+    "created_at": "2025-08-04T02:41:27.755029",
+    "updated_at": "2025-08-04T02:41:27.755029",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "3820b5ee-a304-4a16-968c-9525e120bf5e": {
+    "id": "3820b5ee-a304-4a16-968c-9525e120bf5e",
+    "title": "Sohbet 63",
+    "created_at": "2025-08-04T02:41:29.286527",
+    "updated_at": "2025-08-04T02:41:29.286527",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "8ed03ca8-68be-44c8-924f-2e9b0630a233": {
+    "id": "8ed03ca8-68be-44c8-924f-2e9b0630a233",
+    "title": "Sohbet 64",
+    "created_at": "2025-08-04T02:41:30.833463",
+    "updated_at": "2025-08-04T02:41:30.833463",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "904ba9e5-5d6f-4cb8-8fdf-1d5762856a80": {
+    "id": "904ba9e5-5d6f-4cb8-8fdf-1d5762856a80",
+    "title": "Sohbet 65",
+    "created_at": "2025-08-04T02:41:32.355233",
+    "updated_at": "2025-08-04T02:41:32.355233",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "0bda2fae-a8e1-4a53-8b54-05b64785bab2": {
+    "id": "0bda2fae-a8e1-4a53-8b54-05b64785bab2",
+    "title": "Sohbet 66",
+    "created_at": "2025-08-04T02:42:54.613392",
+    "updated_at": "2025-08-04T02:42:54.613392",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "a05bfd5a-51bb-458b-bc3c-590a275fcb6e": {
+    "id": "a05bfd5a-51bb-458b-bc3c-590a275fcb6e",
+    "title": "soru üret",
+    "created_at": "2025-08-04T02:43:10.875252",
+    "updated_at": "2025-08-04T02:45:16.505658",
+    "message_count": 2,
+    "pdf_count": 1,
+    "last_message": "soru üret"
   }
 }

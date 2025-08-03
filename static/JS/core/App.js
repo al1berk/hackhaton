@@ -143,6 +143,10 @@ class App {
         this.ui.removeTypingIndicator();
 
         switch(data.type) {
+
+            case 'test_generated':
+                this.ui.displayTestButton(data);
+                break;
             case 'connection_established':
                 console.log('✅ Server bağlantısı onaylandı');
                 
@@ -167,6 +171,7 @@ class App {
                     console.log('💬 Chat bilgileri:', data.chat_info);
                 }
                 break;
+            
 
             case 'message':
                 if (data.content?.trim()) {
@@ -235,7 +240,8 @@ class App {
             case 'error':
                 this.ui.addMessage(`❌ Hata: ${data.message || data.content}`, 'system');
                 break;
-
+            
+            
             default:
                 console.warn("⚠️ Bilinmeyen mesaj tipi:", data.type);
                 // Fallback - show content if available

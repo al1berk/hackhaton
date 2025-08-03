@@ -26,6 +26,7 @@ class Config:
     MAX_PDF_SIZE = 50 * 1024 * 1024  # 50MB
     CHUNK_SIZE = 1000
     CHUNK_OVERLAP = 200
+    MAX_IMAGE_SIZE = 10 * 1024 * 1024 # 10MB
     
     # PDF Upload configurations  
     UPLOAD_DIR = "uploads"

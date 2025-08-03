@@ -35,6 +35,48 @@ export class UIManager {
         this.scrollToBottom();
     }
 
+    displayTestButton(data) {
+        const messageElement = document.createElement('div');
+        messageElement.className = 'message system'; // Sistem mesajı olarak gösterelim
+
+        const content = data.content || 'Testin başarıyla oluşturuldu!';
+        const questions = data.questions;
+
+        // Butonun HTML içeriğini oluştur
+        messageElement.innerHTML = `
+            <div class="message-avatar"><i class="fas fa-clipboard-check"></i></div>
+            <div class="message-content">
+                <p>${content}</p>
+                <div class="test-button-container">
+                    <button class="solve-test-btn">
+                        <i class="fas fa-pencil-alt"></i> Testi Çöz
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Butonu bul ve olay dinleyicisi ekle
+        const solveButton = messageElement.querySelector('.solve-test-btn');
+        if (solveButton) {
+            solveButton.onclick = () => {
+                try {
+                    // Soru verisini tarayıcının hafızasına kaydet
+                    localStorage.setItem('currentTestQuestions', JSON.stringify(questions));
+                    console.log('✅ Test soruları localStorage\'a kaydedildi.');
+
+                    // Yeni bir sekmede test çözme sayfasını aç
+                    window.open('test_solver.html', '_blank');
+                } catch (error) {
+                    console.error('❌ Test başlatılırken hata:', error);
+                    alert('Test başlatılırken bir sorun oluştu. Lütfen konsolu kontrol edin.');
+                }
+            };
+        }
+
+        DOM.messagesContainer.appendChild(messageElement);
+        this.scrollToBottom();
+    }
+
     removeTypingIndicator() {
         const typingIndicator = document.getElementById('typingIndicator');
         if (typingIndicator) typingIndicator.remove();

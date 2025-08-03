@@ -1,6 +1,7 @@
 # src/core/conversation.py
 
 from typing import TypedDict, List, Literal
+from chromadb import logger
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import HumanMessage, AIMessage, BaseMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -10,6 +11,8 @@ from datetime import datetime
 
 from core.config import Config
 from agents.research_crew import AsyncCrewAIA2AHandler
+from agents.crew_agents import CrewAISystem # YENİ: CrewAI sistemini import et
+
 from core.vector_store import VectorStore
 
 class ConversationState(TypedDict):
@@ -27,7 +30,10 @@ class ConversationState(TypedDict):
     has_pdf_context: bool
     chat_id: str
     chat_manager: object  # Chat manager referansı
-
+    test_generation_requested: bool
+    test_parameters: dict
+    generated_questions: dict
+    full_document_text: str # Dökümanın tam metnini tutmak için
 class AsyncLangGraphDialog:
     def __init__(self, websocket_callback=None, chat_id=None, chat_manager=None):
         self.llm = ChatGoogleGenerativeAI(
@@ -40,6 +46,8 @@ class AsyncLangGraphDialog:
         self.chat_id = chat_id
         self.chat_manager = chat_manager
         self.crew_handler = AsyncCrewAIA2AHandler(websocket_callback)
+        self.test_crew = CrewAISystem(api_key=Config.GOOGLE_API_KEY)
+
         
         # Chat-specific vector store oluştur
         self.vector_store = VectorStore(Config.VECTOR_STORE_PATH, chat_id=chat_id)
@@ -60,99 +68,72 @@ class AsyncLangGraphDialog:
             rag_context="",
             has_pdf_context=False,
             chat_id=chat_id or "",
-            chat_manager=chat_manager
+            chat_manager=chat_manager,
+            test_generation_requested=False,
+            test_parameters={},
+            generated_questions={},
+            full_document_text=""
         )
     
+    # BU FONKSİYONU TAMAMEN DEĞİŞTİR
     def create_conversation_graph(self):
         workflow = StateGraph(ConversationState)
         
-        workflow.add_node("handle_confirmation", self.handle_confirmation_node)
+        # Düğümleri tanımla
         workflow.add_node("intent_analysis", self.intent_analysis_node)
         workflow.add_node("rag_search", self.rag_search_node)
         workflow.add_node("no_pdf_available", self.no_pdf_available_node)
         workflow.add_node("crew_research_agent", self.crew_research_agent_node)
         workflow.add_node("research_presentation", self.research_presentation_node)
         workflow.add_node("gemini_response", self.gemini_response_node)
-        workflow.add_node("ask_confirmation", self.ask_confirmation_node)
-        workflow.add_node("research_followup", self.research_followup_node)
+        workflow.add_node("check_document_for_test", self.check_document_for_test_node)
+        workflow.add_node("generate_test_questions", self.generate_test_questions_node)
+        workflow.add_node("present_test_results", self.present_test_results_node)
         
-        workflow.set_conditional_entry_point(
-            self.route_initial_input,
-            {"continue_to_intent": "intent_analysis", "handle_confirmation": "handle_confirmation"}
-        )
+        # Giriş noktasını belirle
+        workflow.set_entry_point("intent_analysis")
         
+        # Düğümler arası bağlantıları (kenarları) tanımla
         workflow.add_conditional_edges(
             "intent_analysis",
-            self.should_call_crew_or_ask_or_rag_or_no_pdf,
+            self.route_intent,
             {
-                "crew_research": "crew_research_agent", 
-                "ask_confirmation": "ask_confirmation", 
-                "rag_search": "rag_search", 
+                "web_research": "crew_research_agent",
+                "rag_search": "rag_search",
                 "no_pdf_available": "no_pdf_available",
+                "generate_test": "check_document_for_test", # YENİ ROTA
                 "gemini": "gemini_response"
             }
         )
 
         workflow.add_conditional_edges(
-            "handle_confirmation",
-            self.decide_after_confirmation,
-            {"start_research": "crew_research_agent", "cancel": "gemini_response"}
+            "check_document_for_test",
+            lambda state: "generate_test_questions" if state.get("full_document_text") else "gemini_response",
+            {
+                "generate_test_questions": "generate_test_questions",
+                "gemini_response": "gemini_response" # Döküman yoksa normal cevap ver
+            }
         )
         
         workflow.add_edge("rag_search", "gemini_response")
         workflow.add_edge("no_pdf_available", END)
         workflow.add_edge("crew_research_agent", "research_presentation")
-        workflow.add_edge("research_presentation", "research_followup")
-        workflow.add_edge("research_followup", END)
+        workflow.add_edge("research_presentation", END)
+        workflow.add_edge("generate_test_questions", "present_test_results")
+        workflow.add_edge("present_test_results", END)
         workflow.add_edge("gemini_response", END)
-        workflow.add_edge("ask_confirmation", END)
 
         return workflow.compile()
 
-    def should_call_crew_or_ask_or_rag_or_no_pdf(self, state: ConversationState) -> Literal["crew_research", "ask_confirmation", "rag_search", "no_pdf_available", "gemini"]:
-        intent = state["current_intent"]
-        if intent in ["web_research", "ask_confirmation", "rag_search", "no_pdf_available"]:
+    def route_intent(self, state: ConversationState) -> str:
+        intent = state.get("current_intent", "gemini")
+        if intent in ["web_research", "rag_search", "no_pdf_available", "generate_test"]:
             return intent
         return "gemini"
 
-    def route_initial_input(self, state: ConversationState) -> Literal["continue_to_intent", "handle_confirmation"]:
-        if state.get("pending_action"):
-            return "handle_confirmation"
-        return "continue_to_intent"
+    
 
-    def handle_confirmation_node(self, state: ConversationState) -> ConversationState:
-        last_message = state["messages"][-1].content.lower()
-        
-        if any(keyword in last_message for keyword in ["evet", "onayla", "başlat", "yap"]):
-            state["current_intent"] = state["pending_action"]
-            state["needs_crew_ai"] = True
-        else:
-            state["current_intent"] = "general_chat"
-            state["needs_crew_ai"] = False
-            state["messages"].append(AIMessage(content="Anlaşıldı, araştırma başlatılmadı. Size başka nasıl yardımcı olabilirim?"))
-
-        state["pending_action"] = ""
-        return state
-
-    def decide_after_confirmation(self, state: ConversationState) -> Literal["start_research", "cancel"]:
-        if state["needs_crew_ai"]:
-            return "start_research"
-        return "cancel"
-
-    async def ask_confirmation_node(self, state: ConversationState) -> ConversationState:
-        topic = state["crew_ai_task"]
-        message_content = f"'{topic}' konusu hakkında kapsamlı bir web araştırması başlatmamı onaylıyor musunuz?"
-        
-        if self.websocket_callback:
-            await self.websocket_callback(json.dumps({
-                "type": "confirmation_request", 
-                "content": message_content, 
-                "timestamp": datetime.utcnow().isoformat(),
-                "chat_id": self.chat_id
-            }))
-        
-        state["pending_action"] = "web_research"
-        return state
+    
 
     async def rag_search_node(self, state: ConversationState) -> ConversationState:
         """PDF dokümanlarında arama yapar"""
@@ -198,6 +179,8 @@ class AsyncLangGraphDialog:
             state["has_pdf_context"] = False
         
         return state
+    
+    
 
     def intent_analysis_node(self, state: ConversationState) -> ConversationState:
         last_message = state["messages"][-1].content.strip().lower()
@@ -207,6 +190,13 @@ class AsyncLangGraphDialog:
         force_web_research = state.get("force_web_research", False)
         
         print(f"🔍 Intent Analysis - Message: '{last_message[:50]}...', Force Web Research: {force_web_research}")
+        test_keywords = ["test oluştur", "soru hazırla", "sınav yap", "test yap", "soru üret"]
+        if any(keyword in last_message for keyword in test_keywords):
+            state["current_intent"] = "generate_test"
+            state["test_generation_requested"] = True
+            logger.info("✅ Intent detected: generate_test")
+            return state
+
         
         # Araştırma tamamlandıysa ve research data varsa
         if state.get("research_completed", False) and state.get("research_data"):
@@ -405,28 +395,7 @@ class AsyncLangGraphDialog:
         state["messages"].append(AIMessage(content=response))
         return state
 
-    async def research_followup_node(self, state: ConversationState) -> ConversationState:
-        """Araştırma tamamlandığında takip mesajı gönder"""
-        if state.get("research_completed", False) and not "error" in state.get("research_data", {}):
-            if self.websocket_callback:
-                await self.websocket_callback(json.dumps({
-                    "type": "research_completed", 
-                    "message": "Araştırma başarıyla tamamlandı!", 
-                    "timestamp": datetime.utcnow().isoformat(),
-                    "chat_id": self.chat_id,
-                    "research_data": state["research_data"]
-                }))
-            
-            await asyncio.sleep(1)
-            
-            followup_message = ("🎯 Harika! Araştırma raporunuz hazır. Yukarıdaki **'Detaylı Raporu Görüntüle'** butonuna "
-                              "tıklayarak tüm bulgularımızı inceleyebilirsiniz.\n\n"
-                              "💡 Takıldığınız yerler olursa benimle birlikte raporu inceleyelim! Herhangi bir konuyu "
-                              "daha detayına inmek isterseniz, sadece sorun - birlikte çalışabiliriz! 🤝")
-            
-            state["messages"].append(AIMessage(content=followup_message))
-        
-        return state
+    
 
     async def gemini_response_node(self, state: ConversationState) -> ConversationState:
         try:
@@ -500,6 +469,83 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
             print(f"❌ Gemini response error (Chat: {self.chat_id}): {e}")
         
         return state
+    
+    def _get_full_text_from_vector_store(self) -> str:
+        """Vektör veritabanındaki tüm parçaları birleştirerek tam metni alır."""
+        try:
+            all_docs = self.vector_store.collection.get(include=["documents"])
+            if not all_docs or not all_docs.get('documents'):
+                return ""
+            full_text = "\n\n".join(all_docs['documents'])
+            logger.info(f"📄 Vektör deposundan {len(full_text)} karakterlik tam metin alındı.")
+            return full_text
+        except Exception as e:
+            logger.error(f"❌ Vektör deposundan tam metin alınamadı: {e}")
+            return ""
+
+    async def check_document_for_test_node(self, state: ConversationState) -> ConversationState:
+        """Test üretimi için döküman olup olmadığını kontrol eder."""
+        logger.info("STEP: Checking for document to generate test...")
+        full_text = self._get_full_text_from_vector_store()
+        if not full_text:
+            logger.warning("No document found for test generation.")
+            state["messages"].append(AIMessage(content="Üzgünüm, test üretebilmem için önce bir doküman (PDF, resim vb.) yüklemeniz gerekiyor."))
+            state["full_document_text"] = ""
+        else:
+            state["full_document_text"] = full_text
+        return state
+
+    async def generate_test_questions_node(self, state: ConversationState) -> ConversationState:
+        """CrewAI kullanarak test sorularını üretir."""
+        logger.info("STEP: Generating test questions with CrewAI...")
+        document_content = state["full_document_text"]
+        
+        # TODO: Bu parametreleri kullanıcıdan interaktif olarak alacak bir düğüm eklenebilir.
+        # Şimdilik varsayılan değerler kullanıyoruz.
+        preferences = {
+            "soru_turleri": ['coktan_secmeli', 'klasik', 'bosluk_doldurma'],
+            "zorluk_seviyesi": "orta",
+            "ogrenci_seviyesi": "lise",
+            "toplam_soru": 5
+        }
+        
+        await self.websocket_callback(json.dumps({
+            "type": "system",
+            "content": f"🧠 Anladım, dokümanınızdan {preferences['toplam_soru']} soruluk bir test hazırlıyorum. Bu işlem birkaç dakika sürebilir..."
+        }))
+        
+        # CrewAI'yi asenkron olarak çalıştır
+        generated_data = await self.test_crew.generate_questions(document_content, preferences)
+        
+        state["generated_questions"] = generated_data
+        return state
+    
+    async def present_test_results_node(self, state: ConversationState) -> ConversationState:
+        """Üretilen testin sonuçlarını kullanıcıya sunar."""
+        logger.info("STEP: Presenting test results...")
+        questions_data = state.get("generated_questions", {})
+        
+        if questions_data and not questions_data.get("error"):
+            response_payload = {
+                "type": "test_generated",
+                "content": "Testin başarıyla oluşturuldu! Aşağıdaki butona tıklayarak çözmeye başlayabilirsin.",
+                "questions": questions_data,
+                "timestamp": datetime.utcnow().isoformat(),
+                "chat_id": self.chat_id
+            }
+            if self.websocket_callback:
+                await self.websocket_callback(json.dumps(response_payload))
+            
+            # Chat geçmişine sadece bilgi mesajı ekliyoruz, JSON'ı değil.
+            state["messages"].append(AIMessage(content="✅ Testin hazırlandı!"))
+        else:
+            error_msg = questions_data.get("error", "Bilinmeyen bir hata oluştu.")
+            logger.error(f"Test generation failed: {error_msg}")
+            state["messages"].append(AIMessage(content=f"Üzgünüm, bir sorun oluştu ve test hazırlanamadı.\n\nHata: {error_msg}"))
+            
+        return state
+    
+    
 
     def format_rag_context(self, search_results: List[dict]) -> str:
         """RAG arama sonuçlarını LLM için uygun formatta hazırla"""
@@ -674,3 +720,70 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
         
         # Vector store'u yeni chat ID ile yeniden başlat
         self.vector_store = VectorStore(Config.VECTOR_STORE_PATH, chat_id=chat_id)
+
+
+
+
+
+"""
+def route_initial_input(self, state: ConversationState) -> Literal["continue_to_intent", "handle_confirmation"]:
+        if state.get("pending_action"):
+            return "handle_confirmation"
+        return "continue_to_intent"
+
+def handle_confirmation_node(self, state: ConversationState) -> ConversationState:
+        last_message = state["messages"][-1].content.lower()
+        
+        if any(keyword in last_message for keyword in ["evet", "onayla", "başlat", "yap"]):
+            state["current_intent"] = state["pending_action"]
+            state["needs_crew_ai"] = True
+        else:
+            state["current_intent"] = "general_chat"
+            state["needs_crew_ai"] = False
+            state["messages"].append(AIMessage(content="Anlaşıldı, araştırma başlatılmadı. Size başka nasıl yardımcı olabilirim?"))
+
+        state["pending_action"] = ""
+        return state
+
+    def decide_after_confirmation(self, state: ConversationState) -> Literal["start_research", "cancel"]:
+        if state["needs_crew_ai"]:
+            return "start_research"
+        return "cancel"
+
+    async def ask_confirmation_node(self, state: ConversationState) -> ConversationState:
+        topic = state["crew_ai_task"]
+        message_content = f"'{topic}' konusu hakkında kapsamlı bir web araştırması başlatmamı onaylıyor musunuz?"
+        
+        if self.websocket_callback:
+            await self.websocket_callback(json.dumps({
+                "type": "confirmation_request", 
+                "content": message_content, 
+                "timestamp": datetime.utcnow().isoformat(),
+                "chat_id": self.chat_id
+            }))
+        
+        state["pending_action"] = "web_research"
+        return state
+    async def research_followup_node(self, state: ConversationState) -> ConversationState:
+        Araştırma tamamlandığında takip mesajı gönder
+        if state.get("research_completed", False) and not "error" in state.get("research_data", {}):
+            if self.websocket_callback:
+                await self.websocket_callback(json.dumps({
+                    "type": "research_completed", 
+                    "message": "Araştırma başarıyla tamamlandı!", 
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "chat_id": self.chat_id,
+                    "research_data": state["research_data"]
+                }))
+            
+            await asyncio.sleep(1)
+            
+            followup_message = ("🎯 Harika! Araştırma raporunuz hazır. Yukarıdaki **'Detaylı Raporu Görüntüle'** butonuna "
+                              "tıklayarak tüm bulgularımızı inceleyebilirsiniz.\n\n"
+                              "💡 Takıldığınız yerler olursa benimle birlikte raporu inceleyelim! Herhangi bir konuyu "
+                              "daha detayına inmek isterseniz, sadece sorun - birlikte çalışabiliriz! 🤝")
+            
+            state["messages"].append(AIMessage(content=followup_message))
+        
+        return state
+"""

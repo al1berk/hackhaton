@@ -381,17 +381,16 @@ async def upload_pdf_to_chat(chat_id: str, file: UploadFile = File(...)):
         
         vector_store = VectorStore(Config.VECTOR_STORE_PATH, chat_id=chat_id)
         
-        with open(file_path, "rb") as pdf_file:
-            success = vector_store.add_pdf_document(
-                pdf_file=pdf_file,
-                filename=file.filename,
-                metadata={
-                    "upload_path": str(file_path),
-                    "original_size": file.size,
-                    "safe_filename": safe_filename,
-                    "chat_id": chat_id
-                }
-            )
+        success = vector_store.add_document_from_path(
+            file_path=str(file_path),  # Dosyanın yolunu string olarak gönder
+            filename=file.filename,
+            metadata={
+                "upload_path": str(file_path),
+                "original_size": file.size,
+                "safe_filename": safe_filename,
+                "chat_id": chat_id
+            }
+        )
         
         if success:
             stats = vector_store.get_stats()
@@ -414,6 +413,66 @@ async def upload_pdf_to_chat(chat_id: str, file: UploadFile = File(...)):
     except Exception as e:
         logger.error(f"❌ PDF yükleme hatası: {e}")
         raise HTTPException(status_code=500, detail=f"PDF yükleme hatası: {str(e)}")
+    
+@app.post("/chats/{chat_id}/upload-image")
+async def upload_image_to_chat(chat_id: str, file: UploadFile = File(...)):
+    try:
+        chat_info = chat_manager.get_chat_info(chat_id)
+        if not chat_info:
+            raise HTTPException(status_code=404, detail="Sohbet bulunamadı")
+        
+        # Dosya formatı kontrolü (isteğe bağlı, DocumentProcessor da yapabilir)
+        allowed_extensions = ['.png', '.jpg', '.jpeg', '.bmp', '.webp']
+        if not any(file.filename.lower().endswith(ext) for ext in allowed_extensions):
+            raise HTTPException(status_code=400, detail=f"Sadece resim dosyaları desteklenir: {', '.join(allowed_extensions)}")
+        
+        if file.size > Config.MAX_IMAGE_SIZE: # Config'e MAX_IMAGE_SIZE ekle (örn: 10 * 1024 * 1024)
+            raise HTTPException(status_code=400, detail=f"Dosya boyutu {Config.MAX_IMAGE_SIZE // 1024 // 1024}MB'tan büyük olamaz")
+        
+        chat_upload_dir = chat_manager.get_chat_pdf_directory(chat_id) # Aynı klasörü kullanabiliriz
+        chat_upload_dir.mkdir(exist_ok=True)
+        
+        safe_filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+        file_path = chat_upload_dir / safe_filename
+        
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        vector_store = VectorStore(Config.VECTOR_STORE_PATH, chat_id=chat_id)
+        
+        # Yine aynı fonksiyonu çağırıyoruz, çünkü DocumentProcessor dosya türünü anlıyor
+        success = vector_store.add_document_from_path(
+            file_path=str(file_path),
+            filename=file.filename,
+            metadata={
+                "upload_path": str(file_path),
+                "original_size": file.size,
+                "safe_filename": safe_filename,
+                "chat_id": chat_id,
+                "source_type": "ocr"
+            }
+        )
+        
+        if success:
+            stats = vector_store.get_stats()
+            chat_manager.update_pdf_count(chat_id, stats["total_documents"]) # İsmi yanıltıcı olsa da şimdilik belge sayısını tutar
+            
+            return JSONResponse({
+                "success": True,
+                "message": f"'{file.filename}' başarıyla yüklendi ve OCR ile işlendi",
+                "filename": file.filename,
+                "stats": stats
+            })
+        else:
+            file_path.unlink(missing_ok=True)
+            raise HTTPException(status_code=500, detail="Resim işlenirken hata oluştu")
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Resim yükleme hatası: {e}")
+        raise HTTPException(status_code=500, detail=f"Resim yükleme hatası: {str(e)}")
+
 
 @app.get("/chats/{chat_id}/pdfs")
 async def list_chat_pdfs(chat_id: str):

@@ -170,3 +170,37 @@
     gap: 1rem;
     margin: 1rem 0;
 }
+
+/* static/css/components/messages.css dosyasının sonuna ekle */
+
+.test-button-container {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.solve-test-btn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.solve-test-btn:hover {
+    background: #047857; /* success-color'ın koyu tonu */
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.solve-test-btn i {
+    font-size: 0.875rem;
+}

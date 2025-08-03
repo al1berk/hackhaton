@@ -1,0 +1,219 @@
+:root {
+    --primary-color: #2563eb;
+    --success-color: #059669;
+    --danger-color: #dc2626;
+    --background-color: #f8fafc;
+    --surface-color: #ffffff;
+    --border-color: #e2e8f0;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 2rem;
+}
+
+.test-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--surface-color);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.test-header {
+    padding: 1.5rem 2rem;
+    background: var(--primary-color);
+    color: white;
+}
+
+.test-header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: white;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+#progressText {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+.test-body {
+    padding: 2rem;
+}
+
+.question-card {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.question-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.question-difficulty {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: var(--border-color);
+}
+
+/* Cevap Seçenekleri */
+.options-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option-item:hover {
+    border-color: var(--primary-color);
+    background-color: #eff6ff;
+}
+
+.option-item.answered {
+    pointer-events: none; /* Cevaplandıktan sonra tekrar tıklanamaz */
+}
+
+.option-item.correct {
+    border-color: var(--success-color);
+    background-color: #f0fdf4;
+}
+
+.option-item.incorrect {
+    border-color: var(--danger-color);
+    background-color: #fef2f2;
+}
+
+.option-letter {
+    font-weight: 600;
+    margin-right: 1rem;
+    color: var(--primary-color);
+}
+
+.option-item.correct .option-letter { color: var(--success-color); }
+.option-item.incorrect .option-letter { color: var(--danger-color); }
+
+.answer-feedback {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    display: none; /* Varsayılan olarak gizli */
+}
+
+.answer-feedback.correct {
+    background-color: #dcfce7;
+    color: #15803d;
+    display: block;
+}
+
+.answer-feedback.incorrect {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    display: block;
+}
+
+/* Klasik Soru Stilleri */
+.classic-answer-area textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+}
+.classic-answer-area button {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+/* Footer Stilleri */
+.test-footer {
+    padding: 2rem;
+    text-align: center;
+    background: var(--background-color);
+}
+
+#finishTestBtn {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    cursor: pointer;
+}
+
+.loading-state, .error-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+}
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
