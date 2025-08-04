@@ -1,0 +1,57 @@
+[
+  {
+    "type": "user",
+    "content": "test oluştur",
+    "timestamp": "2025-08-04T06:13:18.030120"
+  },
+  {
+    "type": "user",
+    "content": "testi oluştur",
+    "timestamp": "2025-08-04T06:13:45.147925"
+  },
+  {
+    "type": "ai",
+    "content": "Harika! Bir test oluşturabilirim.\n\nTesti hangi konuda oluşturmamı istersiniz? Lütfen bana testin konusunu veya hangi dokümanlardan soru üretmem gerektiğini belirtin.\n\nAyrıca, her bir soru türünden (Çoktan Seçmeli, Klasik, Boşluk Doldurma, Doğru-Yanlış) kaçar tane soru olmasını istersiniz? Toplam soru sayısı da belirtebilirsiniz, ben de dağılımı ona göre yapabilirim.",
+    "timestamp": "2025-08-04T06:13:47.587795"
+  },
+  {
+    "type": "user",
+    "content": "az önce seçimleri yapmıştım",
+    "timestamp": "2025-08-04T06:13:59.890317"
+  },
+  {
+    "type": "ai",
+    "content": "Haklısınız, kusura bakmayın! Seçimlerinizi kaçırmışım.\n\nAnladığım kadarıyla:\n*   **Soru Türleri:** Çoktan Seçmeli, Klasik (Açık Uçlu), Boşluk Doldurma ve Doğru-Yanlış soruları istiyorsunuz.\n*   **Zorluk Seviyesi:** Orta seviye, analiz ve uygulama gerektiren sorular olacak.\n\nHarika! Şimdi tek ihtiyacım olan:\n\n1.  **Testin Konusu:** Bu testi hangi konuda hazırlamamı istersiniz? Bana bir konu belirtebilir veya önceden yüklediğiniz dokümanlardan hangilerini kullanmam gerektiğini söyleyebilirsiniz.\n2.  **Soru Sayısı:** Toplamda kaç soru olmasını istersiniz? İsterseniz her bir soru türünden kaçar tane olacağını da belirtebilirsiniz.\n\nBu bilgileri alabilirsem hemen sizin için testi oluşturmaya başlayabilirim!",
+    "timestamp": "2025-08-04T06:14:03.148738"
+  },
+  {
+    "type": "user",
+    "content": "evet",
+    "timestamp": "2025-08-04T06:14:11.471485"
+  },
+  {
+    "type": "ai",
+    "content": "Harika, anlaşıldı!\n\nŞu ana kadar elimdeki bilgiler:\n*   **Soru Türleri:** Çoktan Seçmeli, Klasik (Açık Uçlu), Boşluk Doldurma ve Doğru-Yanlış soruları.\n*   **Zorluk Seviyesi:** Orta seviye, analiz ve uygulama gerektiren sorular.\n\nŞimdi testi oluşturabilmem için son iki bilgiye ihtiyacım var:\n\n1.  **Testin Konusu Nedir?** Örneğin, \"Tarih\", \"Biyoloji\", \"Programlama\", \"Ekonomi\" gibi genel bir konu olabilir veya \"Şirketinizin 2023 Yılı Performansı\" gibi belirli bir doküman içeriği olabilir.\n2.  **Toplam Kaç Soru Olmasını İstersiniz?** Veya her bir soru türünden (Çoktan Seçmeli, Klasik, Boşluk Doldurma, Doğru-Yanlış) kaçar tane soru olacağını belirtebilirsiniz.\n\nBu bilgileri bekliyorum, ardından hemen testi hazırlayacağım!",
+    "timestamp": "2025-08-04T06:14:13.479303"
+  },
+  {
+    "type": "user",
+    "content": "5 er tane istiyorum hepsinden",
+    "timestamp": "2025-08-04T06:14:32.138826"
+  },
+  {
+    "type": "ai",
+    "content": "Anladım! Harika bir seçim.\n\nYani, her bir soru türünden (Çoktan Seçmeli, Klasik, Boşluk Doldurma, Doğru-Yanlış) **beşer (5)** tane soru olacak. Bu da toplamda **20 soruluk** bir test demek. Zorluk seviyesi de **orta** ve analiz/uygulama odaklı olacak.\n\nŞimdi tek ihtiyacım olan:\n\n**Bu testi hangi konuda oluşturmamı istersiniz?**\n\nBana bir konu söyleyin (örneğin, \"Cumhuriyet Tarihi\", \"Hücre Biyolojisi\", \"Python Programlama Temelleri\" vb.) veya daha önce yüklediğiniz bir dokümanı/konuyu belirtebilirsiniz.\n\nKonuyu öğrenir öğrenmez testi hazırlamaya başlayacağım!",
+    "timestamp": "2025-08-04T06:14:34.071506"
+  },
+  {
+    "type": "user",
+    "content": "yüklediğim dokümandan oluştur",
+    "timestamp": "2025-08-04T06:14:46.546958"
+  },
+  {
+    "type": "ai",
+    "content": "Harika! Yüklediğiniz dokümanlardan faydalanarak, orta seviyede, analiz ve uygulama gerektiren, her bir soru türünden beşer adet olmak üzere toplam 20 soruluk bir test hazırladım.\n\nKonumuz, yüklediğiniz **\"arastirma-raporu-2025-07-30.pdf\"** dokümanındaki \"Beyin Yapısı ve Fonksiyonları\" ile ilgili bilgilerdir.\n\nİşte testiniz:\n\n---\n\n### **Beyin Yapısı ve Fonksiyonları Testi**\n\n**Zorluk Seviyesi:** Orta (Analiz ve Uygulama)\n**Konu:** Beyin Yapısı ve Fonksiyonları (Yüklenen dokümanlara göre)\n\n---\n\n**A. Çoktan Seçmeli Sorular (Her soru 5 puan)**\n\n1.  Aşağıdakilerden hangisi orta beynin temel işlevlerinden biri *değildir*?\n    a) Görme ve işitme reflekslerinin kontrolü\n    b) Göz hareketlerinin düzenlenmesi\n    c) Vücut dengesinin sağlanması\n    d) Uyku/uyanıklık döngüsünün yönetilmesi\n    e) Dopamin üreten nöronları barındırma\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 14)*\n\n2.  Arka beyin, aşağıdaki ana yapılardan hangilerini içermektedir?\n    a) Talamus ve Hipotalamus\n    b) Frontal Lob ve Parietal Lob\n    c) Pons ve Serebellum\n    d) Amigdala ve Hipokampus\n    e) Beyin sapı ve serebral korteks\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 15)*\n\n3.  Beyincik (Serebellum), özellikle hangi tür becerilerin öğrenilmesi ve otomatikleşmesinde kritik bir rol oynar?\n    a) Sayısal mantık ve problem çözme\n    b) Karmaşık motor beceriler (örn. bisiklete binme, piyano çalma)\n    c) Dil öğrenimi ve konuşma üretimi\n    d) Duygusal tepkilerin düzenlenmesi\n    e) Kısa süreli hafıza oluşturma\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 16)*\n\n4.  Pons (Varol Köprüsü), beyin içinde hangi iki yapı arasında bir köprü görevi görür?\n    a) Ön beyin ve orta beyin\n    b) Orta beyin ve omurilik soğanı\n    c) Serebellum ve omurilik\n    d) Beyin sapı ve talamus\n    e) Hipokampus ve amigdala\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 15)*\n\n5.  Orta beyinde bulunan dopamin üreten nöronlar, aşağıdaki süreçlerden hangilerinde etkilidir?\n    a) Sadece sindirim ve metabolizma\n    b) Ödül, motivasyon ve hareket kontrolü\n    c) Kan basıncı ve vücut sıcaklığı düzenlemesi\n    d) Görme keskinliği ve renk algısı\n    e) Uzun süreli hafıza depolama\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 14, 15)*\n\n---\n\n**B. Klasik (Açık Uçlu) Sorular (Her soru 10 puan)**\n\n1.  Orta beynin görme ve işitme reflekslerinin kontrolündeki rolünü bir örnekle açıklayınız.\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 14)*\n\n2.  Beyincik (Serebellum) hasar gördüğünde vücut fonksiyonlarında ne tür sorunlar ortaya çıkabilir? En az iki örnek veriniz.\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 16)*\n\n3.  Beyin, sadece üst düzey bilişsel fonksiyonları değil, aynı zamanda otomatik yaşamsal fonksiyonları da yönetir. Bu otomatik yaşamsal fonksiyonlardan en az üçünü listeleyiniz.\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 2)*\n\n4.  Pons'un (Varol Köprüsü) solunum kontrolündeki rolünü ve göz hareketleri üzerindeki etkisini açıklayınız.\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 15, 16)*\n\n5.  Yüklenen dokümana göre, \"dürtü kontrolü ve davranış ketleme\" kavramları ne anlama gelmektedir? Bir örnekle açıklayınız.\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 30)*\n\n---\n\n**C. Boşluk Doldurma Soruları (Her boşluk 5 puan)**\n\n1.  Orta beyin, ön beyin ile _________ arasında bir köprü görevi görür ve sinirsel iletim yollarının geçiş noktasıdır.\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 14)*\n\n2.  Serebellum (Beyincik), vücut _________, koordinasyon ve ince motor beceriler gibi işlevlerden sorumludur.\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 16)*\n\n3.  Arka beyin, beynin _________ ile bağlantılı olan en alt kısmıdır ve hayati fonksiyonların çoğu burada düzenlenir.\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 15)*\n\n4.  Beyin, düşünme, öğrenme, hafıza ve duygu gibi üst düzey bilişsel fonksiyonların yanı sıra, solunum, kalp atışı ve _________ gibi otomatik yaşamsal fonksiyonları da yönetir.\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 4)*\n\n5.  Dopamin üreten nöronlar, ödül, motivasyon ve _________ kontrolünde etkilidir.\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 14, 15)*\n\n---\n\n**D. Doğru-Yanlış Soruları (Her soru 5 puan)**\n\n1.  Orta beyin, sadece ani bir ışığa karşı gösterilen refleks tepkilerini yönetir, sese karşı olanları yönetmez. (Doğru/Yanlış)\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 14)*\n\n2.  Pons (Varol Köprüsü), uyku ve denge gibi işlevlerde rol oynar. (Doğru/Yanlış)\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 15)*\n\n3.  Serebellum hasar gördüğünde, bireyde sadece hafıza sorunları ortaya çıkar, denge ve koordinasyon etkilenmez. (Doğru/Yanlış)\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 16)*\n\n4.  Beyin, homeostazı (vücut içi dengeyi) yönetme yeteneğine sahip değildir. (Doğru/Yanlış)\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 4)*\n\n5.  \"Dikkatin sürdürülmesi ve yönlendirilmesi\", belirli bir göreve odaklanma ve dikkat dağıtıcı unsurları görmezden gelme yeteneğini ifade eder. (Doğru/Yanlış)\n    *Kaynak: arastirma-raporu-2025-07-30.pdf (Bölüm 30)*\n\n---\n\nTesti tamamladığınızda bana cevaplarınızı gönderebilirsiniz. Cevaplarınızı analiz ettikten sonra eksik konularınızı belirleyip size özel öğrenme önerilerinde bulunabilirim! Başarılar dilerim!",
+    "timestamp": "2025-08-04T06:15:07.252707"
+  }
+]

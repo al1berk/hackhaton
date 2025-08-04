@@ -1,19 +1,24 @@
 // static/js/core/App.js
 import { DOM } from '../ui/DOM.js';
 import { UIManager } from '../ui/UIManager.js';
-import { WebSocketHandler } from './WebSocketHandler.js';
+import WebSocketHandler from './WebSocketHandler.js';
 import PDFManager from '../pdf-manager.js';
 import ChatHistoryManager from './ChatHistoryManager.js';
 
 class App {
     constructor() {
         this.ui = new UIManager();
-        this.ws = new WebSocketHandler({
-            onOpen: this.handleWsOpen.bind(this),
-            onMessage: this.handleWsMessage.bind(this),
-            onClose: this.handleWsClose.bind(this),
-            onError: this.handleWsError.bind(this)
-        });
+        
+        // Önce currentChatId'yi başlat
+        this.currentChatId = null;
+        
+        // WebSocketHandler'ı doğru parametrelerle başlat
+        this.ws = new WebSocketHandler(
+            null, // İlk başta chatId yok
+            this.handleWsMessage.bind(this), // onMessage callback
+            this.handleConnectionChange.bind(this) // onConnectionChange callback
+        );
+        
         this.pdfManager = new PDFManager(this);
         this.chatHistory = new ChatHistoryManager(this);
 
@@ -46,6 +51,9 @@ class App {
         
         // Global erişim için window'a ekle
         window.app = this;
+
+        // Test sonuçları için message listener
+        this.setupTestMessageListener();
     }
 
     // Event Listeners
@@ -110,7 +118,7 @@ class App {
     // UI Helper Methods
     updateSendButton() {
         const message = DOM.messageInput.value.trim();
-        DOM.sendBtn.disabled = !message || !this.ws.isConnected;
+        DOM.sendBtn.disabled = !message || !this.ws.isConnected();
     }
 
     updateCharCount() {
@@ -120,6 +128,25 @@ class App {
     }
 
     // WebSocket Handlers
+    handleConnectionChange(status) {
+        console.log('🔄 WebSocket bağlantı durumu değişti:', status);
+        
+        switch(status) {
+            case 'connected':
+                this.handleWsOpen();
+                break;
+            case 'disconnected':
+                this.handleWsClose();
+                break;
+            case 'reconnecting':
+                this.ui.updateConnectionStatus('reconnecting', 'Yeniden bağlanıyor...');
+                break;
+            case 'error':
+                this.handleWsError('Bağlantı hatası');
+                break;
+        }
+    }
+
     handleWsOpen() {
         console.log('✅ WebSocket bağlantısı kuruldu');
         this.ui.updateConnectionStatus('connected', 'Bağlı');
@@ -143,17 +170,30 @@ class App {
         this.ui.removeTypingIndicator();
 
         switch(data.type) {
+            case 'ai_response':
+                // AI mesajını direkt göster
+                if (data.message && data.message.trim()) {
+                    this.ui.addMessage(data.message, 'ai');
+                    this.ui.hideWelcomeMessage();
+                }
+                break;
 
             case 'test_generated':
                 this.ui.displayTestButton(data);
                 break;
+                
             case 'connection_established':
                 console.log('✅ Server bağlantısı onaylandı');
                 
-                // YENİ: Chat ID'yi güncelle
-                if (data.chat_id) {
+                // Chat ID'yi güncelle
+                if (data.chat_id && data.chat_id !== 'default') {
+                    this.currentChatId = data.chat_id;
                     this.pdfState.currentChatId = data.chat_id;
-                    console.log(`📝 Aktif sohbet: ${data.chat_id}`);
+                    
+                    // WebSocket'in chat ID'sini güncelle
+                    this.ws.chatId = data.chat_id;
+                    
+                    console.log(`📝 Aktif sohbet güncellendi: ${data.chat_id}`);
                     
                     // İlk yüklemede hoş geldin mesajını göster, sonrasında gizle
                     if (!this.isFirstLoad) {
@@ -165,25 +205,13 @@ class App {
                 if (data.vector_store_stats) {
                     this.updatePDFStats(data.vector_store_stats);
                 }
-                
-                // Chat bilgilerini güncelle
-                if (data.chat_info) {
-                    console.log('💬 Chat bilgileri:', data.chat_info);
-                }
                 break;
-            
 
             case 'message':
-                if (data.content?.trim()) {
-                    this.ui.addMessage(data.content, 'ai');
-                    // İlk AI mesajından sonra hoş geldin mesajını gizle
-                    this.ui.hideWelcomeMessage();
-                }
-                break;
-
             case 'system':
                 if (data.content?.trim()) {
-                    this.ui.addMessage(data.content, 'system');
+                    this.ui.addMessage(data.content, data.type === 'system' ? 'system' : 'ai');
+                    this.ui.hideWelcomeMessage();
                 }
                 break;
 
@@ -241,12 +269,15 @@ class App {
                 this.ui.addMessage(`❌ Hata: ${data.message || data.content}`, 'system');
                 break;
             
-            
             default:
                 console.warn("⚠️ Bilinmeyen mesaj tipi:", data.type);
-                // Fallback - show content if available
-                if (data.content && typeof data.content === 'string') {
-                    this.ui.addMessage(data.content, 'ai');
+                // Fallback - ai_response gibi davran
+                if (data.message || data.content) {
+                    const content = data.message || data.content;
+                    if (typeof content === 'string' && content.trim()) {
+                        this.ui.addMessage(content, 'ai');
+                        this.ui.hideWelcomeMessage();
+                    }
                 }
         }
     }
@@ -300,7 +331,7 @@ class App {
         }
         
         // WebSocket'e bilgi gönder
-        if (this.ws.isConnected) {
+        if (this.ws.isConnected()) {
             this.ws.send({
                 type: 'pdf_uploaded',
                 filename: uploadData.filename,
@@ -442,7 +473,7 @@ class App {
         }
 
         // Aktif sohbet varsa ve bağlıysa direkt gönder
-        if (this.pdfState.currentChatId && this.ws.isConnected) {
+        if (this.pdfState.currentChatId && this.ws.isConnected()) {
             this.sendMessageToServer(message);
             return;
         }
@@ -454,7 +485,7 @@ class App {
         }
 
         // WebSocket bağlı değilse hata mesajı
-        if (!this.ws.isConnected) {
+        if (!this.ws.isConnected()) {
             console.warn('⚠️ WebSocket bağlı değil');
             this.ui.addMessage('❌ Bağlantı yok. Lütfen bekleyin...', 'system');
             return;
@@ -486,12 +517,12 @@ class App {
             let retryCount = 0;
             const maxRetries = 10;
             
-            while (!this.ws.isConnected && retryCount < maxRetries) {
+            while (!this.ws.isConnected() && retryCount < maxRetries) {
                 await new Promise(resolve => setTimeout(resolve, 300));
                 retryCount++;
             }
             
-            if (this.ws.isConnected) {
+            if (this.ws.isConnected()) {
                 this.sendMessageToServer(message);
                 this.isFirstLoad = false;
             } else {
@@ -509,6 +540,44 @@ class App {
     sendMessageToServer(message) {
         console.log('📤 Mesaj gönderiliyor:', message);
 
+        // Aktif chat ID'yi kullan
+        const currentChatId = this.currentChatId || this.pdfState.currentChatId;
+        
+        // Eğer chat ID değiştiyse WebSocket'i yeniden bağla
+        if (currentChatId && this.ws.chatId !== currentChatId) {
+            console.log(`🔄 WebSocket chat ID güncelleniyor: ${this.ws.chatId} → ${currentChatId}`);
+            this.ws.chatId = currentChatId;
+            
+            // WebSocket'i yeni chat ID ile yeniden bağla
+            this.ws.close();
+            setTimeout(() => {
+                this.ws.connect();
+            }, 100);
+            
+            // Bağlantı kurulana kadar bekle
+            const waitForConnection = async () => {
+                let attempts = 0;
+                while (!this.ws.isConnected() && attempts < 10) {
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    attempts++;
+                }
+                
+                if (this.ws.isConnected()) {
+                    this.sendActualMessage(message);
+                } else {
+                    this.ui.removeTypingIndicator();
+                    this.ui.addMessage('❌ Bağlantı kurulamadı. Lütfen tekrar deneyin.', 'system');
+                }
+            };
+            
+            waitForConnection();
+            return;
+        }
+
+        this.sendActualMessage(message);
+    }
+
+    sendActualMessage(message) {
         // Web araştırması checkbox'ını kontrol et
         const webResearchEnabled = document.getElementById('webResearchEnabled');
         const forceWebResearch = webResearchEnabled && webResearchEnabled.checked;
@@ -599,6 +668,85 @@ class App {
     // YENİ FONKSIYON: Chat history manager'a erişim
     getChatHistory() {
         return this.chatHistory;
+    }
+
+    setupTestMessageListener() {
+        window.addEventListener('message', (event) => {
+            // Güvenlik kontrolü
+            if (event.origin !== window.location.origin) return;
+            
+            const data = event.data;
+            
+            if (data.type === 'test_completed') {
+                console.log('📊 Test sonuçları alındı:', data.results);
+                this.handleTestCompleted(data.results);
+            } else if (data.type === 'explain_topic') {
+                console.log('📖 Konu açıklaması istendi:', data.topic);
+                this.handleTopicExplanationRequest(data.topic);
+            }
+        });
+    }
+
+    async handleTestCompleted(results) {
+        try {
+            // Test sonuçlarını sunucuya gönder
+            const response = await fetch(`/chats/${this.currentChatId}/evaluate-test`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ results: results })
+            });
+
+            if (response.ok) {
+                const evaluation = await response.json();
+                console.log('✅ Test değerlendirmesi tamamlandı:', evaluation);
+                
+                // WebSocket üzerinden test tamamlandı mesajını gönder
+                if (this.ws && this.ws.isConnected()) {
+                    this.ws.sendMessage({
+                        type: 'test_completed',
+                        results: results
+                    });
+                }
+            } else {
+                console.error('❌ Test değerlendirme hatası:', response.status);
+            }
+        } catch (error) {
+            console.error('❌ Test sonuçları gönderim hatası:', error);
+        }
+    }
+
+    handleTopicExplanationRequest(topic) {
+        if (this.ws && this.ws.isConnected()) {
+            this.ws.sendMessage({
+                type: 'explain_topic',
+                topic: topic
+            });
+            
+            // Kullanıcıya mesaj alanında göster
+            this.showTopicExplanationRequest(topic);
+        }
+    }
+
+    showTopicExplanationRequest(topic) {
+        const messagesContainer = document.getElementById('messagesContainer');
+        if (!messagesContainer) return;
+
+        const requestDiv = document.createElement('div');
+        requestDiv.className = 'message user-message topic-request';
+        requestDiv.innerHTML = `
+            <div class="message-content">
+                <div class="topic-request-content">
+                    <i class="fas fa-question-circle"></i>
+                    <span>'${topic}' konusunu detaylı olarak açıklayabilir misin?</span>
+                </div>
+            </div>
+            <div class="message-time">${new Date().toLocaleTimeString('tr-TR')}</div>
+        `;
+
+        messagesContainer.appendChild(requestDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 }
 

@@ -8,6 +8,7 @@ from datetime import datetime
 import uvicorn
 import logging
 from fastapi.middleware.cors import CORSMiddleware
+from langchain_core.messages import HumanMessage  # Bu satırı ekledim
 from core.conversation import AsyncLangGraphDialog
 from core.config import Config
 from core.vector_store import VectorStore
@@ -42,9 +43,12 @@ async def startup_event():
     try:
         Config.validate_config()
         logger.info("✅ API anahtarları doğrulandı")
+        logger.info(f"✅ Google API Key: {Config.GOOGLE_API_KEY[:10]}...")
         logger.info("✅ Chat Manager başlatıldı")
     except Exception as e:
         logger.error(f"❌ Startup hatası: {e}")
+        logger.error(f"❌ Config durumu: GOOGLE_API_KEY={'Var' if Config.GOOGLE_API_KEY else 'Yok'}")
+        raise e
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_index():
@@ -62,6 +66,7 @@ async def serve_index():
     <link rel="stylesheet" href="/static/css/components/toast.css">
     <link rel="stylesheet" href="/static/css/components/error_fallback.css">
     <link rel="stylesheet" href="/static/css/components/welcome_actions.css">
+    <link rel="stylesheet" href="/static/css/test-styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -526,102 +531,435 @@ async def delete_chat_pdf(chat_id: str, file_hash: str):
         logger.error(f"❌ PDF silme hatası: {e}")
         raise HTTPException(status_code=500, detail=f"PDF silme hatası: {str(e)}")
 
-# WebSocket endpoint - FİX EDİLDİ
+@app.post("/chats/{chat_id}/evaluate-test")
+async def evaluate_test_results(chat_id: str, test_results: dict):
+    """Test sonuçlarını değerlendirir ve eksik konuları analiz eder"""
+    try:
+        chat_info = chat_manager.get_chat_info(chat_id)
+        if not chat_info:
+            raise HTTPException(status_code=404, detail="Sohbet bulunamadı")
+        
+        # Test sonuçlarını analiz et
+        correct_answers = 0
+        total_questions = 0
+        wrong_topics = []
+        
+        for question_result in test_results.get("results", []):
+            total_questions += 1
+            if question_result.get("is_correct", False):
+                correct_answers += 1
+            else:
+                # Yanlış cevaplanan sorunun konusunu ekle
+                topic = question_result.get("topic", "Genel")
+                if topic not in wrong_topics:
+                    wrong_topics.append(topic)
+        
+        # Başarı oranını hesapla
+        success_rate = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
+        
+        # Eksik konuları belirle
+        weak_areas = []
+        for topic in wrong_topics:
+            weak_areas.append({
+                "topic": topic,
+                "importance": "high" if success_rate < 50 else "medium"
+            })
+        
+        # Test değerlendirme raporu
+        evaluation_result = {
+            "test_id": test_results.get("test_id"),
+            "chat_id": chat_id,
+            "evaluation_date": datetime.now().isoformat(),
+            "statistics": {
+                "total_questions": total_questions,
+                "correct_answers": correct_answers,
+                "wrong_answers": total_questions - correct_answers,
+                "success_rate": round(success_rate, 2)
+            },
+            "performance_level": (
+                "excellent" if success_rate >= 90 else
+                "good" if success_rate >= 70 else
+                "fair" if success_rate >= 50 else
+                "needs_improvement"
+            ),
+            "weak_areas": weak_areas,
+            "recommendations": generate_recommendations(success_rate, weak_areas)
+        }
+        
+        # Sonuçları chat'e mesaj olarak kaydet
+        evaluation_message = format_evaluation_message(evaluation_result)
+        chat_manager.save_message(chat_id, {
+            "type": "system",
+            "content": evaluation_message,
+            "metadata": {
+                "message_type": "test_evaluation",
+                "evaluation_data": evaluation_result
+            }
+        })
+        
+        return JSONResponse({
+            "success": True,
+            "evaluation": evaluation_result,
+            "message": "Test değerlendirmesi tamamlandı"
+        })
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Test değerlendirme hatası: {e}")
+        raise HTTPException(status_code=500, detail=f"Test değerlendirme hatası: {str(e)}")
+
+async def evaluate_test_results_internal(chat_id: str, test_results: dict):
+    """İç kullanım için test sonuçlarını değerlendirir"""
+    try:
+        # Test sonuçlarını analiz et
+        correct_answers = 0
+        total_questions = 0
+        wrong_topics = []
+        
+        for question_result in test_results.get("detailed_results", []):
+            total_questions += 1
+            if question_result.get("is_correct", False):
+                correct_answers += 1
+            else:
+                # Yanlış cevaplanan sorunun konusunu ekle
+                topic = question_result.get("topic", "Genel")
+                if topic not in wrong_topics:
+                    wrong_topics.append(topic)
+        
+        # Başarı oranını hesapla
+        success_rate = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
+        
+        # Eksik konuları belirle
+        weak_areas = []
+        for topic in wrong_topics:
+            weak_areas.append({
+                "topic": topic,
+                "importance": "high" if success_rate < 50 else "medium"
+            })
+        
+        # Test değerlendirme raporu
+        evaluation_result = {
+            "test_id": test_results.get("test_id"),
+            "chat_id": chat_id,
+            "evaluation_date": datetime.now().isoformat(),
+            "statistics": {
+                "total_questions": total_questions,
+                "correct_answers": correct_answers,
+                "wrong_answers": total_questions - correct_answers,
+                "success_rate": round(success_rate, 2)
+            },
+            "performance_level": (
+                "excellent" if success_rate >= 90 else
+                "good" if success_rate >= 70 else
+                "fair" if success_rate >= 50 else
+                "needs_improvement"
+            ),
+            "weak_areas": weak_areas,
+            "recommendations": generate_recommendations(success_rate, weak_areas)
+        }
+        
+        # Sonuçları chat'e mesaj olarak kaydet
+        evaluation_message = format_evaluation_message(evaluation_result)
+        chat_manager.save_message(chat_id, {
+            "type": "system",
+            "content": evaluation_message,
+            "metadata": {
+                "message_type": "test_evaluation",
+                "evaluation_data": evaluation_result
+            }
+        })
+        
+        return evaluation_result
+        
+    except Exception as e:
+        logger.error(f"❌ İç test değerlendirme hatası: {e}")
+        raise e
+
+def generate_recommendations(success_rate: float, weak_areas: list) -> list:
+    """Başarı oranı ve eksik konulara göre öneriler üretir"""
+    recommendations = []
+    
+    if success_rate >= 90:
+        recommendations.append("🎉 Mükemmel performans! Konuyu çok iyi anlamışsın.")
+        recommendations.append("📈 Daha zorlu konulara geçebilir veya bu konuyu başkalarına öğretmeyi deneyebilirsin.")
+    elif success_rate >= 70:
+        recommendations.append("👍 İyi bir performans gösterdin!")
+        recommendations.append("🔄 Eksik kalan konuları tekrar ederek %90'ın üzerine çıkabilirsin.")
+    elif success_rate >= 50:
+        recommendations.append("📚 Orta seviyede bir performans. Daha fazla çalışmayla iyileştirebilirsin.")
+        recommendations.append("🎯 Eksik konulara odaklanarak tekrar yapmakta fayda var.")
+    else:
+        recommendations.append("💪 Bu konuyu daha detaylı çalışman gerekiyor.")
+        recommendations.append("📖 Temel kavramları tekrar gözden geçirmeyi öneririm.")
+    
+    if weak_areas:
+        topics_text = ", ".join([area["topic"] for area in weak_areas])
+        recommendations.append(f"🎯 Özellikle şu konulara odaklan: {topics_text}")
+        recommendations.append("💡 Bu konular için benden detaylı açıklama isteyebilirsin!")
+    
+    return recommendations
+
+def format_evaluation_message(evaluation: dict) -> str:
+    """Test değerlendirmesini kullanıcı dostu mesaja çevirir"""
+    stats = evaluation["statistics"]
+    success_rate = stats["success_rate"]
+    
+    # Emoji ve seviye belirleme
+    if success_rate >= 90:
+        emoji = "🎉"
+        level_text = "Mükemmel"
+        color = "🟢"
+    elif success_rate >= 70:
+        emoji = "👍"
+        level_text = "İyi"
+        color = "🟡"
+    elif success_rate >= 50:
+        emoji = "📚"
+        level_text = "Orta"
+        color = "🟠"
+    else:
+        emoji = "💪"
+        level_text = "Gelişime Açık"
+        color = "🔴"
+    
+    message = f"{emoji} **Test Değerlendirmen**\n\n"
+    message += f"{color} **Performans Seviyesi:** {level_text}\n"
+    message += f"📊 **Başarı Oranı:** %{success_rate}\n"
+    message += f"✅ **Doğru:** {stats['correct_answers']}/{stats['total_questions']}\n"
+    message += f"❌ **Yanlış:** {stats['wrong_answers']}\n\n"
+    
+    # Eksik konular
+    if evaluation["weak_areas"]:
+        message += "🎯 **Eksik Olduğun Konular:**\n"
+        for area in evaluation["weak_areas"]:
+            message += f"• {area['topic']}\n"
+        message += "\n"
+    
+    # Öneriler
+    message += "💡 **Önerilerim:**\n"
+    for rec in evaluation["recommendations"]:
+        message += f"• {rec}\n"
+    
+    message += "\n📖 **Eksik konuları anlatmamı istersen, sadece söyle!**"
+    
+    return message
+
 @app.websocket("/ws/{chat_id}")
 async def websocket_endpoint(websocket: WebSocket, chat_id: str):
     await websocket.accept()
+    logger.info(f"🔌 WebSocket bağlantısı kuruldu - Chat: {chat_id}")
     
-    # WebSocket callback fonksiyonu
-    async def websocket_callback(message):
+    # Chat ID 'default' ise yeni chat oluştur
+    if chat_id == 'default':
+        try:
+            chat_id = chat_manager.create_new_chat()
+            logger.info(f"✅ 'default' chat ID için yeni chat oluşturuldu: {chat_id}")
+        except Exception as e:
+            logger.error(f"❌ Yeni chat oluşturma hatası: {e}")
+            chat_id = 'default'
+    
+    # Chat klasörünün var olduğundan emin ol
+    try:
+        chat_info = chat_manager.get_chat_info(chat_id)
+        if not chat_info:
+            # Chat yoksa oluştur
+            chat_id = chat_manager.create_new_chat()
+            logger.info(f"✅ Chat mevcut değildi, yeni oluşturuldu: {chat_id}")
+    except Exception as e:
+        logger.error(f"❌ Chat kontrol hatası: {e}")
+        # Fallback olarak yeni chat oluştur
+        try:
+            chat_id = chat_manager.create_new_chat()
+            logger.info(f"✅ Fallback: Yeni chat oluşturuldu: {chat_id}")
+        except Exception as create_error:
+            logger.error(f"❌ Fallback chat oluşturma hatası: {create_error}")
+            chat_id = 'emergency_default'
+    
+    async def websocket_callback(message: str):
         try:
             await websocket.send_text(message)
         except Exception as e:
-            logger.error(f"❌ WebSocket send error: {e}")
+            logger.error(f"❌ WebSocket gönderim hatası: {e}")
     
-    # Dialog instance oluştur
-    dialog = AsyncLangGraphDialog(
-        websocket_callback=websocket_callback,
-        chat_id=chat_id,
-        chat_manager=chat_manager
-    )
+    # Dialog instance'ı oluştur veya al
+    if chat_id not in dialog_instances:
+        dialog_instances[chat_id] = AsyncLangGraphDialog(
+            websocket_callback=websocket_callback,
+            chat_id=chat_id,
+            chat_manager=chat_manager
+        )
+    else:
+        # Mevcut instance'ı güncelle
+        dialog_instances[chat_id].websocket_callback = websocket_callback
+        dialog_instances[chat_id].chat_manager = chat_manager
     
-    dialog_instances[chat_id] = dialog
+    dialog = dialog_instances[chat_id]
     
-    # Chat'in mevcut mesajlarını yükle
+    # Sohbet geçmişini yükle
     try:
-        chat_info = chat_manager.get_chat_info(chat_id)
-        if chat_info:
-            messages = chat_manager.get_chat_messages(chat_id)
-            dialog.load_conversation_from_messages(messages)
+        chat_messages = chat_manager.get_chat_messages(chat_id)
+        if chat_messages:
+            dialog.load_conversation_from_messages(chat_messages)
     except Exception as e:
-        logger.error(f"❌ Chat loading error: {e}")
+        logger.error(f"❌ Sohbet geçmişi yükleme hatası: {e}")
     
-    # Vector store stats gönder
+    # Client'a gerçek chat ID'yi gönder
     try:
-        vector_stats = dialog.vector_store.get_stats()
-        await websocket_callback(json.dumps({
+        # Vector store istatistiklerini al
+        vector_store = VectorStore(Config.VECTOR_STORE_PATH, chat_id=chat_id)
+        stats = vector_store.get_stats()
+        
+        await websocket.send_text(json.dumps({
             "type": "connection_established",
-            "message": f"WebSocket bağlantısı kuruldu - Chat: {chat_id}",
             "chat_id": chat_id,
-            "vector_store_stats": vector_stats,
-            "chat_info": chat_info
+            "message": f"Bağlantı kuruldu - Chat: {chat_id}",
+            "vector_store_stats": stats,
+            "timestamp": datetime.utcnow().isoformat()
         }))
+        logger.info(f"✅ Client'a bağlantı onayı gönderildi - Chat: {chat_id}")
     except Exception as e:
-        logger.error(f"❌ Initial stats error: {e}")
+        logger.error(f"❌ Bağlantı onay mesajı hatası: {e}")
+    
+    # Dialog instance'ı oluştur veya al
+    if chat_id not in dialog_instances:
+        dialog_instances[chat_id] = AsyncLangGraphDialog(
+            websocket_callback=websocket_callback,
+            chat_id=chat_id,
+            chat_manager=chat_manager
+        )
+    else:
+        # Mevcut instance'ı güncelle
+        dialog_instances[chat_id].websocket_callback = websocket_callback
+        dialog_instances[chat_id].chat_manager = chat_manager
+    
+    dialog = dialog_instances[chat_id]
+    
+    # Sohbet geçmişini yükle
+    try:
+        chat_messages = chat_manager.get_chat_messages(chat_id)
+        if chat_messages:
+            dialog.load_conversation_from_messages(chat_messages)
+    except Exception as e:
+        logger.error(f"❌ Sohbet geçmişi yükleme hatası: {e}")
     
     try:
         while True:
-            data = await websocket.receive_text()
-            message_data = json.loads(data)
-            
-            if message_data.get("type") == "confirmation_response":
-                # Onay yanıtları için özel işlem
-                user_message = message_data.get("message", "")
-                response = await dialog.process_user_message(user_message)
+            try:
+                data = await websocket.receive_text()
+                message_data = json.loads(data)
                 
-                if response:
-                    await websocket_callback(json.dumps({
-                        "type": "message",
-                        "content": response,
+                if message_data.get("type") == "user_message":
+                    user_message = message_data.get("message", "")
+                    
+                    # Mesaj formatını kontrol et
+                    if isinstance(user_message, dict):
+                        # Eğer mesaj dict ise, içindeki message alanını al
+                        user_message = user_message.get("message", "")
+                    
+                    # String'e çevir ve temizle
+                    user_message = str(user_message).strip()
+                    
+                    if user_message:
+                        response = await dialog.process_user_message(user_message)
+                        if response:
+                            await websocket.send_text(json.dumps({
+                                "type": "ai_response",
+                                "message": response,
+                                "timestamp": datetime.utcnow().isoformat(),
+                                "chat_id": chat_id
+                            }))
+                
+                elif message_data.get("type") == "test_parameters_response":
+                    # Test parametreleri yanıtını işle
+                    stage = message_data.get("stage")
+                    user_response = message_data.get("response", "")
+                    
+                    # Kullanıcının yanıtını conversation state'e ekle
+                    dialog.conversation_state["messages"].append(
+                        HumanMessage(content=user_response)
+                    )
+                    
+                    # Test parametreleri node'unu tekrar çalıştır
+                    await dialog.ask_test_parameters_node(dialog.conversation_state)
+                
+                elif message_data.get("type") == "start_test":
+                    # Test başlatma komutu
+                    test_data = message_data.get("test_data", {})
+                    
+                    # Test verilerini localStorage için gönder
+                    await websocket.send_text(json.dumps({
+                        "type": "test_data_ready",
+                        "test_data": test_data,
                         "timestamp": datetime.utcnow().isoformat(),
                         "chat_id": chat_id
                     }))
-            else:
-                # Normal mesajlar
-                user_message = message_data.get("message", "")
-                force_web_research = message_data.get("force_web_research", False)
                 
-                if user_message:
-                    # Force web research flag'ini conversation state'e ekle
-                    dialog.conversation_state["force_web_research"] = force_web_research
+                elif message_data.get("type") == "test_completed":
+                    # Test tamamlandı, sonuçları değerlendir
+                    test_results = message_data.get("results", {})
                     
-                    response = await dialog.process_user_message(user_message)
-                    
-                    if response:
-                        await websocket_callback(json.dumps({
-                            "type": "message",
-                            "content": response,
+                    try:
+                        # Test sonuçlarını analiz et ve chat'e kaydet
+                        evaluation_result = await evaluate_test_results_internal(chat_id, test_results)
+                        
+                        await websocket.send_text(json.dumps({
+                            "type": "test_evaluation_complete",
+                            "evaluation": evaluation_result,
                             "timestamp": datetime.utcnow().isoformat(),
                             "chat_id": chat_id
                         }))
-                        
-    except WebSocketDisconnect:
-        logger.info(f"🔌 WebSocket disconnected for chat: {chat_id}")
-        if chat_id in dialog_instances:
-            del dialog_instances[chat_id]
-    except Exception as e:
-        logger.error(f"❌ WebSocket error for chat {chat_id}: {e}")
-        if chat_id in dialog_instances:
-            del dialog_instances[chat_id]
-
-# Default WebSocket (yeni chat için)
-@app.websocket("/ws")
-async def default_websocket_endpoint(websocket: WebSocket):
-    # Yeni chat oluştur
-    chat_id = chat_manager.create_new_chat()
+                    except Exception as e:
+                        logger.error(f"❌ Test değerlendirme hatası: {e}")
+                        await websocket.send_text(json.dumps({
+                            "type": "error",
+                            "message": f"Test değerlendirme hatası: {str(e)}"
+                        }))
+                
+                elif message_data.get("type") == "explain_topic":
+                    # Eksik konu açıklaması istendi
+                    topic = message_data.get("topic", "")
+                    
+                    # Bu konuyu açıklama talebini normal mesaj olarak işle
+                    explain_message = f"'{topic}' konusunu detaylı olarak açıklayabilir misin?"
+                    response = await dialog.process_user_message(explain_message)
+                    
+                    if response:
+                        await websocket.send_text(json.dumps({
+                            "type": "topic_explanation",
+                            "topic": topic,
+                            "explanation": response,
+                            "timestamp": datetime.utcnow().isoformat(),
+                            "chat_id": chat_id
+                        }))
+                
+                elif message_data.get("type") == "ping":
+                    await websocket.send_text(json.dumps({
+                        "type": "pong",
+                        "timestamp": datetime.utcnow().isoformat()
+                    }))
+            
+            except WebSocketDisconnect:
+                logger.info(f"🔌 WebSocket bağlantısı kesildi - Chat: {chat_id}")
+                break
+            except json.JSONDecodeError:
+                logger.error("❌ Geçersiz JSON formatı")
+                await websocket.send_text(json.dumps({
+                    "type": "error",
+                    "message": "Geçersiz mesaj formatı"
+                }))
+            except Exception as e:
+                logger.error(f"❌ WebSocket mesaj işleme hatası: {e}")
+                await websocket.send_text(json.dumps({
+                    "type": "error",
+                    "message": f"Mesaj işlenirken hata oluştu: {str(e)}"
+                }))
     
-    # Chat-specific WebSocket'e yönlendir
-    await websocket_endpoint(websocket, chat_id)
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    except WebSocketDisconnect:
+        logger.info(f"🔌 WebSocket bağlantısı sonlandı - Chat: {chat_id}")
+    except Exception as e:
+        logger.error(f"❌ WebSocket genel hatası: {e}")
+    finally:
+        # Cleanup
+        if chat_id in dialog_instances:
+            dialog_instances[chat_id].websocket_callback = None

@@ -1,0 +1,303 @@
+/* Test Parametreleri Stilleri */
+.test-parameters-message {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px 0;
+    color: white;
+}
+
+.test-parameters-content {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 10px 0;
+}
+
+.parameters-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.parameters-header i {
+    font-size: 24px;
+    color: #fff;
+}
+
+.parameters-header h3 {
+    margin: 0;
+    color: #fff;
+}
+
+.parameters-form {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+.checkbox-group, .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.checkbox-item, .radio-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.checkbox-item:hover, .radio-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+}
+
+.checkbox-item input, .radio-item input {
+    width: 18px;
+    height: 18px;
+    accent-color: #ffd700;
+}
+
+.checkbox-text, .radio-text {
+    font-weight: 500;
+    color: white;
+}
+
+.number-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.number-input-group label {
+    font-weight: 600;
+    color: #ffd700;
+}
+
+.number-input-group input {
+    padding: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
+    max-width: 150px;
+}
+
+.number-input-group input:focus {
+    outline: none;
+    border-color: #ffd700;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.number-input-group small {
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+}
+
+.parameters-next-btn {
+    width: 100%;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.parameters-next-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #45a049, #4CAF50);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+.parameters-next-btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Test Sonuçları Stilleri */
+.test-results-message {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px 0;
+    color: white;
+}
+
+.test-results-content {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 10px 0;
+}
+
+.test-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.test-header i {
+    font-size: 24px;
+    color: #fff;
+}
+
+.test-header h3 {
+    margin: 0;
+    color: #fff;
+}
+
+.test-actions {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.solve-test-btn, .preview-test-btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.solve-test-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.solve-test-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.preview-test-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.preview-test-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.test-info {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-item strong {
+    color: #4CAF50;
+}
+
+/* Hata Mesajları */
+.error-message {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    border-radius: 15px;
+    padding: 15px;
+    margin: 15px 0;
+    color: white;
+}
+
+.error-content {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.error-content i {
+    font-size: 24px;
+    color: #fff;
+}
+
+/* Test Değerlendirme Mesajları */
+.test-evaluation {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px 0;
+    color: white;
+}
+
+/* Konu Açıklama İsteği */
+.topic-request {
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+}
+
+.topic-request-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.topic-request-content i {
+    color: #ffd700;
+    font-size: 1.2em;
+}
+
+/* Responsive tasarım */
+@media (max-width: 768px) {
+    .question-types-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .difficulty-options,
+    .level-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .test-actions {
+        flex-direction: column;
+    }
+    
+    .counter-controls {
+        justify-content: center;
+    }
+}

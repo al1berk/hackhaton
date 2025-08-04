@@ -75,8 +75,8 @@ class PDFManager {
             return;
         }
 
-        // Aktif chat ID'yi al - app.chatHistory üzerinden
-        const currentChatId = this.app.chatHistory.getCurrentChatId();
+        // Aktif chat ID'yi al - app üzerinden direkt
+        const currentChatId = this.app.currentChatId || this.app.pdfState.currentChatId;
         if (!currentChatId) {
             // Eğer aktif chat yoksa, yeni chat oluştur
             try {
@@ -87,12 +87,12 @@ class PDFManager {
                 let retryCount = 0;
                 const maxRetries = 10;
                 
-                while (!this.app.ws.isConnected && retryCount < maxRetries) {
+                while (!this.app.ws.isConnected() && retryCount < maxRetries) {
                     await new Promise(resolve => setTimeout(resolve, 300));
                     retryCount++;
                 }
                 
-                if (this.app.ws.isConnected) {
+                if (this.app.ws.isConnected()) {
                     this.startUpload(file, chatId);
                 } else {
                     alert('Bağlantı kurulamadı. Lütfen sayfayı yenileyin.');
@@ -260,7 +260,8 @@ class PDFManager {
 
     async loadPDFList() {
         try {
-            const currentChatId = this.app.chatHistory.getCurrentChatId();
+            // App üzerinden currentChatId'yi al
+            const currentChatId = this.app.currentChatId || this.app.pdfState.currentChatId;
             if (!currentChatId) {
                 this.renderEmptyPDFList();
                 return;
@@ -361,7 +362,8 @@ class PDFManager {
         }
 
         try {
-            const currentChatId = this.app.chatHistory.getCurrentChatId();
+            // App üzerinden currentChatId'yi al
+            const currentChatId = this.app.currentChatId || this.app.pdfState.currentChatId;
             if (!currentChatId) {
                 throw new Error('Aktif sohbet bulunamadı');
             }

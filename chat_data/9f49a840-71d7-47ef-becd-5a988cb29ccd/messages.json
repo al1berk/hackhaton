@@ -1,0 +1,12 @@
+[
+  {
+    "type": "user",
+    "content": "merhaba",
+    "timestamp": "2025-08-04T05:01:47.724538"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Size nasıl yardımcı olabilirim? Ben LangGraph ve CrewAI ile güçlendirilmiş akıllı bir asistanım.\n\nİşte yapabileceklerimden bazıları:\n*   Web araştırması yapabilirim.\n*   Yüklediğiniz dokümanlardan test soruları (çoktan seçmeli, klasik, boşluk doldurma, doğru-yanlış) üretebilirim.\n*   Veri analizi yapabilirim.\n*   Metinleri özetleyebilirim.\n*   PDF ve resimlerden (OCR ile) bilgi çıkarabilirim.\n*   Yüklediğiniz dokümanlar arasında arama yapabilirim.\n*   Test sonuçlarınızı analiz edip eksik konuları belirleyebilirim.\n\nNe konuda yardıma ihtiyacınız var?",
+    "timestamp": "2025-08-04T05:01:49.306119"
+  }
+]

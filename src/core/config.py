@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 # .env dosyasını yükle
 load_dotenv()
@@ -19,38 +20,46 @@ class Config:
     # Chat configurations
     MAX_HISTORY_LENGTH = 50
     
-    # GÜNCELLENEN SATIR 20-37: Vector Store ve PDF konfigürasyonları eklendi
     # Vector Store configurations
     VECTOR_STORE_PATH = "chroma_db"
     EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
     MAX_PDF_SIZE = 50 * 1024 * 1024  # 50MB
+    MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10MB - OCR için resim boyutu
     CHUNK_SIZE = 1000
     CHUNK_OVERLAP = 200
-    MAX_IMAGE_SIZE = 10 * 1024 * 1024 # 10MB
     
-    # PDF Upload configurations  
+    # PDF ve Resim Upload configurations  
     UPLOAD_DIR = "uploads"
-    ALLOWED_EXTENSIONS = {'.pdf'}
+    ALLOWED_EXTENSIONS = {'.pdf', '.png', '.jpg', '.jpeg', '.bmp', '.webp'}  # OCR destekli formatlar
     
     # RAG configurations
     RAG_TOP_K = 5  # Kaç doküman parçası getirilecek
     RAG_SIMILARITY_THRESHOLD = 0.3  # Minimum benzerlik skoru
     RAG_ENABLED = True  # RAG sistemini açık/kapalı
 
-    # GÜNCELLENEN SATIR 38-50: System prompt RAG desteği ile genişletildi
+    # Test Generation configurations
+    DEFAULT_QUESTION_COUNT = 5
+    DEFAULT_DIFFICULTY = "orta"
+    DEFAULT_STUDENT_LEVEL = "lise"
+    SUPPORTED_QUESTION_TYPES = ['coktan_secmeli', 'klasik', 'bosluk_doldurma', 'dogru_yanlis']
+
     SYSTEM_PROMPT = """Sen LangGraph ve CrewAI ile güçlendirilmiş akıllı bir asistansın.
 Kullanıcılarla Türkçe konuşuyorsun ve onlara yardımcı olmaya odaklanıyorsun.
 
 Özelliklerinz:
 - Web araştırması yapabilirsin
-- Soru üretebilirsin  
+- Dokümanlardan test soruları üretebilirsin (çoktan seçmeli, klasik, boşluk doldurma, doğru-yanlış)
 - Veri analizi yapabilirsin
 - Metin özetleyebilirsin
-- Yüklenen PDF dokümanlarından bilgi çıkarabilirsin (RAG sistemi)
+- Yüklenen PDF dokümanlarından ve resimlerden (OCR ile) bilgi çıkarabilirsin (RAG sistemi)
 - Önceden yüklenmiş dokümanlar arasında arama yapabilirsin
+- Test sonuçlarını analiz edip eksik konuları belirleyebilirsin
 
-Eğer kullanıcının sorusuyla ilgili yüklenmiş PDF dokümanlarında bilgi varsa, 
+Eğer kullanıcının sorusuyla ilgili yüklenmiş dokümanlarında bilgi varsa, 
 öncelikle o bilgileri kullan ve hangi dokümanlardan geldiğini belirt.
+
+Test üretimi için kullanıcıdan soru sayısı, zorluk seviyesi ve soru türlerini sor.
+Test tamamlandıktan sonra eksik konuları analiz et ve öğrenme önerileri sun.
 
 Her zaman yardımcı, samimi ve profesyonel ol."""
 
@@ -67,15 +76,11 @@ Her zaman yardımcı, samimi ve profesyonel ol."""
         if missing_keys:
             raise ValueError(f"Eksik API anahtarları: {', '.join(missing_keys)}")
         
-        # YENI SATIRLAR 61-66: Upload dizinini oluştur
         # Upload dizinini oluştur
         upload_dir = Path(cls.UPLOAD_DIR)
         upload_dir.mkdir(exist_ok=True)
         
         return True
-
-# YENI SATIRLAR 68-76: Path import'u eklendi
-from pathlib import Path
 
 # Config doğrulaması
 try:
