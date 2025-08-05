@@ -591,16 +591,45 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
         try:
             # CrewAI'yi asenkron olarak çalıştır
             logger.info("🤖 CrewAI test sistemi başlatılıyor...")
+            
+            # Progress update gönder
+            if self.websocket_callback:
+                await self.websocket_callback(json.dumps({
+                    "type": "crew_progress",
+                    "message": "⚙️ Test oluşturma ajanları hazırlanıyor...",
+                    "timestamp": datetime.utcnow().isoformat(),
+                    "chat_id": self.chat_id
+                }))
+            
             generated_data = await self.test_crew.generate_questions(document_content, preferences)
             logger.info(f"✅ CrewAI test sistemi tamamlandı. Sonuç: {type(generated_data)}")
             
+            # Sonuç kontrolü ve hata yönetimi
             if generated_data and not generated_data.get("error"):
                 state["generated_questions"] = generated_data
                 logger.info("✅ Test soruları başarıyla oluşturuldu")
+                
+                # Başarı mesajı gönder
+                if self.websocket_callback:
+                    await self.websocket_callback(json.dumps({
+                        "type": "crew_progress",
+                        "message": "🎉 Test soruları başarıyla oluşturuldu!",
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "chat_id": self.chat_id
+                    }))
             else:
                 error_msg = generated_data.get("error", "Test oluşturma sırasında bilinmeyen hata") if generated_data else "CrewAI'den yanıt alınamadı"
                 logger.error(f"❌ CrewAI hatası: {error_msg}")
                 state["generated_questions"] = {"error": error_msg}
+                
+                # Hata mesajı gönder
+                if self.websocket_callback:
+                    await self.websocket_callback(json.dumps({
+                        "type": "error",
+                        "message": f"❌ Test oluşturma hatası: {error_msg}",
+                        "timestamp": datetime.utcnow().isoformat(),
+                        "chat_id": self.chat_id
+                    }))
                 
         except Exception as e:
             error_msg = f"CrewAI test oluşturma hatası: {str(e)}"
@@ -616,6 +645,8 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
                     "chat_id": self.chat_id
                 }))
         
+        # Her durumda state'i güncelle - bu kritik!
+        logger.info("📋 Test oluşturma node'u tamamlandı, present_test_results'a geçiliyor...")
         return state
     
     async def ask_test_parameters_node(self, state: ConversationState) -> ConversationState:

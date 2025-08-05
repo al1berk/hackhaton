@@ -350,7 +350,7 @@ class CrewAISystem:
             return str(crew_output)
 
     async def generate_questions(self, document_content: str, preferences: Dict[str, Any]) -> Dict[str, Any]:
-        """Ana soru üretme fonksiyonu - CrewOutput hatası düzeltildi."""
+        """Ana soru üretme fonksiyonu - Geliştirilmiş hata yönetimi ve timeout kontrolü."""
         try:
             print("🔄 Crew AI (Detaylı Görev Yapısı) ile soru üretimi başlatılıyor...")
             await self.send_workflow_message("CrewAI-Manager", "🚀 Soru üretim sistemi başlatılıyor", {
@@ -358,130 +358,129 @@ class CrewAISystem:
                 "document_length": len(document_content)
             })
             
-            tasks = self._create_tasks(document_content, preferences)
-            crew = Crew(
-                agents=list(self.agents.values()),
-                tasks=tasks,
-                verbose=True,  # Boolean değer
-                process=Process.sequential
-            )
+            # Timeout ve retry ayarları
+            max_retries = 3
+            timeout_seconds = 180  # 3 dakika
             
-            await self.send_progress_update("🔄 CrewAI ajanları çalışıyor...")
-            result = await self.run_crew_async(crew)
-            
-            if not result["success"]:
-                raise Exception(result["error"])
-            
-            await self.send_workflow_message("CrewAI-Manager", "✅ Soru üretimi tamamlandı!")
-            print("✅ Crew AI soru üretimi tamamlandı!")
-            
-            # *** HATA DÜZELTMESİ: CrewOutput objesini düzgün işle ***
-            crew_output = result["result"]
-            
-            # CrewOutput objesinden string içeriğini çıkar
-            final_result_str = self._extract_crew_output_content(crew_output)
-            
-            print(f"🔍 CrewOutput türü: {type(crew_output)}")
-            print(f"📝 Raw output (ilk 200 karakter): {final_result_str[:200]}...")
-            
-            # String içeriğini JSON'a çevir
-            try:
-                # JSON temizleme
-                if '```json' in final_result_str:
-                    final_result_str = final_result_str.split('```json')[1].split('```')[0]
-                elif '```' in final_result_str:
-                    # Başka markdown blokları varsa da temizle
-                    parts = final_result_str.split('```')
-                    for part in parts:
-                        if part.strip().startswith('{') or part.strip().startswith('['):
-                            final_result_str = part.strip()
-                            break
-                
-                final_result_str = final_result_str.strip()
-                
-                # JSON parse et
-                parsed_result = json.loads(final_result_str)
-                
-                # Basit format kontrolü
-                if isinstance(parsed_result, dict) and "questions" in parsed_result:
-                    return parsed_result
-                else:
-                    # Fallback: basit format oluştur
-                    return {
-                        "document_info": {
-                            "analysis_date": datetime.now().isoformat(),
-                            "question_count": preferences.get('toplam_soru', 0),
-                            "question_types": preferences.get('soru_turleri', []),
-                            "difficulty_distribution": {"kolay": 0, "orta": 0, "zor": 0},
-                            "student_level": preferences.get('ogrenci_seviyesi', 'lise'),
-                            "special_topics": preferences.get('ozel_konular', [])
-                        },
-                        "questions": parsed_result if isinstance(parsed_result, dict) else {"coktan_secmeli": []},
-                        "raw_output": final_result_str
-                    }
+            for attempt in range(max_retries):
+                try:
+                    await self.send_progress_update(f"🔄 Deneme {attempt + 1}/{max_retries} - CrewAI ajanları çalışıyor...")
                     
-            except (json.JSONDecodeError, IndexError) as e:
-                print(f"❌ CrewAI çıktısı JSON formatında değil: {e}")
-                print(f"🔍 Raw output: {final_result_str}")
-                return {
-                    "error": "Soru üretilemedi. JSON format hatası.",
-                    "raw_output": final_result_str,
-                    "parse_error": str(e)
-                }
+                    tasks = self._create_tasks(document_content, preferences)
+                    crew = Crew(
+                        agents=list(self.agents.values()),
+                        tasks=tasks,
+                        verbose=True,
+                        process=Process.sequential
+                    )
+                    
+                    # Timeout ile crew çalıştır
+                    try:
+                        result = await asyncio.wait_for(
+                            self.run_crew_async(crew), 
+                            timeout=timeout_seconds
+                        )
+                    except asyncio.TimeoutError:
+                        if attempt < max_retries - 1:
+                            await self.send_progress_update(f"⏰ Timeout - {attempt + 1}. deneme başarısız, tekrar deneniyor...")
+                            continue
+                        else:
+                            raise Exception("CrewAI işlemi timeout'a uğradı. Lütfen daha kısa bir doküman ile deneyin.")
+                    
+                    if not result["success"]:
+                        if attempt < max_retries - 1:
+                            await self.send_progress_update(f"❌ Hata oluştu, {attempt + 2}. deneme yapılıyor...")
+                            continue
+                        else:
+                            raise Exception(f"CrewAI hatası: {result.get('error', 'Bilinmeyen hata')}")
+                    
+                    # Başarılı sonuç işleme
+                    crew_output = result["result"]
+                    final_result_str = self._extract_crew_output_content(crew_output)
+                    
+                    # JSON temizleme ve parse etme
+                    cleaned_json = self._clean_and_parse_json(final_result_str)
+                    
+                    if cleaned_json.get("error"):
+                        if attempt < max_retries - 1:
+                            await self.send_progress_update(f"🔧 JSON parse hatası, tekrar deneniyor...")
+                            continue
+                        else:
+                            raise Exception(f"JSON parse hatası: {cleaned_json['error']}")
+                    
+                    # Başarılı sonuç
+                    await self.send_workflow_message("CrewAI-Manager", "✅ Soru üretimi tamamlandı!")
+                    return cleaned_json
+                    
+                except Exception as e:
+                    if attempt < max_retries - 1:
+                        await self.send_progress_update(f"❌ Hata: {str(e)} - Tekrar deneniyor...")
+                        await asyncio.sleep(2)  # Kısa bekleme
+                        continue
+                    else:
+                        raise e
             
         except Exception as e:
-            print(f"❌ Crew AI çalıştırılırken bir hata oluştu: {str(e)}")
-            await self.send_workflow_message("CrewAI-Manager", f"❌ Hata: {str(e)}")
-            return {"error": f"Soru üretimi sırasında bir hata oluştu: {e}"}
+            error_msg = f"Soru üretimi sırasında hata: {str(e)}"
+            print(f"❌ {error_msg}")
+            await self.send_workflow_message("CrewAI-Manager", f"❌ Hata: {error_msg}")
+            return {"error": error_msg}
 
-
-# AsyncCrewAIQuestionHandler sınıfı - WebSocket desteği ile
-class AsyncCrewAIQuestionHandler:
-    def __init__(self, websocket_callback=None):
-        self.websocket_callback = websocket_callback
-        self.crew_system = None
-
-    async def send_workflow_message(self, agent_name: str, message: str, data: Dict = None):
-        """WebSocket üzerinden workflow mesajları gönder"""
-        if self.websocket_callback:
-            workflow_message = {
-                "type": "workflow_message",
-                "agent": agent_name,
-                "message": message,
-                "data": data or {},
-                "timestamp": datetime.utcnow().isoformat()
-            }
-            await self.websocket_callback(json.dumps(workflow_message))
-
-    async def generate_questions_workflow(self, document_content: str, preferences: Dict[str, Any]) -> Dict:
-        """Soru üretimi workflow'u"""
-        await self.send_workflow_message("CrewAI-QuestionGenerator", "🚀 Multi-Agent soru üretim sistemi başlatılıyor", {
-            "preferences": preferences,
-            "agents": ["MultipleChoiceExpert", "ClassicQuestionExpert", "FillBlankExpert", "Coordinator"],
-            "mode": "async"
-        })
-
-        # CrewAI sistemini başlat
-        self.crew_system = CrewAISystem(
-            api_key=Config.GOOGLE_API_KEY,
-            websocket_callback=self.websocket_callback
-        )
-
-        # Soru üretimi işlemini başlat
-        result = await self.crew_system.generate_questions(document_content, preferences)
-
-        # Başarılı sonuç kontrolü
-        if not result.get("error"):
-            question_count = 0
-            question_types = []
+    def _clean_and_parse_json(self, raw_output: str) -> Dict[str, Any]:
+        """JSON temizleme ve parse etme - geliştirilmiş versiyon"""
+        try:
+            # Markdown blokları temizle
+            cleaned = raw_output
+            if '```json' in cleaned:
+                cleaned = cleaned.split('```json')[1].split('```')[0]
+            elif '```' in cleaned:
+                parts = cleaned.split('```')
+                for part in parts:
+                    part = part.strip()
+                    if part.startswith('{') or part.startswith('['):
+                        cleaned = part
+                        break
             
-            if "document_info" in result:
-                question_count = result["document_info"].get("question_count", 0)
-                question_types = result["document_info"].get("question_types", [])
+            cleaned = cleaned.strip()
             
-            await self.send_workflow_message("CrewAI-QuestionGenerator", "✅ Multi-Agent soru üretim workflow'u tamamlandı", {
-                "questions_generated": question_count,
-                "question_types": question_types
-            })
-
-        return result
+            # JSON validator tool kullan
+            validator = JSONValidatorToolForQuestion()
+            validated_json = validator._run(cleaned)
+            
+            # Validator'dan gelen sonucu parse et
+            parsed_result = json.loads(validated_json)
+            
+            # Eğer error alanı varsa hatayı döndür
+            if isinstance(parsed_result, dict) and "error" in parsed_result:
+                return {"error": f"JSON validation hatası: {parsed_result['error']}"}
+            
+            # Format kontrolü ve düzenleme
+            if isinstance(parsed_result, dict) and "questions" in parsed_result:
+                return parsed_result
+            elif isinstance(parsed_result, list):
+                # Liste formatında geldi, düzgün formata çevir
+                return {
+                    "document_info": {
+                        "analysis_date": datetime.now().isoformat(),
+                        "question_count": len(parsed_result),
+                        "question_types": {"coktan_secmeli": len(parsed_result)},
+                        "validation_status": "completed"
+                    },
+                    "questions": {"coktan_secmeli": parsed_result}
+                }
+            else:
+                # Beklenmedik format
+                return {
+                    "document_info": {
+                        "analysis_date": datetime.now().isoformat(),
+                        "question_count": 0,
+                        "question_types": {},
+                        "validation_status": "format_error"
+                    },
+                    "questions": {},
+                    "raw_output": cleaned,
+                    "note": "Beklenmedik JSON formatı"
+                }
+                
+        except Exception as e:
+            return {"error": f"JSON işleme hatası: {str(e)}", "raw_content": raw_output[:500]}

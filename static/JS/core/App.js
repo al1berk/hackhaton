@@ -472,14 +472,28 @@ class App {
             return;
         }
 
+        // Test oluşturma mesajları için özel kontrol
+        const isTestMessage = message.toLowerCase().includes('test oluştur') || 
+                             message.toLowerCase().includes('test üret') ||
+                             message.toLowerCase().includes('soru oluştur') ||
+                             message.toLowerCase().includes('soru üret');
+
+        // Test mesajları için PDF kontrolü yap
+        if (isTestMessage && this.pdfState.totalDocuments === 0) {
+            this.ui.addMessage('📚 Test oluşturmak için önce bir doküman yüklemeniz gerekiyor.\n\n💡 **Nasıl doküman yükleyebilirim?**\n• Sol üstteki **\'PDF Yükle\'** butonuna tıklayın\n• PDF dosyanızı seçin (metin, resim, el yazısı desteklenir)\n• Yükleme tamamlandığında bana tekrar "test oluştur" diyebilirsiniz.', 'ai');
+            DOM.messageInput.value = '';
+            this.updateSendButton();
+            return;
+        }
+
         // Aktif sohbet varsa ve bağlıysa direkt gönder
-        if (this.pdfState.currentChatId && this.ws.isConnected()) {
+        if (this.currentChatId && this.ws.isConnected()) {
             this.sendMessageToServer(message);
             return;
         }
 
         // İlk mesajsa veya aktif sohbet yoksa yeni chat oluştur
-        if (this.isFirstLoad || !this.pdfState.currentChatId) {
+        if (this.isFirstLoad || !this.currentChatId) {
             this.createNewChatAndSendMessage(message);
             return;
         }

@@ -25,6 +25,12 @@ class JSONValidatorToolForQuestion(BaseTool):
         """Yaygın JSON hatalarını düzelt"""
         fixed = json_string
         
+        # Türkçe karakterler için özel escape işlemleri
+        fixed = fixed.replace('\\"', '"')  # Çift escape'leri düzelt
+        fixed = fixed.replace('\n', '\\n')  # Yeni satırları escape et
+        fixed = fixed.replace('\r', '\\r')  # Carriage return'leri escape et
+        fixed = fixed.replace('\t', '\\t')  # Tab'ları escape et
+        
         # Eksik tırnak işaretlerini ekle
         fixed = re.sub(r'(\w+):', r'"\1":', fixed)
         
@@ -34,12 +40,29 @@ class JSONValidatorToolForQuestion(BaseTool):
         # Tek tırnak'ları çift tırnak yap
         fixed = fixed.replace("'", '"')
         
+        # Geçersiz escape karakterlerini temizle
+        fixed = re.sub(r'\\(?!["\\/bfnrt]|u[0-9a-fA-F]{4})', r'\\\\', fixed)
+        
+        # Tırnak içindeki tırnak işaretlerini escape et
+        def escape_quotes_in_strings(match):
+            content = match.group(1)
+            escaped = content.replace('"', '\\"')
+            return f'"{escaped}"'
+        
+        # String değerlerindeki tırnak işaretlerini düzelt
+        fixed = re.sub(r'"([^"]*(?:[^\\]"[^"]*)*)"', escape_quotes_in_strings, fixed)
+        
         try:
             parsed = json.loads(fixed)
             return json.dumps(parsed, ensure_ascii=False, indent=2)
-        except:
-            # Düzeltme başarısız, basit format döndür
-            return '{"error": "JSON format hatası", "original": "' + json_string.replace('"', '\\"') + '"}'
+        except Exception as e:
+            # Son çare: Minimal geçerli JSON döndür
+            print(f"JSON düzeltme hatası: {e}")
+            return json.dumps({
+                "error": "JSON format hatası - düzeltilemedi", 
+                "original_error": str(e),
+                "partial_content": fixed[:200] + "..." if len(fixed) > 200 else fixed
+            }, ensure_ascii=False, indent=2)
 
 class QuestionCounterTool(BaseTool):
     name: str = "Question Counter"

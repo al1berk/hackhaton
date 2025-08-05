@@ -172,6 +172,16 @@ export default class WebSocketHandler {
     handleTestGenerated(data) {
         console.log('🧠 Test oluşturuldu:', data);
         
+        // Test verilerini localStorage'a kaydet (fallback için)
+        if (data.questions) {
+            try {
+                localStorage.setItem('lastGeneratedTest', JSON.stringify(data.questions));
+                console.log('✅ Test verileri localStorage\'a kaydedildi');
+            } catch (error) {
+                console.error('❌ Test verileri localStorage\'a kaydedilemedi:', error);
+            }
+        }
+        
         // Test sonuçlarını göster ve çözme butonunu ekle
         this.showTestResults(data);
     }
@@ -486,6 +496,9 @@ export default class WebSocketHandler {
             if (data.questions) {
                 testQuestions = data.questions;
                 
+                // Test verilerini localStorage'a kaydet
+                localStorage.setItem('lastGeneratedTest', JSON.stringify(testQuestions));
+                
                 // Question count'u güvenli şekilde al
                 if (testQuestions.document_info) {
                     questionCount = testQuestions.document_info.question_count || 0;
@@ -518,6 +531,9 @@ export default class WebSocketHandler {
             questionTypes = ['Karışık'];
         }
 
+        // Benzersiz ID oluştur
+        const testId = `test_${Date.now()}`;
+
         const testDiv = document.createElement('div');
         testDiv.className = 'message ai-message test-results-message';
         testDiv.innerHTML = `
@@ -530,11 +546,11 @@ export default class WebSocketHandler {
                     <p>${data.content}</p>
                     
                     <div class="test-actions">
-                        <button class="solve-test-btn" onclick="window.startTest('${this.escapeForAttribute(JSON.stringify(testQuestions))}')">
+                        <button class="solve-test-btn" data-test-id="${testId}" onclick="window.startTestById('${testId}')">
                             <i class="fas fa-play"></i>
                             Testi Çöz
                         </button>
-                        <button class="preview-test-btn" onclick="window.previewTest('${this.escapeForAttribute(JSON.stringify(testQuestions))}')">
+                        <button class="preview-test-btn" data-test-id="${testId}" onclick="window.previewTestById('${testId}')">
                             <i class="fas fa-eye"></i>
                             Önizleme
                         </button>
@@ -558,13 +574,18 @@ export default class WebSocketHandler {
         messagesContainer.appendChild(testDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
+        // Test verilerini ID ile eşleştirerek sakla
+        if (testQuestions) {
+            localStorage.setItem(`testData_${testId}`, JSON.stringify(testQuestions));
+        }
+
         // Global fonksiyonları tanımla
-        window.startTest = (questionsData) => {
-            this.startTest(questionsData);
+        window.startTestById = (testId) => {
+            this.startTestById(testId);
         };
 
-        window.previewTest = (questionsData) => {
-            this.previewTest(questionsData);
+        window.previewTestById = (testId) => {
+            this.previewTestById(testId);
         };
     }
 
@@ -575,21 +596,195 @@ export default class WebSocketHandler {
     }
 
     startTest(questionsData) {
-        // Test verilerini localStorage'a kaydet
-        const testData = typeof questionsData === 'string' ? 
-            JSON.parse(questionsData) : questionsData;
-        
-        localStorage.setItem('currentTestQuestions', JSON.stringify(testData));
-        
-        // Yeni sekmede test sayfasını aç
-        window.open('/static/test_solver.html', '_blank');
+        try {
+            console.log('🚀 Test başlatılıyor...', typeof questionsData);
+            
+            // Test verilerini güvenli şekilde parse et
+            let testData;
+            if (typeof questionsData === 'string') {
+                // HTML attribute'undan gelen string'i decode et
+                const decodedString = questionsData
+                    .replace(/&quot;/g, '"')
+                    .replace(/&#39;/g, "'");
+                
+                try {
+                    testData = JSON.parse(decodedString);
+                } catch (parseError) {
+                    console.error('❌ JSON parse hatası:', parseError);
+                    console.log('Raw string:', questionsData);
+                    console.log('Decoded string:', decodedString);
+                    
+                    // Fallback: localStorage'dan test verilerini al
+                    const existingData = localStorage.getItem('lastGeneratedTest');
+                    if (existingData) {
+                        console.log('📋 Mevcut test verilerini kullanıyor...');
+                        testData = JSON.parse(existingData);
+                    } else {
+                        throw new Error('Test verileri bulunamadı. Lütfen testi tekrar oluşturun.');
+                    }
+                }
+            } else if (typeof questionsData === 'object') {
+                testData = questionsData;
+            } else {
+                throw new Error('Geçersiz test veri formatı');
+            }
+            
+            // Test verilerini kontrol et
+            if (!testData || typeof testData !== 'object') {
+                throw new Error('Test verileri geçersiz');
+            }
+            
+            console.log('✅ Test verileri başarıyla yüklendi:', testData);
+            
+            // Test verilerini localStorage'a kaydet
+            localStorage.setItem('currentTestQuestions', JSON.stringify(testData));
+            localStorage.setItem('lastGeneratedTest', JSON.stringify(testData));
+            
+            // Yeni sekmede test sayfasını aç
+            const testWindow = window.open('/static/test_solver.html', '_blank');
+            
+            if (!testWindow) {
+                throw new Error('Pop-up engellendi. Lütfen pop-up engelleyicisini devre dışı bırakın.');
+            }
+            
+        } catch (error) {
+            console.error('❌ Test başlatma hatası:', error);
+            
+            // Kullanıcıya hata mesajı göster
+            const errorMessage = `Test başlatılamadı: ${error.message}`;
+            this.onMessage({
+                type: 'error',
+                content: errorMessage,
+                timestamp: new Date().toISOString()
+            });
+        }
+    }
+
+    startTestById(testId) {
+        try {
+            console.log('🚀 Test ID ile başlatılıyor:', testId);
+            
+            // Test verilerini ID ile localStorage'dan al
+            const testDataString = localStorage.getItem(`testData_${testId}`);
+            if (!testDataString) {
+                // Fallback: son oluşturulan testi kullan
+                const fallbackData = localStorage.getItem('lastGeneratedTest');
+                if (fallbackData) {
+                    console.log('📋 Fallback test verilerini kullanıyor...');
+                    localStorage.setItem('currentTestQuestions', fallbackData);
+                } else {
+                    throw new Error('Test verileri bulunamadı. Lütfen testi tekrar oluşturun.');
+                }
+            } else {
+                // Test verilerini currentTestQuestions olarak kaydet
+                localStorage.setItem('currentTestQuestions', testDataString);
+            }
+            
+            // Yeni sekmede test sayfasını aç
+            const testWindow = window.open('/static/test_solver.html', '_blank');
+            
+            if (!testWindow) {
+                throw new Error('Pop-up engellendi. Lütfen pop-up engelleyicisini devre dışı bırakın.');
+            }
+            
+            console.log('✅ Test başarıyla başlatıldı');
+            
+        } catch (error) {
+            console.error('❌ Test başlatma hatası:', error);
+            
+            // Kullanıcıya hata mesajı göster
+            const errorMessage = `Test başlatılamadı: ${error.message}`;
+            this.onMessage({
+                type: 'error',
+                content: errorMessage,
+                timestamp: new Date().toISOString()
+            });
+        }
+    }
+
+    previewTestById(testId) {
+        try {
+            console.log('👁️ Test ID ile önizleme:', testId);
+            
+            // Test verilerini ID ile localStorage'dan al
+            const testDataString = localStorage.getItem(`testData_${testId}`);
+            if (!testDataString) {
+                throw new Error('Test verileri bulunamadı');
+            }
+            
+            const testData = JSON.parse(testDataString);
+            
+            // Önizleme modal'ı veya yeni sekme açabilirsiniz
+            console.log('📋 Test önizlemesi:', testData);
+            
+            // Basit önizleme için console'da göster
+            let previewText = '📋 Test Önizlemesi:\n\n';
+            
+            if (testData.document_info) {
+                previewText += `📊 Toplam Soru: ${testData.document_info.question_count}\n`;
+                previewText += `🎯 Soru Türleri: ${JSON.stringify(testData.document_info.question_types)}\n\n`;
+            }
+            
+            // İlk birkaç soruyu göster
+            if (testData.coktan_secmeli && testData.coktan_secmeli.length > 0) {
+                previewText += `🔸 Çoktan Seçmeli Sorular (${testData.coktan_secmeli.length} adet):\n`;
+                previewText += `1. ${testData.coktan_secmeli[0].question}\n\n`;
+            }
+            
+            if (testData.klasik && testData.klasik.length > 0) {
+                previewText += `🔸 Klasik Sorular (${testData.klasik.length} adet):\n`;
+                previewText += `1. ${testData.klasik[0].question}\n\n`;
+            }
+            
+            // Kullanıcıya önizleme mesajı göster
+            this.onMessage({
+                type: 'ai_response',
+                message: previewText,
+                timestamp: new Date().toISOString(),
+                metadata: {
+                    message_type: 'test_preview'
+                }
+            });
+            
+        } catch (error) {
+            console.error('❌ Test önizleme hatası:', error);
+            
+            const errorMessage = `Test önizlenemiyor: ${error.message}`;
+            this.onMessage({
+                type: 'error',
+                content: errorMessage,
+                timestamp: new Date().toISOString()
+            });
+        }
     }
 
     previewTest(questionsData) {
-        // Önizleme modal'ını göster (isteğe bağlı)
-        console.log('Test önizlemesi:', questionsData);
+        // Eski fonksiyon - geriye dönük uyumluluk için
+        console.log('Test önizlemesi (eski yöntem):', questionsData);
+        
+        try {
+            let testData;
+            if (typeof questionsData === 'string') {
+                testData = JSON.parse(questionsData.replace(/&quot;/g, '"').replace(/&#39;/g, "'"));
+            } else {
+                testData = questionsData;
+            }
+            
+            // startTestById'daki ile aynı önizleme mantığını kullan
+            const tempId = `temp_${Date.now()}`;
+            localStorage.setItem(`testData_${tempId}`, JSON.stringify(testData));
+            this.previewTestById(tempId);
+            
+            // Geçici veriyi temizle
+            setTimeout(() => {
+                localStorage.removeItem(`testData_${tempId}`);
+            }, 5000);
+            
+        } catch (error) {
+            console.error('❌ Test önizleme hatası:', error);
+        }
     }
-
+    
     sendMessage(message) {
         if (this.isConnected()) {
             try {
