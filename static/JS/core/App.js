@@ -697,6 +697,9 @@ class App {
             } else if (data.type === 'explain_topic') {
                 console.log('📖 Konu açıklaması istendi:', data.topic);
                 this.handleTopicExplanationRequest(data.topic);
+            } else if (data.type === 'evaluate_classic_answer') {
+                console.log('🎯 Klasik soru değerlendirme istendi:', data);
+                this.handleClassicAnswerEvaluation(data);
             }
         });
     }
@@ -761,6 +764,89 @@ class App {
 
         messagesContainer.appendChild(requestDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    async handleClassicAnswerEvaluation(data) {
+        try {
+            const { questionIndex, question, userAnswer, sampleAnswer, criteria } = data;
+            
+            console.log('🤖 LLM ile klasik soru değerlendiriliyor...');
+            
+            // LLM'e gönderilecek prompt oluştur
+            const evaluationPrompt = `
+Sen bir öğretmen olarak aşağıdaki açık uçlu soruya verilen öğrenci cevabını değerlendiriyorsun.
+
+SORU: "${question}"
+
+ÖĞRENCİ CEVABI: "${userAnswer}"
+
+ÖRNEK DOĞRU CEVAP: "${sampleAnswer || 'Belirtilmemiş'}"
+
+DEĞERLENDİRME KRİTERLERİ: "${criteria || 'Temel anlayış, doğruluk ve açıklık'}"
+
+Lütfen öğrenci cevabını objektif olarak değerlendir ve şu formatta yanıt ver:
+
+DOĞRU/YANLIŞ: [Doğru veya Yanlış]
+PUAN: [0-100 arası puan]
+GERİ BİLDİRİM: [Kısa ve yapıcı geri bildirim]
+
+Değerlendirme kriterlerin:
+1. Cevap soruyu doğru anlayıp yanıtlıyor mu?
+2. Verilen bilgiler doğru mu?
+3. Açıklama yeterli düzeyde mi?
+4. Örnek cevapla uyumlu mu? (varsa)
+
+Not: Eğer cevap %60 ve üzeri doğruysa "Doğru", altındaysa "Yanlış" olarak değerlendir.
+`;
+
+            // WebSocket üzerinden LLM'e gönder
+            const evaluationRequest = {
+                type: 'llm_evaluation_request',
+                prompt: evaluationPrompt,
+                questionIndex: questionIndex,
+                metadata: {
+                    question: question,
+                    userAnswer: userAnswer,
+                    evaluationType: 'classic_question'
+                }
+            };
+
+            // LLM yanıtını bekle
+            const success = this.ws.send(evaluationRequest);
+            if (!success) {
+                throw new Error('WebSocket bağlantısı mevcut değil');
+            }
+
+            console.log('📤 Klasik soru değerlendirme isteği gönderildi');
+            
+        } catch (error) {
+            console.error('❌ Klasik soru değerlendirme hatası:', error);
+            
+            // Hata durumunda fallback sonuç gönder
+            this.sendClassicEvaluationResult(data.questionIndex, {
+                isCorrect: true, // Hata durumunda doğru kabul et
+                feedback: 'Değerlendirme yapılamadı, cevabınız kaydedildi.',
+                score: 70
+            });
+        }
+    }
+
+    sendClassicEvaluationResult(questionIndex, result) {
+        // Test çözme penceresine sonucu gönder
+        const testWindows = Array.from(document.querySelectorAll('iframe')).concat(
+            Array.from(window.frames)
+        );
+        
+        // Test penceresi bulundurursa ona gönder
+        if (window.testWindow && !window.testWindow.closed) {
+            window.testWindow.postMessage({
+                type: 'classic_evaluation_result',
+                questionIndex: questionIndex,
+                isCorrect: result.isCorrect,
+                feedback: result.feedback,
+                score: result.score || 0
+            }, window.location.origin);
+        }
     }
 }
 

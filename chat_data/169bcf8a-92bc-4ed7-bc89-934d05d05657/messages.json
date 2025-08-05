@@ -1,0 +1,17 @@
+[
+  {
+    "type": "user",
+    "content": "test üret",
+    "timestamp": "2025-08-05T05:05:45.846168"
+  },
+  {
+    "type": "user",
+    "content": "test üret",
+    "timestamp": "2025-08-05T05:06:01.042399"
+  },
+  {
+    "type": "ai",
+    "content": "🎉 **Test Başarıyla Oluşturuldu!**\n\n📊 **Test Detayları:**\n• **Toplam Soru:** 20\n• **Zorluk:** Orta\n• **Seviye:** Lise\n\n🎯 **Soru Dağılımı:**\n• **Çoktan Seçmeli:** 5 soru\n• **Klasik (Açık Uçlu):** 5 soru\n• **Boşluk Doldurma:** 5 soru\n• **Doğru-Yanlış:** 5 soru\n\n🚀 **Hazır!** Aşağıdaki **'Testi Çöz'** butonuna tıklayarak testinizi başlatabilirsiniz.\n📝 Test sonuçlarınız otomatik olarak değerlendirilecek ve eksik konularınız belirlenecek.",
+    "timestamp": "2025-08-05T05:07:28.225726"
+  }
+]

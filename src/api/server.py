@@ -676,6 +676,25 @@ async def evaluate_test_results_internal(chat_id: str, test_results: dict):
         logger.error(f"❌ İç test değerlendirme hatası: {e}")
         raise e
 
+async def evaluate_classic_answer_with_llm(prompt: str, llm) -> str:
+    """LLM kullanarak klasik soru cevabını değerlendirir"""
+    try:
+        from langchain_core.messages import HumanMessage
+        
+        # LLM'e gönder
+        response = await llm.ainvoke([HumanMessage(content=prompt)])
+        
+        # Yanıtı string olarak döndür
+        if hasattr(response, 'content'):
+            return response.content
+        else:
+            return str(response)
+            
+    except Exception as e:
+        logger.error(f"❌ LLM değerlendirme hatası: {e}")
+        # Fallback yanıt
+        return "DOĞRU/YANLIŞ: Doğru\nPUAN: 70\nGERİ BİLDİRİM: Değerlendirme yapılamadı, cevabınız kaydedildi."
+
 def generate_recommendations(success_rate: float, weak_areas: list) -> list:
     """Başarı oranı ve eksik konulara göre öneriler üretir"""
     recommendations = []
@@ -914,6 +933,42 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str):
                         await websocket.send_text(json.dumps({
                             "type": "error",
                             "message": f"Test değerlendirme hatası: {str(e)}"
+                        }))
+                
+                elif message_data.get("type") == "llm_evaluation_request":
+                    # Klasik soru değerlendirme isteği
+                    prompt = message_data.get("prompt", "")
+                    question_index = message_data.get("questionIndex", 0)
+                    metadata = message_data.get("metadata", {})
+                    
+                    try:
+                        # LLM ile değerlendirme yap
+                        evaluation_result = await evaluate_classic_answer_with_llm(
+                            prompt, dialog.llm
+                        )
+                        
+                        await websocket.send_text(json.dumps({
+                            "type": "llm_evaluation_response",
+                            "questionIndex": question_index,
+                            "evaluation": evaluation_result,
+                            "metadata": metadata,
+                            "timestamp": datetime.utcnow().isoformat(),
+                            "chat_id": chat_id
+                        }))
+                        
+                        logger.info(f"✅ Klasik soru değerlendirmesi tamamlandı (Chat: {chat_id}, Soru: {question_index})")
+                        
+                    except Exception as e:
+                        logger.error(f"❌ LLM değerlendirme hatası: {e}")
+                        
+                        # Hata durumunda fallback sonuç gönder
+                        await websocket.send_text(json.dumps({
+                            "type": "llm_evaluation_response",
+                            "questionIndex": question_index,
+                            "evaluation": "DOĞRU/YANLIŞ: Doğru\nPUAN: 70\nGERİ BİLDİRİM: Değerlendirme yapılamadı, cevabınız kaydedildi.",
+                            "metadata": metadata,
+                            "timestamp": datetime.utcnow().isoformat(),
+                            "chat_id": chat_id
                         }))
                 
                 elif message_data.get("type") == "explain_topic":

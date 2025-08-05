@@ -138,6 +138,10 @@ export default class WebSocketHandler {
                 this.lastPingTime = Date.now();
                 break;
                 
+            case 'llm_evaluation_response':
+                this.handleLLMEvaluationResponse(data);
+                break;
+                
             default:
                 console.warn('⚠️ Bilinmeyen mesaj türü:', data.type);
                 this.onMessage(data);
@@ -210,6 +214,112 @@ export default class WebSocketHandler {
                 explanation_type: 'topic_detail'
             }
         });
+    }
+
+    handleLLMEvaluationResponse(data) {
+        try {
+            console.log('🤖 LLM değerlendirme yanıtı alındı:', data);
+            
+            const { questionIndex, evaluation, metadata } = data;
+            
+            if (metadata && metadata.evaluationType === 'classic_question') {
+                // LLM yanıtını parse et
+                const result = this.parseLLMEvaluationResponse(evaluation);
+                
+                // Test penceresine sonucu gönder
+                this.sendEvaluationToTestWindow(questionIndex, result);
+                
+                console.log('✅ Klasik soru değerlendirmesi tamamlandı:', result);
+            }
+            
+        } catch (error) {
+            console.error('❌ LLM değerlendirme yanıtı işleme hatası:', error);
+            
+            // Hata durumunda fallback sonuç gönder
+            this.sendEvaluationToTestWindow(data.questionIndex, {
+                isCorrect: true,
+                feedback: 'Değerlendirme hatası oluştu, cevabınız kaydedildi.',
+                score: 70
+            });
+        }
+    }
+
+    parseLLMEvaluationResponse(evaluation) {
+        try {
+            // LLM yanıtından bilgileri çıkar
+            const lines = evaluation.split('\n');
+            let isCorrect = true;
+            let score = 70;
+            let feedback = 'Değerlendirme tamamlandı.';
+            
+            for (const line of lines) {
+                const cleanLine = line.trim().toUpperCase();
+                
+                // DOĞRU/YANLIŞ kontrolü
+                if (cleanLine.includes('DOĞRU/YANLIŞ:') || cleanLine.includes('DOGRU/YANLIS:')) {
+                    isCorrect = cleanLine.includes('DOĞRU') && !cleanLine.includes('YANLIŞ');
+                }
+                
+                // PUAN kontrolü
+                if (cleanLine.includes('PUAN:')) {
+                    const scoreMatch = line.match(/(\d+)/);
+                    if (scoreMatch) {
+                        score = parseInt(scoreMatch[1]);
+                        // %60 altı yanlış kabul edilir
+                        if (score < 60) {
+                            isCorrect = false;
+                        }
+                    }
+                }
+                
+                // GERİ BİLDİRİM kontrolü
+                if (line.trim().toUpperCase().includes('GERİ BİLDİRİM:') || 
+                    line.trim().toUpperCase().includes('GERI BILDIRIM:')) {
+                    feedback = line.split(':').slice(1).join(':').trim();
+                }
+            }
+            
+            // Eğer hiçbir bilgi bulunamazsa, tüm metni feedback olarak kullan
+            if (feedback === 'Değerlendirme tamamlandı.' && evaluation.length > 50) {
+                feedback = evaluation.substring(0, 200) + '...';
+            }
+            
+            return {
+                isCorrect: isCorrect,
+                feedback: feedback,
+                score: score
+            };
+            
+        } catch (error) {
+            console.error('❌ LLM yanıtı parse hatası:', error);
+            return {
+                isCorrect: true, // Hata durumunda doğru kabul et
+                feedback: 'Değerlendirme tamamlandı ancak detaylı analiz yapılamadı.',
+                score: 70
+            };
+        }
+    }
+
+    sendEvaluationToTestWindow(questionIndex, result) {
+        try {
+            // Tüm açık pencereleri kontrol et
+            if (window.testWindow && !window.testWindow.closed) {
+                window.testWindow.postMessage({
+                    type: 'classic_evaluation_result',
+                    questionIndex: questionIndex,
+                    isCorrect: result.isCorrect,
+                    feedback: result.feedback,
+                    score: result.score || 0
+                }, window.location.origin);
+                
+                console.log(`📤 Test penceresine değerlendirme sonucu gönderildi (Soru ${questionIndex})`);
+            } else {
+                console.warn('⚠️ Test penceresi bulunamadı veya kapatılmış');
+            }
+            
+        } catch (error) {
+            console.error('❌ Test penceresine sonuç gönderme hatası:', error);
+        }
     }
 
     showTestParametersUI(data) {

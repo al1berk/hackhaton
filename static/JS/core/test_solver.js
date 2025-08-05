@@ -21,23 +21,57 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const testData = JSON.parse(questionsDataString);
-            const questions = testData.questions;
-
-            // Tüm soru türlerini tek bir listeye topla
-            if (questions.coktan_secmeli) allQuestions.push(...questions.coktan_secmeli.map(q => ({...q, type: 'coktan_secmeli'})));
-            if (questions.klasik) allQuestions.push(...questions.klasik.map(q => ({...q, type: 'klasik'})));
-            if (questions.bosluk_doldurma) allQuestions.push(...questions.bosluk_doldurma.map(q => ({...q, type: 'bosluk_doldurma'})));
-
-            totalQuestions = allQuestions.length;
-            if (totalQuestions === 0) {
-                showError("Bu testte hiç soru bulunmuyor.");
+            
+            // Test verilerini doğrula
+            if (!testData || typeof testData !== 'object') {
+                showError("Test verisi geçersiz format.");
                 return;
             }
 
+            let questions = null;
+            
+            // Test verisinin yapısını kontrol et
+            if (testData.questions) {
+                questions = testData.questions;
+            } else if (testData.coktan_secmeli || testData.klasik || testData.bosluk_doldurma) {
+                // Direkt soru türleri varsa
+                questions = testData;
+            } else {
+                showError("Test verilerinde soru bulunamadı.");
+                return;
+            }
+
+            // Güvenli soru ekleme fonksiyonu
+            const addQuestionsToArray = (questionArray, type) => {
+                if (Array.isArray(questionArray)) {
+                    questionArray.forEach(q => {
+                        // Her soruyu doğrula
+                        if (q && typeof q === 'object' && q.soru) {
+                            allQuestions.push({...q, type: type});
+                        } else {
+                            console.warn(`Geçersiz ${type} sorusu atlandı:`, q);
+                        }
+                    });
+                }
+            };
+
+            // Tüm soru türlerini güvenli şekilde ekle
+            addQuestionsToArray(questions.coktan_secmeli, 'coktan_secmeli');
+            addQuestionsToArray(questions.klasik, 'klasik');
+            addQuestionsToArray(questions.bosluk_doldurma, 'bosluk_doldurma');
+            addQuestionsToArray(questions.dogru_yanlis, 'dogru_yanlis');
+
+            totalQuestions = allQuestions.length;
+            if (totalQuestions === 0) {
+                showError("Bu testte hiç geçerli soru bulunmuyor.");
+                return;
+            }
+
+            console.log(`✅ ${totalQuestions} soru yüklendi:`, allQuestions);
             renderTest();
         } catch (error) {
             console.error("Test yüklenirken hata:", error);
-            showError("Test yüklenirken bir hata oluştu. Lütfen konsolu kontrol edin.");
+            showError(`Test yüklenirken bir hata oluştu: ${error.message}`);
         }
     }
 
@@ -62,6 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 questionHTML += renderClassic(question, index);
             } else if (question.type === 'bosluk_doldurma') {
                 questionHTML += renderFillBlank(question, index);
+            } else if (question.type === 'dogru_yanlis') {
+                questionHTML += renderTrueFalse(question, index);
             }
             
             questionHTML += `<div class="answer-feedback" id="feedback-${index}"></div>`;
@@ -74,23 +110,110 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderMultipleChoice(question, index) {
-        let optionsHTML = '<ul class="options-list">';
-        for (const [key, value] of Object.entries(question.secenekler)) {
-            optionsHTML += `
-                <li class="option-item" data-question-index="${index}" data-answer-key="${key}">
-                    <span class="option-letter">${key}</span>
-                    <span class="option-text">${value}</span>
-                </li>
+        // Seçenekleri güvenli şekilde kontrol et
+        const options = question.secenekler;
+        
+        if (!options || typeof options !== 'object') {
+            console.error(`Geçersiz seçenekler (Soru ${index + 1}):`, options);
+            return `
+                <div class="error-message">
+                    <p>⚠️ Bu soruda seçenekler eksik veya hatalı</p>
+                    <small>Soru ${index + 1} için seçenekler yüklenemedi</small>
+                </div>
             `;
         }
+
+        let optionsHTML = '<ul class="options-list">';
+        
+        try {
+            const entries = Object.entries(options);
+            
+            if (entries.length === 0) {
+                console.warn(`Boş seçenekler listesi (Soru ${index + 1})`);
+                return `
+                    <div class="error-message">
+                        <p>⚠️ Bu soruda hiç seçenek bulunamadı</p>
+                    </div>
+                `;
+            }
+            
+            entries.forEach(([key, value]) => {
+                if (key && value !== null && value !== undefined) {
+                    optionsHTML += `
+                        <li class="option-item" data-question-index="${index}" data-answer-key="${key}">
+                            <span class="option-letter">${key}</span>
+                            <span class="option-text">${value}</span>
+                        </li>
+                    `;
+                }
+            });
+            
+        } catch (error) {
+            console.error(`Seçenekler işlenirken hata (Soru ${index + 1}):`, error);
+            return `
+                <div class="error-message">
+                    <p>⚠️ Seçenekler işlenirken hata oluştu</p>
+                    <small>${error.message}</small>
+                </div>
+            `;
+        }
+        
         optionsHTML += '</ul>';
         return optionsHTML;
     }
     
-    // Diğer soru tipleri için render fonksiyonları (klasik, boşluk doldurma) benzer şekilde eklenebilir.
-    function renderClassic(question, index) { return `<div class="classic-answer-area"><textarea placeholder="Cevabınızı buraya yazın..."></textarea><button data-question-index="${index}">Cevapla</button></div>`; }
-    function renderFillBlank(question, index) { return `<div class="classic-answer-area"><input type="text" placeholder="Boşluğu doldurun..." /><button data-question-index="${index}">Cevapla</button></div>`; }
+    function renderClassic(question, index) { 
+        return `
+            <div class="classic-answer-area">
+                <textarea 
+                    id="classic-answer-${index}" 
+                    placeholder="Cevabınızı buraya yazın..." 
+                    rows="4" 
+                    data-question-index="${index}">
+                </textarea>
+                <button 
+                    class="answer-btn classic-answer-btn" 
+                    data-question-index="${index}" 
+                    onclick="handleClassicAnswer(${index})">
+                    Cevapla
+                </button>
+            </div>
+        `;
+    }
+    
+    function renderFillBlank(question, index) { 
+        return `
+            <div class="fill-blank-answer-area">
+                <input 
+                    type="text" 
+                    id="fill-blank-answer-${index}" 
+                    placeholder="Boşluğu doldurun..." 
+                    data-question-index="${index}" 
+                />
+                <button 
+                    class="answer-btn fill-blank-answer-btn" 
+                    data-question-index="${index}" 
+                    onclick="handleFillBlankAnswer(${index})">
+                    Cevapla
+                </button>
+            </div>
+        `;
+    }
 
+    function renderTrueFalse(question, index) {
+        return `
+            <div class="true-false-options">
+                <div class="true-false-option" data-question-index="${index}" data-answer="true" onclick="handleTrueFalseAnswer(${index}, true)">
+                    <span class="option-letter">D</span>
+                    <span class="option-text">Doğru</span>
+                </div>
+                <div class="true-false-option" data-question-index="${index}" data-answer="false" onclick="handleTrueFalseAnswer(${index}, false)">
+                    <span class="option-letter">Y</span>
+                    <span class="option-text">Yanlış</span>
+                </div>
+            </div>
+        `;
+    }
 
     function attachEventListeners() {
         document.querySelectorAll('.option-item').forEach(item => {
@@ -196,6 +319,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Şimdilik otomatik "doğru" kabul ediyoruz
                 isCorrect = userAnswer && userAnswer.trim().length > 10;
                 correctAnswer = "Manuel değerlendirme gerekli";
+            } else if (question.type === 'dogru_yanlis') {
+                correctAnswer = question.dogru_cevap === 'true' ? 'Doğru' : 'Yanlış';
+                isCorrect = userAnswer === correctAnswer;
             }
 
             if (isCorrect) {
@@ -410,4 +536,228 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Testi başlat
     loadTest();
+
+    // Klasik soru cevaplama fonksiyonu
+    window.handleClassicAnswer = function(questionIndex) {
+        const textarea = document.getElementById(`classic-answer-${questionIndex}`);
+        const userAnswer = textarea.value.trim();
+        
+        if (!userAnswer) {
+            alert('Lütfen bir cevap yazın.');
+            return;
+        }
+        
+        // Butonu devre dışı bırak
+        const button = document.querySelector(`button[data-question-index="${questionIndex}"]`);
+        button.disabled = true;
+        button.textContent = 'Değerlendiriliyor...';
+        
+        // Kullanıcı cevabını kaydet
+        userAnswers[questionIndex] = userAnswer;
+        
+        // LLM ile değerlendirme yap
+        evaluateClassicAnswer(questionIndex, userAnswer);
+    };
+
+    // Boşluk doldurma cevaplama fonksiyonu
+    window.handleFillBlankAnswer = function(questionIndex) {
+        const input = document.getElementById(`fill-blank-answer-${questionIndex}`);
+        const userAnswer = input.value.trim();
+        
+        if (!userAnswer) {
+            alert('Lütfen boşluğu doldurun.');
+            return;
+        }
+        
+        const question = allQuestions[questionIndex];
+        const correctAnswer = question.dogru_cevap;
+        
+        // Alternatif cevapları kontrol et
+        let isCorrect = false;
+        const alternatives = question.alternatif_cevaplar || [correctAnswer];
+        
+        for (const alt of alternatives) {
+            if (userAnswer.toLowerCase().trim() === alt.toLowerCase().trim()) {
+                isCorrect = true;
+                break;
+            }
+        }
+        
+        // Benzerlik kontrolü (yakın cevaplar için)
+        if (!isCorrect) {
+            const similarity = calculateStringSimilarity(userAnswer.toLowerCase(), correctAnswer.toLowerCase());
+            if (similarity > 0.8) {
+                isCorrect = true;
+            }
+        }
+        
+        // Butonu devre dışı bırak
+        const button = document.querySelector(`button[data-question-index="${questionIndex}"]`);
+        button.disabled = true;
+        input.disabled = true;
+        
+        // Stil güncellemeleri
+        if (isCorrect) {
+            input.classList.add('correct');
+            score++;
+            showFeedback(questionIndex, `Doğru! ${question.aciklama || ''}`, true);
+        } else {
+            input.classList.add('incorrect');
+            showFeedback(questionIndex, `Yanlış. Doğru cevap: "${correctAnswer}". ${question.aciklama || ''}`, false);
+        }
+        
+        // Kullanıcı cevabını kaydet
+        userAnswers[questionIndex] = userAnswer;
+        
+        answeredQuestions++;
+        updateProgress();
+    };
+
+    // Doğru-Yanlış cevaplama fonksiyonu
+    window.handleTrueFalseAnswer = function(questionIndex, userAnswer) {
+        const question = allQuestions[questionIndex];
+        const correctAnswer = question.dogru_cevap;
+        
+        // String olarak karşılaştır
+        const userAnswerStr = userAnswer ? 'true' : 'false';
+        const isCorrect = userAnswerStr === correctAnswer;
+        
+        // Tüm seçenekleri devre dışı bırak
+        const options = document.querySelectorAll(`.true-false-option[data-question-index="${questionIndex}"]`);
+        options.forEach(opt => {
+            opt.classList.add('answered');
+            if (opt.dataset.answer === correctAnswer) {
+                opt.classList.add('correct');
+            }
+        });
+        
+        // Seçilen seçeneği işaretle
+        const selectedOption = document.querySelector(`.true-false-option[data-question-index="${questionIndex}"][data-answer="${userAnswerStr}"]`);
+        if (selectedOption && !isCorrect) {
+            selectedOption.classList.add('incorrect');
+        }
+        
+        if (isCorrect) {
+            score++;
+            showFeedback(questionIndex, `Doğru! ${question.aciklama || ''}`, true);
+        } else {
+            const correctText = correctAnswer === 'true' ? 'Doğru' : 'Yanlış';
+            showFeedback(questionIndex, `Yanlış. Doğru cevap: ${correctText}. ${question.aciklama || ''}`, false);
+        }
+        
+        // Kullanıcı cevabını kaydet
+        userAnswers[questionIndex] = userAnswer ? 'Doğru' : 'Yanlış';
+        
+        answeredQuestions++;
+        updateProgress();
+    };
+
+    // String benzerlik hesaplama fonksiyonu
+    function calculateStringSimilarity(str1, str2) {
+        const longer = str1.length > str2.length ? str1 : str2;
+        const shorter = str1.length > str2.length ? str2 : str1;
+        
+        if (longer.length === 0) return 1.0;
+        
+        const editDistance = levenshteinDistance(longer, shorter);
+        return (longer.length - editDistance) / longer.length;
+    }
+
+    // Levenshtein distance hesaplama
+    function levenshteinDistance(str1, str2) {
+        const matrix = [];
+        
+        for (let i = 0; i <= str2.length; i++) {
+            matrix[i] = [i];
+        }
+        
+        for (let j = 0; j <= str1.length; j++) {
+            matrix[0][j] = j;
+        }
+        
+        for (let i = 1; i <= str2.length; i++) {
+            for (let j = 1; j <= str1.length; j++) {
+                if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                    matrix[i][j] = matrix[i - 1][j - 1];
+                } else {
+                    matrix[i][j] = Math.min(
+                        matrix[i - 1][j - 1] + 1,
+                        matrix[i][j - 1] + 1,
+                        matrix[i - 1][j] + 1
+                    );
+                }
+            }
+        }
+        
+        return matrix[str2.length][str1.length];
+    }
+
+    // LLM ile klasik soru değerlendirme fonksiyonu
+    async function evaluateClassicAnswer(questionIndex, userAnswer) {
+        const question = allQuestions[questionIndex];
+        
+        try {
+            // Ana pencereye değerlendirme isteği gönder
+            if (window.opener && !window.opener.closed) {
+                // Promise ile callback bekle
+                const result = await new Promise((resolve, reject) => {
+                    const timeout = setTimeout(() => {
+                        reject(new Error('Değerlendirme timeout'));
+                    }, 30000); // 30 saniye timeout
+                    
+                    // Tek seferlik message listener
+                    const messageHandler = (event) => {
+                        if (event.data.type === 'classic_evaluation_result' && 
+                            event.data.questionIndex === questionIndex) {
+                            clearTimeout(timeout);
+                            window.removeEventListener('message', messageHandler);
+                            resolve(event.data);
+                        }
+                    };
+                    
+                    window.addEventListener('message', messageHandler);
+                    
+                    // Ana pencereye değerlendirme isteği gönder
+                    window.opener.postMessage({
+                        type: 'evaluate_classic_answer',
+                        questionIndex: questionIndex,
+                        question: question.soru,
+                        userAnswer: userAnswer,
+                        sampleAnswer: question.ornek_cevap || question.cevap,
+                        criteria: question.degerlendirme_kriterleri
+                    }, window.location.origin);
+                });
+                
+                // Sonucu işle
+                const isCorrect = result.isCorrect;
+                const feedback = result.feedback;
+                
+                if (isCorrect) {
+                    score++;
+                    showFeedback(questionIndex, `✅ Doğru! ${feedback}`, true);
+                } else {
+                    showFeedback(questionIndex, `❌ ${feedback}\n\n📋 Örnek Cevap: ${question.ornek_cevap || question.cevap}`, false);
+                }
+                
+            } else {
+                // Ana pencere yoksa manuel değerlendirme
+                showFeedback(questionIndex, 'Cevabınız kaydedildi. Manuel değerlendirme gerekiyor.', true);
+                score++; // Geçici olarak doğru kabul et
+            }
+            
+        } catch (error) {
+            console.error('❌ Klasik soru değerlendirme hatası:', error);
+            // Hata durumunda cevabı doğru kabul et
+            showFeedback(questionIndex, 'Cevabınız kaydedildi. Değerlendirme yapılamadı, geçici olarak doğru kabul edildi.', true);
+            score++;
+        }
+        
+        // Butonu normale döndür
+        const button = document.querySelector(`button[data-question-index="${questionIndex}"]`);
+        button.disabled = true;
+        button.textContent = 'Cevaplandı';
+        
+        answeredQuestions++;
+        updateProgress();
+    }
 });

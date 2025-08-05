@@ -637,5 +637,86 @@
     "message_count": 3,
     "pdf_count": 1,
     "last_message": "test oluştur"
+  },
+  "a1b236fe-68e8-49d0-a199-5038dfff6c62": {
+    "id": "a1b236fe-68e8-49d0-a199-5038dfff6c62",
+    "title": "test oluştur",
+    "created_at": "2025-08-05T04:08:34.578820",
+    "updated_at": "2025-08-05T04:11:28.390017",
+    "message_count": 3,
+    "pdf_count": 1,
+    "last_message": "test oluştur"
+  },
+  "3c9ca6ce-bd80-40c8-966a-598492be7bd0": {
+    "id": "3c9ca6ce-bd80-40c8-966a-598492be7bd0",
+    "title": "Sohbet 73",
+    "created_at": "2025-08-05T04:25:31.917107",
+    "updated_at": "2025-08-05T04:25:31.917107",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "961d4190-1564-48f4-a727-c04e978344c5": {
+    "id": "961d4190-1564-48f4-a727-c04e978344c5",
+    "title": "daha önce yüklediğim pdf e bak",
+    "created_at": "2025-08-05T04:25:41.875389",
+    "updated_at": "2025-08-05T04:32:20.707875",
+    "message_count": 6,
+    "pdf_count": 1,
+    "last_message": "test oluştur"
+  },
+  "1a74ec50-7666-4a60-a24b-4d0b8da8061a": {
+    "id": "1a74ec50-7666-4a60-a24b-4d0b8da8061a",
+    "title": "Sohbet 75",
+    "created_at": "2025-08-05T04:26:13.036748",
+    "updated_at": "2025-08-05T04:26:13.036748",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "4641d4db-d53c-427b-a8c0-d859777ae69b": {
+    "id": "4641d4db-d53c-427b-a8c0-d859777ae69b",
+    "title": "Sohbet 76",
+    "created_at": "2025-08-05T04:26:13.043025",
+    "updated_at": "2025-08-05T04:26:13.043025",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "169bcf8a-92bc-4ed7-bc89-934d05d05657": {
+    "id": "169bcf8a-92bc-4ed7-bc89-934d05d05657",
+    "title": "test üret",
+    "created_at": "2025-08-05T05:04:35.838020",
+    "updated_at": "2025-08-05T05:07:28.226531",
+    "message_count": 3,
+    "pdf_count": 1,
+    "last_message": "test üret"
+  },
+  "581d4905-23a6-4988-9ef5-de75a10610d8": {
+    "id": "581d4905-23a6-4988-9ef5-de75a10610d8",
+    "title": "Sohbet 78",
+    "created_at": "2025-08-05T05:04:43.124416",
+    "updated_at": "2025-08-05T05:04:56.800758",
+    "message_count": 0,
+    "pdf_count": 1,
+    "last_message": null
+  },
+  "9f6dd32a-7624-4671-b593-41aed15a20a4": {
+    "id": "9f6dd32a-7624-4671-b593-41aed15a20a4",
+    "title": "Sohbet 79",
+    "created_at": "2025-08-05T05:05:13.739809",
+    "updated_at": "2025-08-05T05:05:13.739809",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "56b7bde1-75b1-4521-8076-069a5be5e0dd": {
+    "id": "56b7bde1-75b1-4521-8076-069a5be5e0dd",
+    "title": "Sohbet 80",
+    "created_at": "2025-08-05T05:05:13.745770",
+    "updated_at": "2025-08-05T05:05:13.745770",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
   }
 }
