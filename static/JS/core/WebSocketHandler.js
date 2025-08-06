@@ -302,23 +302,107 @@ export default class WebSocketHandler {
 
     sendEvaluationToTestWindow(questionIndex, result) {
         try {
-            // Tüm açık pencereleri kontrol et
+            console.log(`🔍 Test penceresine sonuç göndermeye çalışıyor (Soru ${questionIndex}):`, result);
+            
+            // Ana pencere referansları
+            let testWindowFound = false;
+            let attempts = 0;
+            const maxAttempts = 3;
+            
+            // 1. window.testWindow referansını kontrol et
             if (window.testWindow && !window.testWindow.closed) {
-                window.testWindow.postMessage({
-                    type: 'classic_evaluation_result',
-                    questionIndex: questionIndex,
-                    isCorrect: result.isCorrect,
-                    feedback: result.feedback,
-                    score: result.score || 0
-                }, window.location.origin);
-                
-                console.log(`📤 Test penceresine değerlendirme sonucu gönderildi (Soru ${questionIndex})`);
+                console.log('✅ window.testWindow bulundu ve açık');
+                try {
+                    window.testWindow.postMessage({
+                        type: 'classic_evaluation_result',
+                        questionIndex: questionIndex,
+                        isCorrect: result.isCorrect,
+                        feedback: result.feedback,
+                        score: result.score || 0
+                    }, window.location.origin);
+                    
+                    console.log(`📤 Test penceresine değerlendirme sonucu gönderildi (window.testWindow) (Soru ${questionIndex})`);
+                    testWindowFound = true;
+                } catch (msgError) {
+                    console.error('❌ window.testWindow ile mesaj gönderme hatası:', msgError);
+                }
             } else {
-                console.warn('⚠️ Test penceresi bulunamadı veya kapatılmış');
+                console.warn('⚠️ window.testWindow bulunamadı veya kapatılmış');
             }
+            
+            // 2. Tüm açık pencereleri kontrol et (fallback)
+            if (!testWindowFound) {
+                console.log('🔍 Alternatif yöntemlerle test penceresi aranıyor...');
+                
+                // Chrome/modern browsers için
+                if (typeof window.chrome !== 'undefined' && window.chrome.runtime) {
+                    // Chrome extension context - farklı yaklaşım gerekebilir
+                    console.log('Chrome ortamı tespit edildi');
+                }
+                
+                // Tüm açık sekmelere mesaj göndermeye çalış
+                try {
+                    // localStorage üzerinden iletişim kurmayı dene
+                    const messageData = {
+                        type: 'classic_evaluation_result',
+                        questionIndex: questionIndex,
+                        isCorrect: result.isCorrect,
+                        feedback: result.feedback,
+                        score: result.score || 0,
+                        timestamp: Date.now()
+                    };
+                    
+                    localStorage.setItem('test_evaluation_message', JSON.stringify(messageData));
+                    console.log('📦 Test sonucu localStorage\'a kaydedildi');
+                    
+                    // localStorage event'i tetiklemek için hemen sil ve tekrar yaz
+                    setTimeout(() => {
+                        localStorage.removeItem('test_evaluation_message');
+                        localStorage.setItem('test_evaluation_message', JSON.stringify(messageData));
+                    }, 50);
+                    
+                } catch (storageError) {
+                    console.error('❌ localStorage ile iletişim hatası:', storageError);
+                }
+            }
+            
+            // 3. Son çare: Global window objesi üzerinden
+            if (!testWindowFound) {
+                try {
+                    // Diğer sekmelerde dinlenebilecek global event
+                    const customEvent = new CustomEvent('testEvaluationResult', {
+                        detail: {
+                            type: 'classic_evaluation_result',
+                            questionIndex: questionIndex,
+                            isCorrect: result.isCorrect,
+                            feedback: result.feedback,
+                            score: result.score || 0
+                        }
+                    });
+                    window.dispatchEvent(customEvent);
+                    console.log('📡 Global custom event gönderildi');
+                } catch (eventError) {
+                    console.error('❌ Custom event gönderme hatası:', eventError);
+                }
+            }
+            
+            // Debug bilgisi
+            console.log(`🔍 Test penceresi durumu raporu:
+                - window.testWindow var mı: ${!!window.testWindow}
+                - window.testWindow kapalı mı: ${window.testWindow ? window.testWindow.closed : 'N/A'}
+                - Mesaj gönderildi mi: ${testWindowFound}
+                - localStorage fallback kullanıldı: ${!testWindowFound}
+            `);
             
         } catch (error) {
             console.error('❌ Test penceresine sonuç gönderme hatası:', error);
+            
+            // Son çare: Konsola yazdır (geliştirme için)
+            console.log(`🆘 FALLBACK - Test sonucu (Soru ${questionIndex}):`, {
+                isCorrect: result.isCorrect,
+                feedback: result.feedback,
+                score: result.score
+            });
         }
     }
 
@@ -810,9 +894,10 @@ export default class WebSocketHandler {
             }
             
             // Yeni sekmede test sayfasını aç
-            const testWindow = window.open('/static/test_solver.html', '_blank');
+            window.testWindow = window.open('/static/test_solver.html', '_blank');
+
             
-            if (!testWindow) {
+            if (!window.testWindow) {
                 throw new Error('Pop-up engellendi. Lütfen pop-up engelleyicisini devre dışı bırakın.');
             }
             

@@ -693,102 +693,136 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // LLM ile klasik soru değerlendirme fonksiyonu
+    // LLM ile klasik soru değerlendirme fonksiyonu
     async function evaluateClassicAnswer(questionIndex, userAnswer) {
         const question = allQuestions[questionIndex];
         
         try {
-            // Ana pencereye değerlendirme isteği gönder
-            if (window.opener && !window.opener.closed) {
-                // Promise ile callback bekle - timeout süresini 60 saniyeye çıkardık
-                const result = await new Promise((resolve, reject) => {
-                    const timeout = setTimeout(() => {
-                        reject(new Error('Değerlendirme timeout - LLM yanıt vermedi'));
-                    }, 60000); // 60 saniye timeout
-                    
-                    // Tek seferlik message listener
-                    const messageHandler = (event) => {
-                        if (event.origin !== window.location.origin) return;
-                        
-                        if (event.data.type === 'classic_evaluation_result' && 
-                            event.data.questionIndex === questionIndex) {
-                            clearTimeout(timeout);
-                            window.removeEventListener('message', messageHandler);
-                            resolve(event.data);
-                        } else if (event.data.type === 'llm_evaluation_response' &&
-                                  event.data.questionIndex === questionIndex) {
-                            clearTimeout(timeout);
-                            window.removeEventListener('message', messageHandler);
-                            
-                            // LLM yanıtını parse et
-                            const evaluation = event.data.evaluation;
-                            const isCorrect = evaluation.includes('DOĞRU/YANLIŞ: Doğru') || 
-                                            evaluation.includes('Doğru') && !evaluation.includes('Yanlış');
-                            const feedbackMatch = evaluation.match(/GERİ BİLDİRİM: (.+?)(?:\n|$)/);
-                            const feedback = feedbackMatch ? feedbackMatch[1] : evaluation;
-                            
-                            resolve({
-                                isCorrect: isCorrect,
-                                feedback: feedback,
-                                questionIndex: questionIndex
-                            });
-                        }
-                    };
-                    
-                    window.addEventListener('message', messageHandler);
-                    
-                    // Ana pencereye değerlendirme isteği gönder
-                    console.log("ADIM 1: Test sayfasından ana uygulamaya istek gönderiliyor...");
-
-                    window.opener.postMessage({
-                        type: 'evaluate_classic_answer',
-                        questionIndex: questionIndex,
-                        question: question.soru,
-                        userAnswer: userAnswer,
-                        sampleAnswer: question.ornek_cevap || question.cevap,
-                        criteria: question.degerlendirme_kriterleri
-                    }, window.location.origin);
-                    
-                    console.log(`📤 Klasik soru değerlendirme isteği gönderildi (Soru ${questionIndex + 1})`);
-                });
-                
-                // Sonucu işle
-                const isCorrect = result.isCorrect;
-                const feedback = result.feedback;
-                
-                if (isCorrect) {
-                    score++;
-                    showFeedback(questionIndex, `✅ Doğru! ${feedback}`, true);
-                } else {
-                    showFeedback(questionIndex, `❌ ${feedback}\n\n📋 Örnek Cevap: ${question.ornek_cevap || question.cevap}`, false);
-                }
-                
-                console.log(`✅ Klasik soru değerlendirmesi tamamlandı (Soru ${questionIndex + 1}):`, isCorrect);
-                
-            } else {
-                // Ana pencere yoksa manuel değerlendirme
+            // Ana pencerenin var olup olmadığını kontrol et
+            if (!window.opener || window.opener.closed) {
                 console.warn('⚠️ Ana pencere bulunamadı, manuel değerlendirme yapılıyor');
                 showFeedback(questionIndex, 'Cevabınız kaydedildi. Ana pencere bulunamadığı için manuel değerlendirme gerekiyor.', true);
                 score++; // Geçici olarak doğru kabul et
+                answeredQuestions++;
+                updateProgress();
+                return;
             }
+
+            // Ana pencereden cevabı beklemek için bir Promise oluştur
+            const result = await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => {
+                    reject(new Error('Değerlendirme çok uzun sürdü. Ana uygulamadan yanıt gelmedi.'));
+                }, 60000); // 60 saniye timeout
+
+                // Sadece bu isteğe özel, tek seferlik bir mesaj dinleyicisi oluştur
+                const messageHandler = (event) => {
+                    // Güvenlik: Sadece beklenen kaynaktan gelen mesajları kabul et
+                    if (event.origin !== window.location.origin) return;
+                    
+                    // Gelen mesajın bu soruya ait olup olmadığını kontrol et
+                    if (event.data.type === 'classic_evaluation_result' && 
+                        event.data.questionIndex === questionIndex) {
+                        clearTimeout(timeout); // Zaman aşımını iptal et
+                        window.removeEventListener('message', messageHandler); // Dinleyiciyi kaldır
+                        resolve(event.data); // Promise'i başarıyla tamamla
+                    }
+                };
+                
+                // Mesaj dinleyicisini pencereye ekle
+                window.addEventListener('message', messageHandler);
+
+                // Değerlendirme isteğini ana pencereye GÖNDER
+                window.opener.postMessage({
+                    type: 'evaluate_classic_answer',
+                    questionIndex: questionIndex,
+                    question: question.soru,
+                    userAnswer: userAnswer,
+                    sampleAnswer: question.ornek_cevap || question.cevap,
+                    criteria: question.degerlendirme_kriterleri
+                }, window.location.origin);
+
+                console.log(`📤 Klasik soru değerlendirme isteği ana pencereye gönderildi (Soru ${questionIndex + 1})`);
+            });
+
+            // Değerlendirme sonucunu işle
+            const isCorrect = result.isCorrect;
+            const feedback = result.feedback;
             
-        } catch (error) {
-            console.error('❌ Klasik soru değerlendirme hatası:', error);
-            
-            // Hata türüne göre farklı mesajlar
-            if (error.message.includes('timeout')) {
-                showFeedback(questionIndex, 'Değerlendirme çok uzun sürdü. Cevabınız kaydedildi, geçici olarak doğru kabul edildi.', true);
+            if (isCorrect) {
+                score++;
+                showFeedback(questionIndex, `✅ Değerlendirme: ${feedback}`, true);
             } else {
-                showFeedback(questionIndex, 'Cevabınız kaydedildi. Değerlendirme yapılamadı, geçici olarak doğru kabul edildi.', true);
+                showFeedback(questionIndex, `❌ Değerlendirme: ${feedback}\n\n📋 Örnek Cevap: ${question.ornek_cevap || question.cevap}`, false);
             }
-            score++;
+            
+            console.log(`✅ Değerlendirme sonucu alındı (Soru ${questionIndex + 1}):`, result);
+
+        } catch (error) {
+            console.error('❌ Klasik soru değerlendirme sürecinde hata:', error);
+            showFeedback(questionIndex, error.message, false); // Hata mesajını UI'da göster
+        } finally {
+            // Butonu normale döndür
+            const button = document.querySelector(`button[data-question-index="${questionIndex}"]`);
+            if(button) {
+                button.disabled = true;
+                button.textContent = 'Cevaplandı';
+            }
+            
+            answeredQuestions++;
+            updateProgress();
         }
+    }
+
+    // localStorage üzerinden mesaj dinleyicisi ekle
+    window.addEventListener('storage', (event) => {
+        if (event.key === 'test_evaluation_message' && event.newValue) {
+            try {
+                const messageData = JSON.parse(event.newValue);
+                if (messageData.type === 'classic_evaluation_result') {
+                    console.log('📦 localStorage üzerinden değerlendirme sonucu alındı:', messageData);
+                    
+                    // Mesajı işle
+                    handleEvaluationResult(messageData);
+                    
+                    // Mesajı temizle
+                    localStorage.removeItem('test_evaluation_message');
+                }
+            } catch (error) {
+                console.error('❌ localStorage mesaj parse hatası:', error);
+            }
+        }
+    });
+
+    // Custom event dinleyicisi ekle (alternatif yöntem)
+    window.addEventListener('testEvaluationResult', (event) => {
+        console.log('📡 Custom event üzerinden değerlendirme sonucu alındı:', event.detail);
+        handleEvaluationResult(event.detail);
+    });
+
+    // Değerlendirme sonucunu işleyen fonksiyon
+    function handleEvaluationResult(messageData) {
+        const { questionIndex, isCorrect, feedback, score } = messageData;
         
         // Butonu normale döndür
         const button = document.querySelector(`button[data-question-index="${questionIndex}"]`);
-        button.disabled = true;
-        button.textContent = 'Cevaplandı';
+        if (button) {
+            button.disabled = true;
+            button.textContent = 'Cevaplandı';
+        }
+        
+        // Sonucu göster
+        if (isCorrect) {
+            score++;
+            showFeedback(questionIndex, `✅ Değerlendirme: ${feedback}`, true);
+        } else {
+            showFeedback(questionIndex, `❌ Değerlendirme: ${feedback}`, false);
+        }
         
         answeredQuestions++;
         updateProgress();
+        
+        console.log(`✅ Klasik soru değerlendirmesi tamamlandı (Soru ${questionIndex + 1}):`, {
+            isCorrect, feedback, score
+        });
     }
 });

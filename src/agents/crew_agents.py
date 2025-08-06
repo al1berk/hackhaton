@@ -1,4 +1,4 @@
-# src/agents/crew_agents.py (DÜZELTME: CrewOutput object hatası giderildi)
+# src/agents/crew_agents.py (DÜZELTME: Test oluşturma sorunları giderildi)
 
 from crewai import Agent, Task, Crew, Process, LLM
 import json
@@ -121,11 +121,36 @@ class CrewAISystem:
         }
         return distribution
 
+    def _preprocess_document(self, document_content: str, max_chars: int = 15000) -> str:
+        """Dokümanı CrewAI için uygun boyuta getirir"""
+        if len(document_content) <= max_chars:
+            return document_content
+        
+        print(f"📝 Doküman çok büyük ({len(document_content)} karakter), {max_chars} karaktere kısaltılıyor...")
+        
+        # İlk kısmı al ve mantıklı bir yerde kes
+        truncated = document_content[:max_chars]
+        
+        # Son nokta veya paragraf sonunda kes
+        last_period = truncated.rfind('.')
+        last_newline = truncated.rfind('\n\n')
+        
+        if last_period > max_chars * 0.8:  # %80'inden sonraki son nokta
+            truncated = truncated[:last_period + 1]
+        elif last_newline > max_chars * 0.7:  # %70'inden sonraki son paragraf
+            truncated = truncated[:last_newline]
+        
+        print(f"✂️ Doküman {len(truncated)} karaktere kısaltıldı")
+        return truncated
+
     def _create_tasks(self, document_content: str, preferences: Dict[str, Any]) -> List[Task]:
         """Kullanıcı tercihlerine göre her ajan için ayrı ve detaylı görevler oluşturur."""
         tasks = []
         individual_tasks = []
         question_distribution = self._calculate_question_distribution(preferences)
+
+        # Dokümanı preprocessing'den geçir
+        processed_content = self._preprocess_document(document_content)
 
         # --- ÇOKTAN SEÇMELİ GÖREVİ ---
         if question_distribution.get("coktan_secmeli", 0) > 0:
@@ -133,7 +158,7 @@ class CrewAISystem:
                 description=f"""
                 Verilen dokümandan {question_distribution['coktan_secmeli']} adet çoktan seçmeli soru oluştur.
                         
-                Döküman içeriği: {document_content[:2000]}...
+                Döküman içeriği: {processed_content[:3000]}...
                         
                 Zorluk seviyesi: {preferences.get('zorluk_seviyesi', 'orta')}
                 Öğrenci seviyesi: {preferences.get('ogrenci_seviyesi', 'lise')}
@@ -175,7 +200,7 @@ class CrewAISystem:
                 description=f"""
                 Verilen dokümandan {question_distribution['klasik']} adet klasik (açık uçlu) soru oluştur.
                         
-                Döküman içeriği: {document_content[:2000]}...
+                Döküman içeriği: {processed_content[:3000]}...
                         
                 Zorluk seviyesi: {preferences.get('zorluk_seviyesi', 'orta')}
                 Öğrenci seviyesi: {preferences.get('ogrenci_seviyesi', 'lise')}
@@ -216,7 +241,7 @@ class CrewAISystem:
                 description=f"""
                 Verilen dokümandan {question_distribution['bosluk_doldurma']} adet boşluk doldurma sorusu oluştur.
                         
-                Döküman içeriği: {document_content[:2000]}...
+                Döküman içeriği: {processed_content[:3000]}...
                         
                 Zorluk seviyesi: {preferences.get('zorluk_seviyesi', 'orta')}
                 Öğrenci seviyesi: {preferences.get('ogrenci_seviyesi', 'lise')}
@@ -256,7 +281,7 @@ class CrewAISystem:
                 description=f"""
                 Verilen dokümandan {question_distribution['dogru_yanlis']} adet doğru-yanlış sorusu oluştur.
                         
-                Döküman içeriği: {document_content[:2000]}...
+                Döküman içeriği: {processed_content[:3000]}...
                         
                 Zorluk seviyesi: {preferences.get('zorluk_seviyesi', 'orta')}
                 Öğrenci seviyesi: {preferences.get('ogrenci_seviyesi', 'lise')}
@@ -409,15 +434,27 @@ class CrewAISystem:
                 "document_length": len(document_content)
             })
             
-            # Timeout ve retry ayarları
-            max_retries = 3
-            timeout_seconds = 180  # 3 dakika
+            # Geliştirilmiş timeout ve retry ayarları
+            max_retries = 2  # Retry sayısını azalt
+            timeout_seconds = 480  # 8 dakika (çok daha uzun)
+            
+            # Doküman boyutu kontrol ve optimizasyon
+            doc_length = len(document_content)
+            if doc_length > 20000:
+                await self.send_progress_update(f"📄 Büyük doküman tespit edildi ({doc_length:,} karakter), optimizasyon yapılıyor...")
+                document_content = self._preprocess_document(document_content, 15000)
+                await self.send_progress_update(f"✂️ Doküman {len(document_content):,} karaktere optimize edildi")
             
             for attempt in range(max_retries):
                 try:
-                    await self.send_progress_update(f"🔄 Deneme {attempt + 1}/{max_retries} - CrewAI ajanları çalışıyor...")
+                    await self.send_progress_update(f"🔄 Deneme {attempt + 1}/{max_retries} - CrewAI test üretim ajanları başlatılıyor...")
                     
+                    # Task oluşturma zamanını ölç
+                    start_time = datetime.now()
                     tasks = self._create_tasks(document_content, preferences)
+                    task_creation_time = (datetime.now() - start_time).total_seconds()
+                    print(f"⏱️ Task oluşturma süresi: {task_creation_time:.2f} saniye")
+                    
                     crew = Crew(
                         agents=list(self.agents.values()),
                         tasks=tasks,
@@ -425,22 +462,30 @@ class CrewAISystem:
                         process=Process.sequential
                     )
                     
+                    await self.send_progress_update(f"🤖 {len(tasks)} adet ajan görevi tanımlandı, çalıştırılıyor... (Tahmini süre: 5-8 dakika)")
+                    
                     # Timeout ile crew çalıştır
                     try:
+                        crew_start_time = datetime.now()
                         result = await asyncio.wait_for(
                             self.run_crew_async(crew), 
                             timeout=timeout_seconds
                         )
+                        crew_duration = (datetime.now() - crew_start_time).total_seconds()
+                        print(f"⏱️ CrewAI çalışma süresi: {crew_duration:.2f} saniye")
+                        
                     except asyncio.TimeoutError:
                         if attempt < max_retries - 1:
-                            await self.send_progress_update(f"⏰ Timeout - {attempt + 1}. deneme başarısız, tekrar deneniyor...")
+                            await self.send_progress_update(f"⏰ Timeout ({timeout_seconds}s) - {attempt + 1}. deneme başarısız, kısaltılmış dokümanla tekrar deneniyor...")
+                            # Bir sonraki denemede daha kısa doküman kullan
+                            document_content = self._preprocess_document(document_content, 8000)
                             continue
                         else:
-                            raise Exception("CrewAI işlemi timeout'a uğradı. Lütfen daha kısa bir doküman ile deneyin.")
+                            raise Exception(f"CrewAI işlemi {timeout_seconds//60} dakika timeout'a uğradı. Doküman çok büyük veya karmaşık olabilir.")
                     
                     if not result["success"]:
                         if attempt < max_retries - 1:
-                            await self.send_progress_update(f"❌ Hata oluştu, {attempt + 2}. deneme yapılıyor...")
+                            await self.send_progress_update(f"❌ CrewAI hatası, {attempt + 2}. deneme yapılıyor...")
                             continue
                         else:
                             raise Exception(f"CrewAI hatası: {result.get('error', 'Bilinmeyen hata')}")
@@ -448,6 +493,8 @@ class CrewAISystem:
                     # Başarılı sonuç işleme
                     crew_output = result["result"]
                     final_result_str = self._extract_crew_output_content(crew_output)
+                    
+                    await self.send_progress_update("🔧 Test sonuçları işleniyor ve JSON formatı kontrol ediliyor...")
                     
                     # JSON temizleme ve parse etme
                     cleaned_json = self._clean_and_parse_json(final_result_str)
@@ -460,13 +507,14 @@ class CrewAISystem:
                             raise Exception(f"JSON parse hatası: {cleaned_json['error']}")
                     
                     # Başarılı sonuç
-                    await self.send_workflow_message("CrewAI-Manager", "✅ Soru üretimi tamamlandı!")
+                    await self.send_workflow_message("CrewAI-Manager", "✅ Soru üretimi başarıyla tamamlandı!")
+                    await self.send_progress_update("🎉 Test soruları hazır! Şimdi sunuluyor...")
                     return cleaned_json
                     
                 except Exception as e:
                     if attempt < max_retries - 1:
-                        await self.send_progress_update(f"❌ Hata: {str(e)} - Tekrar deneniyor...")
-                        await asyncio.sleep(2)  # Kısa bekleme
+                        await self.send_progress_update(f"❌ Hata: {str(e)[:100]}... - Tekrar deneniyor...")
+                        await asyncio.sleep(3)  # Biraz daha uzun bekleme
                         continue
                     else:
                         raise e

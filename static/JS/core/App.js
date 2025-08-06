@@ -686,7 +686,7 @@ class App {
 
     setupTestMessageListener() {
         window.addEventListener('message', (event) => {
-            console.log("%c ANA UYGULAMA: Bir 'message' olayı yakalandı!", "color: blue; font-weight: bold;", event.data); // <-- BU SATIRI EKLEYİN
+            console.log("%c ANA UYGULAMA: Bir 'message' olayı yakalandı!", "color: blue; font-weight: bold;", event.data);
 
             // Güvenlik kontrolü
             if (event.origin !== window.location.origin) return;
@@ -768,22 +768,19 @@ class App {
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
+    // Mevcut fonksiyonu bulun ve aşağıdakiyle değiştirin
     async handleClassicAnswerEvaluation(data) {
         try {
             const { questionIndex, question, userAnswer, sampleAnswer, criteria } = data;
             
-            console.log('🤖 LLM ile klasik soru değerlendiriliyor...');
+            console.log('🤖 LLM ile klasik soru değerlendiriliyor...', data);
             
-            // LLM'e gönderilecek prompt oluştur
             const evaluationPrompt = `
 Sen bir öğretmen olarak aşağıdaki açık uçlu soruya verilen öğrenci cevabını değerlendiriyorsun.
 
 SORU: "${question}"
-
 ÖĞRENCİ CEVABI: "${userAnswer}"
-
 ÖRNEK DOĞRU CEVAP: "${sampleAnswer || 'Belirtilmemiş'}"
-
 DEĞERLENDİRME KRİTERLERİ: "${criteria || 'Temel anlayış, doğruluk ve açıklık'}"
 
 Lütfen öğrenci cevabını objektif olarak değerlendir ve şu formatta yanıt ver:
@@ -801,7 +798,6 @@ Değerlendirme kriterlerin:
 Not: Eğer cevap %60 ve üzeri doğruysa "Doğru", altındaysa "Yanlış" olarak değerlendir.
 `;
 
-            // WebSocket üzerinden LLM'e gönder
             const evaluationRequest = {
                 type: 'llm_evaluation_request',
                 prompt: evaluationPrompt,
@@ -813,24 +809,41 @@ Not: Eğer cevap %60 ve üzeri doğruysa "Doğru", altındaysa "Yanlış" olarak
                 }
             };
 
-            // LLM yanıtını bekle
-            const success = this.ws.sendMessage(evaluationRequest);
-
-            if (!success) {
-                throw new Error('WebSocket bağlantısı mevcut değil');
-            }
-
-            console.log('📤 Klasik soru değerlendirme isteği gönderildi');
+            // İsteği WebSocket üzerinden sunucuya gönder
+            this.ws.sendMessage(evaluationRequest);
+            console.log('📤 Değerlendirme isteği sunucuya gönderildi.');
             
         } catch (error) {
-            console.error('❌ Klasik soru değerlendirme hatası:', error);
-            
-            // Hata durumunda fallback sonuç gönder
-            this.sendClassicEvaluationResult(data.questionIndex, {
+            console.error('❌ Klasik soru değerlendirme isteği gönderilirken hata:', error);
+            // Hata durumunda test penceresine geri bildirim gönder
+            this.sendEvaluationToTestWindow(data.questionIndex, {
                 isCorrect: true, // Hata durumunda doğru kabul et
-                feedback: 'Değerlendirme yapılamadı, cevabınız kaydedildi.',
+                feedback: 'Değerlendirme isteği gönderilemedi, cevabınız kaydedildi.',
                 score: 70
             });
+        }
+    }
+
+    // Bu fonksiyonu App sınıfının içine, diğer fonksiyonların yanına ekleyin
+    sendEvaluationToTestWindow(questionIndex, result) {
+        try {
+            // Kaydedilmiş test penceresi referansını kontrol et
+            if (window.testWindow && !window.testWindow.closed) {
+                window.testWindow.postMessage({
+                    type: 'classic_evaluation_result',
+                    questionIndex: questionIndex,
+                    isCorrect: result.isCorrect,
+                    feedback: result.feedback,
+                    score: result.score || 0
+                }, window.location.origin);
+                
+                console.log(`✅ Değerlendirme sonucu test penceresine gönderildi (Soru ${questionIndex})`);
+            } else {
+                console.warn('⚠️ Test penceresi bulunamadı veya kapatılmış. Sonuç gönderilemedi.');
+            }
+            
+        } catch (error) {
+            console.error('❌ Test penceresine sonuç gönderilirken hata:', error);
         }
     }
 
