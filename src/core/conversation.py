@@ -1017,7 +1017,6 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
                     state["messages"].append(AIMessage(content="Test parametreleri alınırken bir sorun oluştu. Lütfen tekrar deneyin."))
                     return state
             
-            # Bu düğüm artık UI göndermez. Sadece state'i günceller.
             # Yönlendirme (routing) işlemi, grafikteki bir sonraki kenar tarafından yapılır.
             return state
         

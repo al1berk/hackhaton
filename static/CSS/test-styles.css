@@ -172,7 +172,6 @@
     gap: 10px;
     margin: 20px 0;
 }
-
 .solve-test-btn, .preview-test-btn {
     flex: 1;
     padding: 12px 20px;
@@ -187,50 +186,41 @@
     justify-content: center;
     gap: 8px;
 }
-
 .solve-test-btn {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
 }
-
 .solve-test-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
-
 .preview-test-btn {
     background: rgba(255, 255, 255, 0.2);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
-
 .preview-test-btn:hover {
     background: rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
 }
-
 .test-info {
     background: rgba(255, 255, 255, 0.1);
     padding: 15px;
     border-radius: 8px;
     margin-top: 15px;
 }
-
 .info-item {
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
     color: #fff;
 }
-
 .info-item:last-child {
     margin-bottom: 0;
 }
-
 .info-item strong {
     color: #4CAF50;
 }
-
 /* Hata Mesajları */
 .error-message {
     background: linear-gradient(135deg, #ff6b6b, #ee5a24);
@@ -239,7 +229,6 @@
     margin: 15px 0;
     color: white;
 }
-
 .error-content {
     background: linear-gradient(135deg, #ff6b6b, #ee5a52);
     color: white;
@@ -250,12 +239,10 @@
     align-items: center;
     gap: 10px;
 }
-
 .error-content i {
     font-size: 24px;
     color: #fff;
 }
-
 /* Test Değerlendirme Mesajları */
 .test-evaluation {
     background: linear-gradient(135deg, #74b9ff, #0984e3);
@@ -264,30 +251,25 @@
     margin: 15px 0;
     color: white;
 }
-
 /* Konu Açıklama İsteği */
 .topic-request {
     background: linear-gradient(135deg, #a29bfe, #6c5ce7);
 }
-
 .topic-request-content {
     display: flex;
     align-items: center;
     gap: 10px;
     font-weight: 500;
 }
-
 .topic-request-content i {
     color: #ffd700;
     font-size: 1.2em;
 }
-
 /* Responsive tasarım */
 @media (max-width: 768px) {
     .question-types-grid {
         grid-template-columns: 1fr;
     }
-    
     .difficulty-options,
     .level-options {
         grid-template-columns: 1fr;
@@ -296,7 +278,6 @@
     .test-actions {
         flex-direction: column;
     }
-    
     .counter-controls {
         justify-content: center;
     }

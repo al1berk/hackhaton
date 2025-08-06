@@ -14,8 +14,6 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from crewai_tools import SerperDevTool
 from faster_whisper import WhisperModel
 from concurrent.futures import ThreadPoolExecutor
-
-# --- GÜNCELLENMİŞ IMPORT YOLLARI ---
 from tools.custom_tools import YouTubeSearchTool, YouTubeTranscriptTool, JSONValidatorTool, JSONSaverTool, FileReaderTool
 from core.config import Config
 
