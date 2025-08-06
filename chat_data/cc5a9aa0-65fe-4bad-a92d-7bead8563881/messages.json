@@ -1,0 +1,27 @@
+[
+  {
+    "type": "user",
+    "content": "test oluştur",
+    "timestamp": "2025-08-05T05:19:39.845069"
+  },
+  {
+    "type": "user",
+    "content": "oluştur",
+    "timestamp": "2025-08-05T05:19:54.563045"
+  },
+  {
+    "type": "ai",
+    "content": "Harika! Test oluşturmak için istediğiniz soru türlerini ve zorluk seviyesini anladım.\n\n*   **Soru Türleri:** Çoktan Seçmeli, Klasik (Açık Uçlu), Boşluk Doldurma, Doğru-Yanlış\n*   **Zorluk Seviyesi:** Orta (Orta seviye analiz ve uygulama)\n\nŞimdi testin konusunu ve kaç soru olmasını istediğinizi belirtir misiniz? Örneğin:\n\n*   \"Bana yüklediğim 'Yapay Zeka Temelleri.pdf' belgesinden 10 soru içeren bir test oluştur.\"\n*   \"Türkiye tarihi hakkında 15 soruluk bir test hazırla.\"\n\nKonuyu ve soru sayısını öğrendikten sonra hemen testi hazırlamaya başlayabilirim. Eğer yüklenmiş belgelerinizden birini kullanmamı isterseniz, lütfen belgenin adını da belirtin.",
+    "timestamp": "2025-08-05T05:19:57.684038"
+  },
+  {
+    "type": "user",
+    "content": "test ıluştur",
+    "timestamp": "2025-08-05T05:20:08.685733"
+  },
+  {
+    "type": "ai",
+    "content": "Tekrar test oluşturma talebinizi anladım!\n\nDaha önceki konuşmamızdan istediğiniz soru türlerini (Çoktan Seçmeli, Klasik, Boşluk Doldurma, Doğru-Yanlış) ve zorluk seviyesini (Orta) biliyorum.\n\nŞimdi sadece şu bilgilere ihtiyacım var:\n\n1.  **Testin konusu ne olacak?** (Örneğin, belirli bir PDF belgesinden mi, yoksa genel bir konu mu?)\n2.  **Kaç soru olmasını istersiniz?**\n\nBu bilgileri bana verdiğinizde hemen testi hazırlayacağım!",
+    "timestamp": "2025-08-05T05:20:10.662147"
+  }
+]

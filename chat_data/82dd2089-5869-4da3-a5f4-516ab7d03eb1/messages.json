@@ -1,0 +1,32 @@
+[
+  {
+    "type": "user",
+    "content": "test oluştur",
+    "timestamp": "2025-08-05T06:16:30.978240"
+  },
+  {
+    "type": "user",
+    "content": "test oluştur",
+    "timestamp": "2025-08-05T06:16:58.876560"
+  },
+  {
+    "type": "user",
+    "content": "test oluştıur",
+    "timestamp": "2025-08-05T06:17:16.221795"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Elbette, size bir test oluşturabilirim.\n\nTesti hazırlayabilmem için lütfen bana şu bilgileri verebilir misiniz:\n\n1.  **Kaç soru olmasını istersiniz?** (Örn: 10 soru)\n2.  **Soruların zorluk seviyesi ne olsun?** (Kolay, orta, zor)\n3.  **Hangi türde sorular olsun?** (Çoktan seçmeli, klasik, boşluk doldurma, doğru-yanlış veya bunların karışımı)\n\nEğer belirli bir konu veya yüklediğiniz dokümanlardan test oluşturmamı isterseniz, lütfen konuyu veya dokümanları da belirtin.",
+    "timestamp": "2025-08-05T06:17:18.245928"
+  },
+  {
+    "type": "user",
+    "content": "test oluştur",
+    "timestamp": "2025-08-05T06:17:22.978677"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Elbette, size bir test oluşturabilirim.\n\nTesti hazırlayabilmem için lütfen bana şu bilgileri verebilir misiniz:\n\n1.  **Kaç soru olmasını istersiniz?** (Örn: 10 soru)\n2.  **Soruların zorluk seviyesi ne olsun?** (Kolay, orta, zor)\n3.  **Hangi türde sorular olsun?** (Çoktan seçmeli, klasik, boşluk doldurma, doğru-yanlış veya bunların karışımı)\n\nEğer belirli bir konu veya yüklediğiniz dokümanlardan test oluşturmamı isterseniz, lütfen konuyu veya dokümanları da belirtin.",
+    "timestamp": "2025-08-05T06:17:22.993502"
+  }
+]

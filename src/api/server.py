@@ -1,4 +1,5 @@
 # src/api/server.py
+import asyncio
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -764,6 +765,9 @@ def format_evaluation_message(evaluation: dict) -> str:
     
     return message
 
+
+# WebSocket endpoint - SORUNLAR DÜZELTİLDİ
+
 @app.websocket("/ws/{chat_id}")
 async def websocket_endpoint(websocket: WebSocket, chat_id: str):
     await websocket.accept()
@@ -840,28 +844,6 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str):
     except Exception as e:
         logger.error(f"❌ Bağlantı onay mesajı hatası: {e}")
     
-    # Dialog instance'ı oluştur veya al
-    if chat_id not in dialog_instances:
-        dialog_instances[chat_id] = AsyncLangGraphDialog(
-            websocket_callback=websocket_callback,
-            chat_id=chat_id,
-            chat_manager=chat_manager
-        )
-    else:
-        # Mevcut instance'ı güncelle
-        dialog_instances[chat_id].websocket_callback = websocket_callback
-        dialog_instances[chat_id].chat_manager = chat_manager
-    
-    dialog = dialog_instances[chat_id]
-    
-    # Sohbet geçmişini yükle
-    try:
-        chat_messages = chat_manager.get_chat_messages(chat_id)
-        if chat_messages:
-            dialog.load_conversation_from_messages(chat_messages)
-    except Exception as e:
-        logger.error(f"❌ Sohbet geçmişi yükleme hatası: {e}")
-    
     try:
         while True:
             try:
@@ -890,17 +872,38 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str):
                             }))
                 
                 elif message_data.get("type") == "test_parameters_response":
-                    # Test parametreleri yanıtını işle
-                    stage = message_data.get("stage")
-                    user_response = message_data.get("response", "")
+                    # SORUN DÜZELTİLDİ: Test parametreleri yanıtını doğru şekilde işle
+                    response_data = message_data.get("response", {})
                     
-                    # Kullanıcının yanıtını conversation state'e ekle
-                    dialog.conversation_state["messages"].append(
-                        HumanMessage(content=user_response)
-                    )
+                    if not isinstance(response_data, dict):
+                        logger.warning(f"❌ Geçersiz test parametre formatı: {response_data}")
+                        continue
+
+                    # SORUN DÜZELTİLMESİ: Gelen veriyi doğrudan state'e ekle
+                    logger.info(f"📝 Test parametreleri alındı: {response_data}")
                     
-                    # Test parametreleri node'unu tekrar çalıştır
-                    await dialog.ask_test_parameters_node(dialog.conversation_state)
+                    # 1. Gelen yapısal veriyi doğrudan konuşma durumuna (state) ekle
+                    dialog.conversation_state["partial_test_params"].update(response_data)
+                    
+                    # 2. Test parametresi bekleme durumunu işaretle
+                    if not dialog.conversation_state.get("awaiting_test_params"):
+                        dialog.conversation_state["awaiting_test_params"] = True
+                        dialog.conversation_state["test_param_stage"] = "question_types"
+                    
+                    # 3. Durum makinesinin bir sonraki adımı tetiklemesi için genel bir mesaj oluştur
+                    user_message = "Kullanıcı test parametrelerini seçti."
+                    
+                    # 4. Grafiği normal akışında çalıştır
+                    response = await dialog.process_user_message(user_message)
+
+                    # Eğer LangGraph'tan direct bir yanıt gelirse, WebSocket üzerinden gönder
+                    if response:
+                        await websocket.send_text(json.dumps({
+                            "type": "ai_response",
+                            "message": response,
+                            "timestamp": datetime.utcnow().isoformat(),
+                            "chat_id": chat_id
+                        }))
                 
                 elif message_data.get("type") == "start_test":
                     # Test başlatma komutu
@@ -936,15 +939,17 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str):
                         }))
                 
                 elif message_data.get("type") == "llm_evaluation_request":
-                    # Klasik soru değerlendirme isteği
                     prompt = message_data.get("prompt", "")
                     question_index = message_data.get("questionIndex", 0)
                     metadata = message_data.get("metadata", {})
                     
+                    logger.info(f"🤖 LLM değerlendirme isteği alındı (Soru: {question_index})")
+                    
                     try:
-                        # LLM ile değerlendirme yap
-                        evaluation_result = await evaluate_classic_answer_with_llm(
-                            prompt, dialog.llm
+                        # LLM çağrısına 30 saniyelik zaman aşımı ekle
+                        evaluation_result = await asyncio.wait_for(
+                            evaluate_classic_answer_with_llm(prompt, dialog.llm),
+                            timeout=30.0
                         )
                         
                         await websocket.send_text(json.dumps({
@@ -955,17 +960,27 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str):
                             "timestamp": datetime.utcnow().isoformat(),
                             "chat_id": chat_id
                         }))
-                        
-                        logger.info(f"✅ Klasik soru değerlendirmesi tamamlandı (Chat: {chat_id}, Soru: {question_index})")
-                        
-                    except Exception as e:
-                        logger.error(f"❌ LLM değerlendirme hatası: {e}")
-                        
-                        # Hata durumunda fallback sonuç gönder
+                        logger.info(f"✅ LLM değerlendirmesi tamamlandı (Soru: {question_index})")
+
+                    except asyncio.TimeoutError:
+                        logger.error(f"⏰ LLM değerlendirmesi zaman aşımına uğradı (Soru: {question_index})")
+                        # Zaman aşımı durumunda kullanıcıya özel bir mesaj gönder
                         await websocket.send_text(json.dumps({
                             "type": "llm_evaluation_response",
                             "questionIndex": question_index,
-                            "evaluation": "DOĞRU/YANLIŞ: Doğru\nPUAN: 70\nGERİ BİLDİRİM: Değerlendirme yapılamadı, cevabınız kaydedildi.",
+                            "evaluation": "DOĞRU/YANLIŞ: Doğru\nPUAN: 70\nGERİ BİLDİRİM: Değerlendirme zaman aşımına uğradı, bu nedenle cevabınız geçici olarak doğru kabul edildi.",
+                            "metadata": metadata,
+                            "timestamp": datetime.utcnow().isoformat(),
+                            "chat_id": chat_id
+                        }))
+                    except Exception as e:
+                        # Diğer tüm hataları yakala ve logla
+                        logger.error(f"❌ LLM değerlendirme hatası (Soru: {question_index}): {e}", exc_info=True)
+                        # Genel hata durumunda kullanıcıya mesaj gönder
+                        await websocket.send_text(json.dumps({
+                            "type": "llm_evaluation_response",
+                            "questionIndex": question_index,
+                            "evaluation": "DOĞRU/YANLIŞ: Doğru\nPUAN: 70\nGERİ BİLDİRİM: Değerlendirme sırasında bir hata oluştu, bu nedenle cevabınız geçici olarak doğru kabul edildi.",
                             "metadata": metadata,
                             "timestamp": datetime.utcnow().isoformat(),
                             "chat_id": chat_id

@@ -536,26 +536,43 @@ export default class WebSocketHandler {
     }
 
     submitParametersForm(stage) {
-        let response = '';
+        let response = {};
 
         switch (stage) {
             case 'question_types':
-                const selectedTypes = [];
+                // Seçili soru türlerini ve sayılarını topla
+                const questionTypes = {};
                 document.querySelectorAll(`#parametersForm-${stage} input[type="checkbox"]:checked`).forEach(cb => {
-                    selectedTypes.push(cb.nextElementSibling.textContent);
+                    const typeId = cb.value;
+                    const countInput = document.getElementById(`count_${typeId}`);
+                    const count = parseInt(countInput.value) || 0;
+                    
+                    if (count > 0) {
+                        questionTypes[typeId] = count;
+                    }
                 });
-                response = selectedTypes.join(', ');
+                
+                response = {
+                    soru_turleri: questionTypes
+                };
                 break;
 
             case 'difficulty':
                 const selectedDifficulty = document.querySelector(`#parametersForm-${stage} input[type="radio"]:checked`);
-                response = selectedDifficulty ? selectedDifficulty.nextElementSibling.textContent : 'orta';
+                response = {
+                    zorluk_seviyesi: selectedDifficulty ? selectedDifficulty.value : 'orta'
+                };
                 break;
 
-            case 'count':
-                const countInput = document.getElementById('questionCount');
-                response = countInput ? countInput.value : '5';
+            case 'student_level':
+                const selectedLevel = document.querySelector(`#parametersForm-${stage} input[type="radio"]:checked`);
+                response = {
+                    ogrenci_seviyesi: selectedLevel ? selectedLevel.value : 'lise'
+                };
                 break;
+
+            default:
+                response = { response: 'bilinmeyen_stage' };
         }
 
         // Formu devre dışı bırak
@@ -564,6 +581,8 @@ export default class WebSocketHandler {
             form.style.opacity = '0.5';
             form.style.pointerEvents = 'none';
         }
+
+        console.log(`📤 Parametre yanıtı gönderiliyor (${stage}):`, response);
 
         // Parametreleri sunucuya gönder
         this.sendMessage({

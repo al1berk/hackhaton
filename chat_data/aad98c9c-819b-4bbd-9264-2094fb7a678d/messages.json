@@ -1,0 +1,12 @@
+[
+  {
+    "type": "user",
+    "content": "test oluştur",
+    "timestamp": "2025-08-06T02:32:38.929815"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T02:32:38.971996"
+  }
+]

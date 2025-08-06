@@ -8,6 +8,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import asyncio
 import json
 from datetime import datetime
+import re
 
 from .config import Config
 from agents.research_crew import AsyncCrewAIA2AHandler
@@ -34,10 +35,13 @@ class ConversationState(TypedDict):
     test_parameters: dict
     generated_questions: dict
     full_document_text: str # Dökümanın tam metnini tutmak için
-    # YENİ ALANLAR
+    # DÜZELTİLMİŞ TEST ALANLARI
     awaiting_test_params: bool
-    test_param_stage: str  # "question_types", "difficulty", "count", "complete"
+    test_param_stage: str  # "start", "question_types", "difficulty", "student_level", "complete"
     partial_test_params: dict
+    test_params_ready: bool  # Test parametrelerinin hazır olup olmadığını belirler
+    ui_message_sent: bool  # UI mesajının gönderilip gönderilmediğini takip eder - YENİ
+    
 class AsyncLangGraphDialog:
     def __init__(self, websocket_callback=None, chat_id=None, chat_manager=None):
         self.llm = ChatGoogleGenerativeAI(
@@ -50,7 +54,7 @@ class AsyncLangGraphDialog:
         self.chat_id = chat_id
         self.chat_manager = chat_manager
         self.crew_handler = AsyncCrewAIA2AHandler(websocket_callback)
-        self.test_crew = CrewAISystem(api_key=Config.GOOGLE_API_KEY)
+        self.test_crew = CrewAISystem(api_key=Config.GOOGLE_API_KEY, websocket_callback=websocket_callback)
 
         
         # Chat-specific vector store oluştur
@@ -78,11 +82,12 @@ class AsyncLangGraphDialog:
             generated_questions={},
             full_document_text="",
             awaiting_test_params=False,
-            test_param_stage="",
-            partial_test_params={}
+            test_param_stage="start",
+            partial_test_params={},
+            test_params_ready=False,
+            ui_message_sent=False  # YENİ: UI mesaj takibi
         )
     
-    # BU FONKSİYONU TAMAMEN DEĞİŞTİR
     def create_conversation_graph(self):
         workflow = StateGraph(ConversationState)
         
@@ -95,6 +100,7 @@ class AsyncLangGraphDialog:
         workflow.add_node("gemini_response", self.gemini_response_node)
         workflow.add_node("check_document_for_test", self.check_document_for_test_node)
         workflow.add_node("ask_test_parameters", self.ask_test_parameters_node)
+        workflow.add_node("process_test_parameters", self.process_test_parameters_node)
         workflow.add_node("generate_test_questions", self.generate_test_questions_node)
         workflow.add_node("present_test_results", self.present_test_results_node)
         
@@ -110,6 +116,7 @@ class AsyncLangGraphDialog:
                 "rag_search": "rag_search",
                 "no_pdf_available": "no_pdf_available",
                 "generate_test": "check_document_for_test",
+                "process_test_params": "process_test_parameters",
                 "gemini": "gemini_response"
             }
         )
@@ -117,22 +124,26 @@ class AsyncLangGraphDialog:
         # Test kontrolü sonrası yönlendirmeler
         workflow.add_conditional_edges(
             "check_document_for_test",
-            lambda state: "ask_test_parameters" if state.get("full_document_text") else "gemini_response",
+            self.route_test_document_check,
             {
                 "ask_test_parameters": "ask_test_parameters",
                 "gemini_response": "gemini_response"
             }
         )
         
-        # Test parametreleri alma sonrası
+        # Test parametreleri işleme sonrası
         workflow.add_conditional_edges(
-            "ask_test_parameters",
-            lambda state: "generate_test_questions" if state.get("test_param_stage") == "complete" else END,
+            "process_test_parameters",
+            self.route_test_parameters,
             {
+                "ask_test_parameters": "ask_test_parameters",
                 "generate_test_questions": "generate_test_questions",
-                END: END
+                "gemini_response": "gemini_response"
             }
         )
+        
+        # Test parametreleri alma sonrası
+        workflow.add_edge("ask_test_parameters", END)
         
         # Diğer bağlantılar
         workflow.add_edge("rag_search", "gemini_response")
@@ -146,21 +157,37 @@ class AsyncLangGraphDialog:
         return workflow.compile()
 
     def route_intent(self, state: ConversationState) -> str:
+        """Intent'e göre yönlendirme - DÜZELTİLMİŞ"""
         intent = state.get("current_intent", "gemini")
-        if intent in ["web_research", "rag_search", "no_pdf_available", "generate_test"]:
+        
+        # Eğer test parametreleri işlenmeyi bekliyorsa
+        if state.get("awaiting_test_params") and intent != "generate_test":
+            return "process_test_params"
+        
+        if intent in ["web_research", "rag_search", "no_pdf_available", "generate_test", "process_test_params"]:
             return intent
         return "gemini"
 
+    def route_test_document_check(self, state: ConversationState) -> str:
+        """Test için doküman kontrolü sonrası yönlendirme"""
+        if state.get("full_document_text"):
+            return "ask_test_parameters"
+        return "gemini_response"
     
-
-    
+    def route_test_parameters(self, state: ConversationState) -> str:
+        """Test parametrelerini işleme sonrası yönlendirme"""
+        if state.get("test_params_ready"):
+            return "generate_test_questions"
+        elif state.get("awaiting_test_params"):
+            return "ask_test_parameters"
+        return "gemini_response"
 
     async def rag_search_node(self, state: ConversationState):
         """PDF dokümanlarında arama yapar"""
         try:
             last_message = state["messages"][-1].content
             
-            # Vektör deposunda ara
+            # Vektör deposında ara
             search_results = self.vector_store.search_similar(
                 query=last_message,
                 n_results=Config.RAG_TOP_K
@@ -198,10 +225,198 @@ class AsyncLangGraphDialog:
             state["rag_context"] = ""
             state["has_pdf_context"] = False
         
-        return state
     
-    
+    def format_rag_context(self, search_results: List[dict]) -> str:
+        """RAG arama sonuçlarını LLM için uygun formatta hazırla"""
+        context = f"YÜKLENEN PDF DOKÜMANLARINDAN BULUNAN BİLGİLER (Sohbet: {self.chat_id}):\n\n"
+        
+        for i, result in enumerate(search_results, 1):
+            filename = result['metadata'].get('filename', 'Bilinmeyen dosya')
+            chunk_index = result['metadata'].get('chunk_index', 0)
+            similarity = result.get('similarity', 0)
+            content = result['content']
+            
+            context += f"{i}. KAYNAK: {filename} (Bölüm {chunk_index + 1}, Benzerlik: %{similarity*100:.1f})\n"
+            context += f"İÇERİK: {content}\n\n"
+        
+        context += f"TOPLAM KAYNAK: {len(search_results)} doküman parçası\n"
+        context += f"ARAMA TARİHİ: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        
+        return context
 
+    def format_research_context(self, research_data: dict) -> str:
+        """Araştırma verilerini LLM için uygun formatta hazırla"""
+        context = f"KONU: {research_data.get('topic', 'Belirtilmemiş')}\n\n"
+        
+        detailed_research = research_data.get('detailed_research', [])
+        if detailed_research:
+            context += "ALT BAŞLIKLAR VE DETAYLAR:\n"
+            for i, section in enumerate(detailed_research, 1):
+                title = section.get('alt_baslik', f'Konu {i}')
+                content = section.get('aciklama', 'İçerik mevcut değil')
+                context += f"\n{i}. {title}:\n{content}\n"
+        
+        context += f"\nARAŞTIRMA TARİHİ: {research_data.get('timestamp', 'Belirtilmemiş')}"
+        return context
+    
+    async def process_user_message(self, user_message: str) -> str:
+        try:
+            # Kullanıcı mesajını conversation state'e ekle
+            self.conversation_state["messages"].append(HumanMessage(content=user_message))
+            self.conversation_state["websocket_callback"] = self.websocket_callback
+            
+            # Mesajı chat manager'a kaydet
+            if self.chat_manager and self.chat_id:
+                self.chat_manager.save_message(self.chat_id, {
+                    "type": "user",
+                    "content": user_message
+                })
+                
+                # İlk mesajsa otomatik başlık oluştur
+                chat_info = self.chat_manager.get_chat_info(self.chat_id)
+                if chat_info and chat_info.get("message_count", 0) == 1:
+                    self.chat_manager.auto_generate_title(self.chat_id, user_message)
+            
+            # Graph'ı çalıştır
+            final_state = await self.graph.ainvoke(self.conversation_state)
+            self.conversation_state = final_state
+            
+            # Pending action varsa mesaj döndürme
+            if final_state.get('pending_action'):
+                return ""
+            
+            # AI mesajlarını al
+            ai_messages = [msg for msg in final_state["messages"] if isinstance(msg, AIMessage)]
+            if ai_messages:
+                ai_response = ai_messages[-1].content
+                
+                # AI mesajını da chat manager'a kaydet
+                if self.chat_manager and self.chat_id and ai_response:
+                    self.chat_manager.save_message(self.chat_id, {
+                        "type": "ai",
+                        "content": ai_response
+                    })
+                
+                return ai_response
+            return ""
+            
+        except Exception as e:
+            error_response = f"Bir hata oluştu: {str(e)}"
+            print(f"❌ Process message error (Chat: {self.chat_id}): {e}")
+            self.conversation_state["pending_action"] = ""
+            
+            # Hata mesajını da kaydet
+            if self.chat_manager and self.chat_id:
+                self.chat_manager.save_message(self.chat_id, {
+                    "type": "system",
+                    "content": error_response
+                })
+            
+            return error_response
+
+    def get_conversation_history(self) -> List[dict]:
+        """Konuşma geçmişini döner"""
+        history = []
+        for message in self.conversation_state["messages"]:
+            if isinstance(message, HumanMessage):
+                history.append({"type": "human", "content": message.content})
+            elif isinstance(message, AIMessage):
+                history.append({"type": "ai", "content": message.content})
+        return history
+    
+    def get_conversation_stats(self) -> dict:
+        """Konuşma istatistiklerini döner"""
+        messages = self.conversation_state["messages"]
+        user_messages = sum(1 for msg in messages if isinstance(msg, HumanMessage))
+        ai_messages = sum(1 for msg in messages if isinstance(msg, AIMessage))
+        
+        vector_stats = self.vector_store.get_stats()
+        
+        return {
+            "total_messages": len(messages),
+            "user_messages": user_messages,
+            "ai_messages": ai_messages,
+            "current_intent": self.conversation_state.get("current_intent", "N/A"),
+            "has_research_data": bool(self.conversation_state.get("research_data")),
+            "last_research": self.conversation_state.get("research_data", {}).get("topic", ""),
+            "crew_ai_enabled": True,
+            "async_mode": True,
+            "research_completed": self.conversation_state.get("research_completed", False),
+            "rag_enabled": Config.RAG_ENABLED,
+            "vector_store_stats": vector_stats,
+            "chat_id": self.chat_id or "default",
+            # Test durumu istatistikleri - DÜZELTİLMİŞ
+            "test_stats": {
+                "awaiting_params": self.conversation_state.get("awaiting_test_params", False),
+                "param_stage": self.conversation_state.get("test_param_stage", "start"),
+                "params_ready": self.conversation_state.get("test_params_ready", False),
+                "has_generated_test": bool(self.conversation_state.get("generated_questions")),
+                "ui_message_sent": self.conversation_state.get("ui_message_sent", False)
+            }
+        }
+
+    def load_conversation_from_messages(self, messages: List[dict]):
+        """Daha önce kaydedilmiş mesajları yükle"""
+        try:
+            # SystemMessage'ı koru, diğerlerini temizle
+            system_messages = [msg for msg in self.conversation_state["messages"] if isinstance(msg, SystemMessage)]
+            self.conversation_state["messages"] = system_messages
+            
+            # Kaydedilmiş mesajları ekle
+            for msg in messages:
+                if msg.get("type") == "user":
+                    self.conversation_state["messages"].append(HumanMessage(content=msg["content"]))
+                elif msg.get("type") == "ai":
+                    self.conversation_state["messages"].append(AIMessage(content=msg["content"]))
+                    
+        except Exception as e:
+            print(f"❌ Load conversation error (Chat: {self.chat_id}): {e}")
+
+    def reset_conversation(self):
+        """Konuşmayı sıfırla"""
+        self.conversation_state = ConversationState(
+            messages=[SystemMessage(content=Config.SYSTEM_PROMPT)],
+            current_intent="",
+            needs_crew_ai=False,
+            crew_ai_task="",
+            user_context={},
+            conversation_summary="",
+            research_data={},
+            websocket_callback=self.websocket_callback,
+            pending_action="",
+            research_completed=False,
+            rag_context="",
+            has_pdf_context=False,
+            chat_id=self.chat_id or "",
+            chat_manager=self.chat_manager,
+            test_generation_requested=False,
+            test_parameters={},
+            generated_questions={},
+            full_document_text="",
+            awaiting_test_params=False,
+            test_param_stage="start",
+            partial_test_params={},
+            test_params_ready=False,
+            ui_message_sent=False  # YENİ: UI mesaj takibi sıfırla
+        )
+
+    def update_chat_manager(self, chat_manager):
+        """Chat manager referansını güncelle"""
+        self.chat_manager = chat_manager
+        self.conversation_state["chat_manager"] = chat_manager
+
+    def get_chat_id(self) -> str:
+        """Mevcut chat ID'yi döner"""
+        return self.chat_id or ""
+
+    def set_chat_id(self, chat_id: str):
+        """Chat ID'yi güncelle ve vector store'u yeniden başlat"""
+        self.chat_id = chat_id
+        self.conversation_state["chat_id"] = chat_id
+        
+        # Vector store'u yeni chat ID ile yeniden başlat
+        self.vector_store = VectorStore(Config.VECTOR_STORE_PATH, chat_id=chat_id)
+    
     def intent_analysis_node(self, state: ConversationState) -> ConversationState:
         last_message = state["messages"][-1].content.strip().lower()
         original_message = state["messages"][-1].content.strip()
@@ -211,10 +426,17 @@ class AsyncLangGraphDialog:
         
         print(f"🔍 Intent Analysis - Message: '{last_message[:50]}...', Force Web Research: {force_web_research}")
         
+        # ÖNCE test parametresi bekleme durumunu kontrol et
+        if state.get("awaiting_test_params"):
+            # Test parametresi bekleniyor
+            state["current_intent"] = "process_test_params"
+            logger.info("✅ Intent detected: process_test_params (awaiting parameters)")
+            return state
+        
         # Test oluşturma komutları - GENİŞLETİLMİŞ LİSTE
         test_keywords = [
             "test oluştur", "test olustur", "soru hazırla", "sınav yap", "test yap", 
-            "soru üret", "soru uret", "test hazırla", "test hazirla", "quiz oluştur",
+            "soru üret", "soru uret", "test hazırla", "test hazırla", "quiz oluştur",
             "quiz olustur", "sınav oluştur", "sinav olustur", "test üret", "test uret",
             "sorular oluştur", "sorular olustur", "değerlendirme yap", "degerlendirme yap"
         ]
@@ -423,8 +645,6 @@ class AsyncLangGraphDialog:
         state["messages"].append(AIMessage(content=response))
         return state
 
-    
-
     async def gemini_response_node(self, state: ConversationState) -> ConversationState:
         try:
             messages_for_llm = state["messages"]
@@ -550,8 +770,238 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
             
         return state
 
+    async def ask_test_parameters_node(self, state: ConversationState) -> ConversationState:
+        """Kullanıcıdan test parametrelerini almak için etkileşimli düğüm - TEK SEFERDE UI GÖNDERİM"""
+        try:
+            current_stage = state.get("test_param_stage", "question_types")
+            
+            # SORUN 1: Çoklu UI mesajları önlemek için kontrol ekle
+            if state.get("ui_message_sent"):
+                logger.info("⚠️ UI mesajı zaten gönderildi, tekrar gönderilmiyor")
+                return state
+            
+            # İlk kez çağrılıyorsa, parametreleri sıfırla
+            if not state.get("awaiting_test_params"):
+                state["awaiting_test_params"] = True
+                state["test_param_stage"] = "question_types"
+                state["partial_test_params"] = {}
+                state["test_params_ready"] = False
+                current_stage = "question_types"
+                
+                logger.info("🎯 Test parametreleri isteniyor - ilk aşama başlatılıyor")
+            
+            # UI mesajını sadece bir kez gönder
+            state["ui_message_sent"] = True
+            
+            if current_stage == "question_types":
+                # Soru türleri seçim mesajı gönder
+                question_types_message = {
+                    "type": "test_parameters_request",
+                    "stage": "question_types",
+                    "content": "🎯 **Test Oluşturma Ayarları**\n\n**1. Hangi soru türlerini ve kaçar tane istiyorsunuz?**\n\nHer soru türü için 0-20 arası sayı belirleyebilirsiniz:",
+                    "options": [
+                        {
+                            "id": "coktan_secmeli", 
+                            "label": "Çoktan Seçmeli Sorular", 
+                            "description": "A, B, C, D şıklı sorular",
+                            "selected": True,
+                            "default_count": 5,
+                            "max_count": 20
+                        },
+                        {
+                            "id": "klasik", 
+                            "label": "Klasik (Açık Uçlu) Sorular", 
+                            "description": "Uzun cevap gerektiren sorular",
+                            "selected": True,
+                            "default_count": 3,
+                            "max_count": 10
+                        },
+                        {
+                            "id": "bosluk_doldurma", 
+                            "label": "Boşluk Doldurma Soruları", 
+                            "description": "Eksik kelime/kavram tamamlama",
+                            "selected": False,
+                            "default_count": 2,
+                            "max_count": 15
+                        },
+                        {
+                            "id": "dogru_yanlis", 
+                            "label": "Doğru-Yanlış Soruları", 
+                            "description": "İki seçenekli doğruluk soruları",
+                            "selected": False,
+                            "default_count": 5,
+                            "max_count": 20
+                        }
+                    ],
+                    "next_button_text": "Devam Et",
+                    "chat_id": self.chat_id
+                }
+                
+                # AI mesajı ekle (kullanıcıya görünür olan kısım)
+                ui_message = ("🎯 **Test Ayarları**\n\n"
+                            "Test oluşturmak için önce birkaç ayar yapalım:\n\n"
+                            "**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n"
+                            "**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n"
+                            "**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\n"
+                            "Yukarıdaki menüden seçimlerinizi yapın ⬆️")
+                
+                state["messages"].append(AIMessage(content=ui_message))
+                
+            elif current_stage == "difficulty":
+                # Zorluk seviyesi mesajı gönder
+                question_types_message = {
+                    "type": "test_parameters_request",
+                    "stage": "difficulty",
+                    "content": "**2. Testin zorluk seviyesini seçin:**",
+                    "options": [
+                        {"id": "kolay", "label": "Kolay", "description": "Temel kavramlar ve basit uygulamalar", "selected": False},
+                        {"id": "orta", "label": "Orta", "description": "Orta seviye analiz ve uygulama", "selected": True},
+                        {"id": "zor", "label": "Zor", "description": "İleri seviye analiz ve sentez", "selected": False}
+                    ],
+                    "next_button_text": "Devam Et",
+                    "chat_id": self.chat_id
+                }
+                
+            elif current_stage == "student_level":
+                # Öğrenci seviyesi mesajı gönder
+                question_types_message = {
+                    "type": "test_parameters_request",
+                    "stage": "student_level",
+                    "content": "**3. Hedef öğrenci seviyesini seçin:**",
+                    "options": [
+                        {"id": "ortaokul", "label": "Ortaokul (5-8. Sınıf)", "description": "Temel kavramlar ve basit açıklamalar", "selected": False},
+                        {"id": "lise", "label": "Lise (9-12. Sınıf)", "description": "Detaylı analiz ve kavramsal bağlantılar", "selected": True},
+                        {"id": "universite", "label": "Üniversite", "description": "İleri seviye akademik içerik", "selected": False},
+                        {"id": "yetiskin", "label": "Yetişkin Eğitimi", "description": "Pratik odaklı öğrenme", "selected": False}
+                    ],
+                    "next_button_text": "Testi Oluştur",
+                    "chat_id": self.chat_id
+                }
+            
+            # WebSocket mesajını gönder
+            if self.websocket_callback:
+                await self.websocket_callback(json.dumps(question_types_message))
+                logger.info(f"📤 Test parametreleri UI mesajı gönderildi - Stage: {current_stage}")
+                
+        except Exception as e:
+            error_message = f"Üzgünüm, test parametreleri alınırken bir hata oluştu: {str(e)}"
+            state["messages"].append(AIMessage(content=error_message))
+            logger.error(f"❌ Ask test parameters error (Chat: {self.chat_id}): {e}")
+        
+        return state
+
+    async def process_test_parameters_node(self, state: ConversationState) -> ConversationState:
+        """Kullanıcıdan gelen test parametrelerini işler - SORUN 2 DÜZELTİLMİŞ"""
+        try:
+            # Eğer test parametresi beklemiyorsak, bu düğümün çalışmaması gerekir.
+            if not state.get("awaiting_test_params"):
+                logger.info("❌ Test parametreleri beklenmiyor, normal sohbete devam ediliyor.")
+                state["current_intent"] = "gemini" 
+                return state
+
+            # Mevcut aşamayı ve önceden doldurulmuş parametreleri state'ten al.
+            current_stage = state.get("test_param_stage", "question_types")
+            all_params = state.get("partial_test_params", {})
+            
+            logger.info(f"🔄 Parametreler işleniyor - Aşama: {current_stage}, Mevcut Params: {all_params}")
+
+            # SORUN 2: UI mesaj flag'ini sıfırla ki bir sonraki aşamada UI gönderilebilsin
+            state["ui_message_sent"] = False
+
+            # Gelen parametrelere göre bir sonraki aşamayı belirle
+            if current_stage == "question_types":
+                # Arayüzden "soru_turleri" verisi geldi mi diye kontrol et.
+                if "soru_turleri" in all_params:
+                    state["test_param_stage"] = "difficulty"
+                    logger.info(f"✅ Soru türleri işlendi: {all_params['soru_turleri']}, bir sonraki aşama: 'difficulty'")
+                else:
+                    # Gerekli parametre yoksa, bir hata olduğunu varsay ve döngüyü kır.
+                    logger.warning("⚠️ 'soru_turleri' parametresi state içinde bulunamadı.")
+                    state["awaiting_test_params"] = False
+                    state["messages"].append(AIMessage(content="Test parametreleri alınırken bir sorun oluştu. Lütfen tekrar deneyin."))
+                    return state
+
+            elif current_stage == "difficulty":
+                # Arayüzden "zorluk_seviyesi" verisi geldi mi diye kontrol et.
+                if "zorluk_seviyesi" in all_params:
+                    state["test_param_stage"] = "student_level"
+                    logger.info(f"✅ Zorluk seviyesi işlendi: {all_params['zorluk_seviyesi']}, bir sonraki aşama: 'student_level'")
+                else:
+                    logger.warning("⚠️ 'zorluk_seviyesi' parametresi state içinde bulunamadı.")
+                    state["awaiting_test_params"] = False
+                    state["messages"].append(AIMessage(content="Test parametreleri alınırken bir sorun oluştu. Lütfen tekrar deneyin."))
+                    return state
+                    
+            elif current_stage == "student_level":
+                # Arayüzden "ogrenci_seviyesi" verisi geldi mi diye kontrol et.
+                if "ogrenci_seviyesi" in all_params:
+                    # Tüm parametreler tamamlandı. Test üretimine geçilebilir.
+                    state["test_param_stage"] = "complete"
+                    state["test_params_ready"] = True
+                    state["awaiting_test_params"] = False
+                    
+                    # SORUN 2: Parametreleri doğru formatta kaydet
+                    final_params = {
+                        "soru_turleri": all_params.get("soru_turleri", {}),
+                        "zorluk_seviyesi": all_params.get("zorluk_seviyesi", "orta"),
+                        "ogrenci_seviyesi": all_params.get("ogrenci_seviyesi", "lise")
+                    }
+                    
+                    state["test_parameters"] = final_params
+                    state["partial_test_params"] = final_params  # İkisini de güncelle
+                    
+                    logger.info(f"🎯 Tüm test parametreleri tamamlandı ve kaydedildi: {final_params}")
+                    
+                    # Kullanıcıya parametrelerin alındığını bildiren mesaj
+                    total_questions = sum(final_params["soru_turleri"].values()) if final_params["soru_turleri"] else 8
+                    
+                    confirmation_message = (
+                        f"✅ **Test parametreleri ayarlandı!**\n\n"
+                        f"🎯 **Soru türleri:** "
+                    )
+                    
+                    # Soru türlerini güzel formatta göster
+                    soru_turleri_text = []
+                    for tur, sayi in final_params["soru_turleri"].items():
+                        if sayi > 0:
+                            tur_adi = {
+                                "coktan_secmeli": "Çoktan Seçmeli",
+                                "klasik": "Klasik (Açık Uçlu)", 
+                                "bosluk_doldurma": "Boşluk Doldurma",
+                                "dogru_yanlis": "Doğru-Yanlış"
+                            }.get(tur, tur)
+                            soru_turleri_text.append(f"{tur_adi}: {sayi}")
+                    
+                    confirmation_message += ", ".join(soru_turleri_text)
+                    confirmation_message += (
+                        f"\n📊 **Zorluk:** {final_params['zorluk_seviyesi'].title()}"
+                        f"\n🎓 **Seviye:** {final_params['ogrenci_seviyesi'].title()}"
+                        f"\n🔢 **Toplam soru:** {total_questions}\n\n"
+                        f"🔄 Test sorularını oluşturuyorum, bu işlem 3-5 dakika sürebilir..."
+                    )
+                    
+                    state["messages"].append(AIMessage(content=confirmation_message))
+                    
+                else:
+                    logger.warning("⚠️ 'ogrenci_seviyesi' parametresi state içinde bulunamadı.")
+                    state["awaiting_test_params"] = False
+                    state["messages"].append(AIMessage(content="Test parametreleri alınırken bir sorun oluştu. Lütfen tekrar deneyin."))
+                    return state
+            
+            # Bu düğüm artık UI göndermez. Sadece state'i günceller.
+            # Yönlendirme (routing) işlemi, grafikteki bir sonraki kenar tarafından yapılır.
+            return state
+        
+        except Exception as e:
+            error_message = f"Test parametreleri işlenirken kritik bir hata oluştu: {str(e)}"
+            logger.error(f"❌ Process test parameters error: {e}", exc_info=True)
+            state["messages"].append(AIMessage(content=error_message))
+            state["awaiting_test_params"] = False
+            state["test_params_ready"] = False
+            return state
+
     async def generate_test_questions_node(self, state: ConversationState) -> ConversationState:
-        """CrewAI kullanarak test sorularını üretir."""
+        """CrewAI kullanarak test sorularını üretir - SORUN 2 DÜZELTİLMİŞ"""
         logger.info("🚀 STEP: Generating test questions with CrewAI...")
         document_content = state["full_document_text"]
         
@@ -563,12 +1013,20 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
         
         logger.info(f"📄 Doküman uzunluğu: {len(document_content)} karakter")
         
-        # Test parametrelerini ayarla
-        question_types = state.get("partial_test_params", {}).get("soru_turleri", {'coktan_secmeli': 5, 'klasik': 3})
-        difficulty_level = state.get("partial_test_params", {}).get("zorluk_seviyesi", "orta")
-        student_level = state.get("partial_test_params", {}).get("ogrenci_seviyesi", "lise")
+        test_params = state.get("test_parameters", {})
         
-        # Toplam soru sayısını hesapla
+        if not test_params:
+            error_msg = "Test parametreleri bulunamadı. Lütfen tekrar 'test oluştur' yazın."
+            logger.error(f"❌ {error_msg}")
+            state["messages"].append(AIMessage(content=error_msg))
+            return state
+        
+        # Parametreleri doğru şekilde çıkar
+        question_types = test_params.get("soru_turleri", {'coktan_secmeli': 5, 'klasik': 3})
+        difficulty_level = test_params.get("zorluk_seviyesi", "orta")
+        student_level = test_params.get("ogrenci_seviyesi", "lise")
+        
+        # SORUN 2: Toplam soru sayısını doğru hesapla
         total_questions = sum(question_types.values()) if isinstance(question_types, dict) else 8
         
         preferences = {
@@ -578,7 +1036,7 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
             "toplam_soru": total_questions
         }
         
-        logger.info(f"🎯 Test Parametreleri: {preferences}")
+        logger.info(f"🎯 DOĞRU Test Parametreleri: {preferences}")
         
         if self.websocket_callback:
             await self.websocket_callback(json.dumps({
@@ -591,15 +1049,6 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
         try:
             # CrewAI'yi asenkron olarak çalıştır
             logger.info("🤖 CrewAI test sistemi başlatılıyor...")
-            
-            # Progress update gönder
-            if self.websocket_callback:
-                await self.websocket_callback(json.dumps({
-                    "type": "crew_progress",
-                    "message": "⚙️ Test oluşturma ajanları hazırlanıyor...",
-                    "timestamp": datetime.utcnow().isoformat(),
-                    "chat_id": self.chat_id
-                }))
             
             generated_data = await self.test_crew.generate_questions(document_content, preferences)
             logger.info(f"✅ CrewAI test sistemi tamamlandı. Sonuç: {type(generated_data)}")
@@ -648,424 +1097,6 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
         # Her durumda state'i güncelle - bu kritik!
         logger.info("📋 Test oluşturma node'u tamamlandı, present_test_results'a geçiliyor...")
         return state
-    
-    async def ask_test_parameters_node(self, state: ConversationState) -> ConversationState:
-        """Kullanıcıdan test parametrelerini almak için etkileşimli düğüm"""
-        try:
-            # İlk kez çağrılıyorsa, parametreleri sıfırla
-            if not state.get("awaiting_test_params"):
-                state["awaiting_test_params"] = True
-                state["test_param_stage"] = "question_types"
-                state["partial_test_params"] = {}
-                
-                # Soru türleri seçim mesajı gönder
-                question_types_message = {
-                    "type": "test_parameters_request",
-                    "stage": "question_types",
-                    "content": "🎯 **Test Oluşturma Ayarları**\n\n**1. Hangi soru türlerini ve kaçar tane istiyorsunuz?**\n\nHer soru türü için 0-20 arası sayı belirleyebilirsiniz:",
-                    "options": [
-                        {
-                            "id": "coktan_secmeli", 
-                            "label": "Çoktan Seçmeli Sorular", 
-                            "description": "A, B, C, D şıklı sorular",
-                            "selected": True,
-                            "default_count": 5,
-                            "max_count": 20
-                        },
-                        {
-                            "id": "klasik", 
-                            "label": "Klasik (Açık Uçlu) Sorular", 
-                            "description": "Uzun cevap gerektiren sorular",
-                            "selected": True,
-                            "default_count": 3,
-                            "max_count": 10
-                        },
-                        {
-                            "id": "bosluk_doldurma", 
-                            "label": "Boşluk Doldurma Soruları", 
-                            "description": "Eksik kelime/kavram tamamlama",
-                            "selected": False,
-                            "default_count": 2,
-                            "max_count": 15
-                        },
-                        {
-                            "id": "dogru_yanlis", 
-                            "label": "Doğru-Yanlış Soruları", 
-                            "description": "İki seçenekli doğruluk soruları",
-                            "selected": False,
-                            "default_count": 5,
-                            "max_count": 20
-                        }
-                    ],
-                    "next_button_text": "Devam Et",
-                    "chat_id": self.chat_id
-                }
-                
-                if self.websocket_callback:
-                    await self.websocket_callback(json.dumps(question_types_message))
-                
-                return state
-            
-            # Kullanıcıdan gelen yanıtı işle
-            user_message = state["messages"][-1].content
-            
-            if state.get("test_param_stage") == "question_types":
-                # Soru türlerini ve sayılarını parse et
-                selected_types = {}
-                user_lower = user_message.lower()
-                
-                # Her soru türü için kontrol et
-                type_mappings = {
-                    "çoktan seçmeli": "coktan_secmeli",
-                    "coktan secmeli": "coktan_secmeli", 
-                    "çoktan": "coktan_secmeli",
-                    "klasik": "klasik",
-                    "açık uçlu": "klasik",
-                    "acik uclu": "klasik",
-                    "boşluk doldurma": "bosluk_doldurma",
-                    "bosluk doldurma": "bosluk_doldurma",
-                    "boşluk": "bosluk_doldurma",
-                    "doğru yanlış": "dogru_yanlis",
-                    "dogru yanlis": "dogru_yanlis",
-                    "doğru-yanlış": "dogru_yanlis"
-                }
-                
-                # Basit parsing - kullanıcının mesajından çıkarım yap
-                for turkish_name, english_id in type_mappings.items():
-                    if turkish_name in user_lower:
-                        selected_types[english_id] = 5  # varsayılan sayı
-                
-                # Eğer hiç tür seçilmemişse varsayılan kombinasyon ver
-                if not selected_types:
-                    selected_types = {
-                        "coktan_secmeli": 5,
-                        "klasik": 3
-                    }
-                
-                state["partial_test_params"]["soru_turleri"] = selected_types
-                state["test_param_stage"] = "difficulty"
-                
-                # Zorluk seviyesi seçim mesajı
-                difficulty_message = {
-                    "type": "test_parameters_request",
-                    "stage": "difficulty",
-                    "content": "**2. Testin zorluk seviyesini seçin:**",
-                    "options": [
-                        {
-                            "id": "kolay", 
-                            "label": "Kolay", 
-                            "description": "Temel kavramlar ve basit uygulamalar",
-                            "selected": False
-                        },
-                        {
-                            "id": "orta", 
-                            "label": "Orta", 
-                            "description": "Orta seviye analiz ve uygulama",
-                            "selected": True
-                        },
-                        {
-                            "id": "zor", 
-                            "label": "Zor", 
-                            "description": "İleri seviye analiz ve sentez",
-                            "selected": False
-                        }
-                    ],
-                    "next_button_text": "Devam Et",
-                    "chat_id": self.chat_id
-                }
-                
-                if self.websocket_callback:
-                    await self.websocket_callback(json.dumps(difficulty_message))
-                    
-            elif state.get("test_param_stage") == "difficulty":
-                # Zorluk seviyesini parse et
-                user_lower = user_message.lower()
-                difficulty = "orta"  # varsayılan
-                
-                if "kolay" in user_lower:
-                    difficulty = "kolay"
-                elif "zor" in user_lower:
-                    difficulty = "zor"
-                elif "orta" in user_lower:
-                    difficulty = "orta"
-                
-                state["partial_test_params"]["zorluk_seviyesi"] = difficulty
-                state["test_param_stage"] = "student_level"
-                
-                # Öğrenci seviyesi seçim mesajı
-                level_message = {
-                    "type": "test_parameters_request",
-                    "stage": "student_level",
-                    "content": "**3. Hedef öğrenci seviyesini seçin:**",
-                    "options": [
-                        {
-                            "id": "ortaokul", 
-                            "label": "Ortaokul (5-8. Sınıf)", 
-                            "description": "Temel kavramlar ve basit açıklamalar",
-                            "selected": False
-                        },
-                        {
-                            "id": "lise", 
-                            "label": "Lise (9-12. Sınıf)", 
-                            "description": "Detaylı analiz ve kavramsal bağlantılar",
-                            "selected": True
-                        },
-                        {
-                            "id": "universite", 
-                            "label": "Üniversite", 
-                            "description": "İleri seviye akademik içerik",
-                            "selected": False
-                        },
-                        {
-                            "id": "yetiskin", 
-                            "label": "Yetişkin Eğitimi", 
-                            "description": "Pratik odaklı öğrenme",
-                            "selected": False
-                        }
-                    ],
-                    "next_button_text": "Testi Oluştur",
-                    "chat_id": self.chat_id
-                }
-                
-                if self.websocket_callback:
-                    await self.websocket_callback(json.dumps(level_message))
-                    
-            elif state.get("test_param_stage") == "student_level":
-                # Öğrenci seviyesini parse et
-                user_lower = user_message.lower()
-                student_level = "lise"  # varsayılan
-                
-                if "ortaokul" in user_lower or "5" in user_lower or "6" in user_lower or "7" in user_lower or "8" in user_lower:
-                    student_level = "ortaokul"
-                elif "üniversite" in user_lower or "universite" in user_lower or "akademik" in user_lower:
-                    student_level = "universite"
-                elif "yetişkin" in user_lower or "yetiskin" in user_lower or "adult" in user_lower:
-                    student_level = "yetiskin"
-                else:
-                    student_level = "lise"
-                
-                state["partial_test_params"]["ogrenci_seviyesi"] = student_level
-                state["test_param_stage"] = "complete"
-                
-                # Toplam soru sayısını hesapla
-                question_types = state["partial_test_params"]["soru_turleri"]
-                total_questions = sum(question_types.values())
-                
-                # Parametreler tamamlandı mesajı
-                type_summary = []
-                type_labels = {
-                    "coktan_secmeli": "Çoktan Seçmeli",
-                    "klasik": "Klasik (Açık Uçlu)",
-                    "bosluk_doldurma": "Boşluk Doldurma",
-                    "dogru_yanlis": "Doğru-Yanlış"
-                }
-                
-                for type_id, count in question_types.items():
-                    if count > 0:
-                        type_summary.append(f"{type_labels.get(type_id, type_id)}: {count}")
-                
-                complete_message = {
-                    "type": "test_parameters_complete",
-                    "content": f"✅ **Test parametreleri ayarlandı!**\n\n" +
-                             f"🎯 **Soru türleri:** {', '.join(type_summary)}\n" +
-                             f"📊 **Zorluk:** {state['partial_test_params']['zorluk_seviyesi'].title()}\n" +
-                             f"🎓 **Seviye:** {state['partial_test_params']['ogrenci_seviyesi'].title()}\n" +
-                             f"🔢 **Toplam soru:** {total_questions}\n\n" +
-                             f"🔄 Test sorularını oluşturuyorum, bu işlem 2-3 dakika sürebilir...",
-                    "parameters": state["partial_test_params"],
-                    "chat_id": self.chat_id
-                }
-                
-                if self.websocket_callback:
-                    await self.websocket_callback(json.dumps(complete_message))
-        
-        except Exception as e:
-            error_message = f"Üzgünüm, test parametreleri alınırken bir hata oluştu: {str(e)}"
-            state["messages"].append(AIMessage(content=error_message))
-            logger.error(f"❌ Ask test parameters error (Chat: {self.chat_id}): {e}")
-        
-        return state
-    
-    def format_rag_context(self, search_results: List[dict]) -> str:
-        """RAG arama sonuçlarını LLM için uygun formatta hazırla"""
-        context = f"YÜKLENEN PDF DOKÜMANLARINDAN BULUNAN BİLGİLER (Sohbet: {self.chat_id}):\n\n"
-        
-        for i, result in enumerate(search_results, 1):
-            filename = result['metadata'].get('filename', 'Bilinmeyen dosya')
-            chunk_index = result['metadata'].get('chunk_index', 0)
-            similarity = result.get('similarity', 0)
-            content = result['content']
-            
-            context += f"{i}. KAYNAK: {filename} (Bölüm {chunk_index + 1}, Benzerlik: %{similarity*100:.1f})\n"
-            context += f"İÇERİK: {content}\n\n"
-        
-        context += f"TOPLAM KAYNAK: {len(search_results)} doküman parçası\n"
-        context += f"ARAMA TARİHİ: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
-        
-        return context
-
-    def format_research_context(self, research_data: dict) -> str:
-        """Araştırma verilerini LLM için uygun formatta hazırla"""
-        context = f"KONU: {research_data.get('topic', 'Belirtilmemiş')}\n\n"
-        
-        detailed_research = research_data.get('detailed_research', [])
-        if detailed_research:
-            context += "ALT BAŞLIKLAR VE DETAYLAR:\n"
-            for i, section in enumerate(detailed_research, 1):
-                title = section.get('alt_baslik', f'Konu {i}')
-                content = section.get('aciklama', 'İçerik mevcut değil')
-                context += f"\n{i}. {title}:\n{content}\n"
-        
-        context += f"\nARAŞTIRMA TARİHİ: {research_data.get('timestamp', 'Belirtilmemiş')}"
-        return context
-    
-    async def process_user_message(self, user_message: str) -> str:
-        try:
-            # Kullanıcı mesajını conversation state'e ekle
-            self.conversation_state["messages"].append(HumanMessage(content=user_message))
-            self.conversation_state["websocket_callback"] = self.websocket_callback
-            
-            # Mesajı chat manager'a kaydet
-            if self.chat_manager and self.chat_id:
-                self.chat_manager.save_message(self.chat_id, {
-                    "type": "user",
-                    "content": user_message
-                })
-                
-                # İlk mesajsa otomatik başlık oluştur
-                chat_info = self.chat_manager.get_chat_info(self.chat_id)
-                if chat_info and chat_info.get("message_count", 0) == 1:
-                    self.chat_manager.auto_generate_title(self.chat_id, user_message)
-            
-            # Graph'ı çalıştır
-            final_state = await self.graph.ainvoke(self.conversation_state)
-            self.conversation_state = final_state
-            
-            # Pending action varsa mesaj döndürme
-            if final_state.get('pending_action'):
-                return ""
-            
-            # AI mesajlarını al
-            ai_messages = [msg for msg in final_state["messages"] if isinstance(msg, AIMessage)]
-            if ai_messages:
-                ai_response = ai_messages[-1].content
-                
-                # AI mesajını da chat manager'a kaydet
-                if self.chat_manager and self.chat_id and ai_response:
-                    self.chat_manager.save_message(self.chat_id, {
-                        "type": "ai",
-                        "content": ai_response
-                    })
-                
-                return ai_response
-            return ""
-            
-        except Exception as e:
-            error_response = f"Bir hata oluştu: {str(e)}"
-            print(f"❌ Process message error (Chat: {self.chat_id}): {e}")
-            self.conversation_state["pending_action"] = ""
-            
-            # Hata mesajını da kaydet
-            if self.chat_manager and self.chat_id:
-                self.chat_manager.save_message(self.chat_id, {
-                    "type": "system",
-                    "content": error_response
-                })
-            
-            return error_response
-
-    def get_conversation_history(self) -> List[dict]:
-        """Konuşma geçmişini döner"""
-        history = []
-        for message in self.conversation_state["messages"]:
-            if isinstance(message, HumanMessage):
-                history.append({"type": "human", "content": message.content})
-            elif isinstance(message, AIMessage):
-                history.append({"type": "ai", "content": message.content})
-        return history
-    
-    def get_conversation_stats(self) -> dict:
-        """Konuşma istatistiklerini döner"""
-        messages = self.conversation_state["messages"]
-        user_messages = sum(1 for msg in messages if isinstance(msg, HumanMessage))
-        ai_messages = sum(1 for msg in messages if isinstance(msg, AIMessage))
-        
-        vector_stats = self.vector_store.get_stats()
-        
-        return {
-            "total_messages": len(messages),
-            "user_messages": user_messages,
-            "ai_messages": ai_messages,
-            "current_intent": self.conversation_state.get("current_intent", "N/A"),
-            "has_research_data": bool(self.conversation_state.get("research_data")),
-            "last_research": self.conversation_state.get("research_data", {}).get("topic", ""),
-            "crew_ai_enabled": True,
-            "async_mode": True,
-            "research_completed": self.conversation_state.get("research_completed", False),
-            "rag_enabled": Config.RAG_ENABLED,
-            "vector_store_stats": vector_stats,
-            "chat_id": self.chat_id or "default"
-        }
-
-    def load_conversation_from_messages(self, messages: List[dict]):
-        """Daha önce kaydedilmiş mesajları yükle"""
-        try:
-            # SystemMessage'ı koru, diğerlerini temizle
-            system_messages = [msg for msg in self.conversation_state["messages"] if isinstance(msg, SystemMessage)]
-            self.conversation_state["messages"] = system_messages
-            
-            # Kaydedilmiş mesajları ekle
-            for msg in messages:
-                if msg.get("type") == "user":
-                    self.conversation_state["messages"].append(HumanMessage(content=msg["content"]))
-                elif msg.get("type") == "ai":
-                    self.conversation_state["messages"].append(AIMessage(content=msg["content"]))
-                    
-        except Exception as e:
-            print(f"❌ Load conversation error (Chat: {self.chat_id}): {e}")
-
-    def reset_conversation(self):
-        """Konuşmayı sıfırla"""
-        self.conversation_state = ConversationState(
-            messages=[SystemMessage(content=Config.SYSTEM_PROMPT)],
-            current_intent="",
-            needs_crew_ai=False,
-            crew_ai_task="",
-            user_context={},
-            conversation_summary="",
-            research_data={},
-            websocket_callback=self.websocket_callback,
-            pending_action="",
-            research_completed=False,
-            rag_context="",
-            has_pdf_context=False,
-            chat_id=self.chat_id or "",
-            chat_manager=self.chat_manager,
-            test_generation_requested=False,
-            test_parameters={},
-            generated_questions={},
-            full_document_text="",
-            awaiting_test_params=False,
-            test_param_stage="",
-            partial_test_params={}
-        )
-
-    def update_chat_manager(self, chat_manager):
-        """Chat manager referansını güncelle"""
-        self.chat_manager = chat_manager
-        self.conversation_state["chat_manager"] = chat_manager
-
-    def get_chat_id(self) -> str:
-        """Mevcut chat ID'yi döner"""
-        return self.chat_id or ""
-
-    def set_chat_id(self, chat_id: str):
-        """Chat ID'yi güncelle ve vector store'u yeniden başlat"""
-        self.chat_id = chat_id
-        self.conversation_state["chat_id"] = chat_id
-        
-        # Vector store'u yeni chat ID ile yeniden başlat
-        self.vector_store = VectorStore(Config.VECTOR_STORE_PATH, chat_id=chat_id)
 
     async def present_test_results_node(self, state: ConversationState) -> ConversationState:
         """Test sonuçlarını kullanıcıya sunar"""
@@ -1086,8 +1117,11 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
             return state
         
         try:
-            # Test parametrelerinden bilgileri al
+            # Test parametrelerinden bilgileri al - DOĞRU KAYNAK
             test_params = state.get("partial_test_params", {})
+            if not test_params:
+                test_params = state.get("test_parameters", {})
+                
             question_types = test_params.get("soru_turleri", {})
             total_questions = sum(question_types.values()) if question_types else 0
             
@@ -1135,12 +1169,16 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
             # State'e de mesajı ekle
             state["messages"].append(AIMessage(content=success_message))
             
+            # Test tamamlandıktan sonra state'i temizle
+            state["awaiting_test_params"] = False
+            state["test_param_stage"] = "start"
+            state["test_params_ready"] = False
+            state["partial_test_params"] = {}
+            state["ui_message_sent"] = False  # UI mesaj flag'ini temizle
+            
         except Exception as e:
             error_msg = f"Test sonuçları sunulurken hata oluştu: {str(e)}"
             logger.error(f"❌ {error_msg}")
             state["messages"].append(AIMessage(content=error_msg))
         
         return state
-
-
-

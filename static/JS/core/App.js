@@ -686,6 +686,8 @@ class App {
 
     setupTestMessageListener() {
         window.addEventListener('message', (event) => {
+            console.log("%c ANA UYGULAMA: Bir 'message' olayı yakalandı!", "color: blue; font-weight: bold;", event.data); // <-- BU SATIRI EKLEYİN
+
             // Güvenlik kontrolü
             if (event.origin !== window.location.origin) return;
             
@@ -812,7 +814,8 @@ Not: Eğer cevap %60 ve üzeri doğruysa "Doğru", altındaysa "Yanlış" olarak
             };
 
             // LLM yanıtını bekle
-            const success = this.ws.send(evaluationRequest);
+            const success = this.ws.sendMessage(evaluationRequest);
+
             if (!success) {
                 throw new Error('WebSocket bağlantısı mevcut değil');
             }

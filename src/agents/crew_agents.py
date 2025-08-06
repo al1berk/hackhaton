@@ -77,10 +77,18 @@ class CrewAISystem:
                 tools=self.tools, 
                 verbose=True
             ),
+            "true_false": Agent(
+                role="Doğru-Yanlış Soru Uzmanı",
+                goal="Verilen metne ve tercihlere göre etkili doğru-yanlış soruları oluşturmak ve JSON formatını doğrulamak.",
+                backstory="Sen doğru-yanlış soruları konusunda uzman bir öğretmensin. Net ve kesin yargılar içeren, yanıltıcı olmayan sorular hazırlıyorsun ve JSONValidatorToolForQuestion ile format doğruluğunu sağlıyorsun.",
+                llm=self.llm, 
+                tools=self.tools, 
+                verbose=True
+            ),
             "validator": Agent(
                 role="JSON Format Doğrulama Uzmanı",
                 goal="Üretilen tüm soruların JSON formatını kontrol etmek ve düzeltmek.",
-                backstory="Sen JSON format doğrulama konusunda uzman bir teknisyensin. Diğer ajanlardan gelen çıktıları JSONValidatorToolForQuestion kullanarak kontrol eder ve geçerli JSON formatına dönüştürürsün.",
+                backstory="Sen JSON format doğrulama konusunda uzman bir teknisyensin. Diğer ajanlardan gelen çıktıları JSONValidatorToolForQuestion kullanarak kontrol eder ve geçerli JSON formatına dönüştürsün.",
                 llm=self.llm,
                 tools=self.tools,
                 verbose=True
@@ -97,15 +105,18 @@ class CrewAISystem:
 
     def _calculate_question_distribution(self, preferences: Dict[str, Any]) -> Dict[str, int]:
         """Soru türlerine göre soru sayısı dağılımını hesaplar."""
+        # Eğer soru_turleri dict ise doğrudan onu döndür
+        question_types = preferences.get("soru_turleri", {})
+        if isinstance(question_types, dict):
+            return question_types
+        # Eski davranış (liste ise)
         total_questions = preferences.get("toplam_soru", 10)
-        question_types = preferences.get("soru_turleri", ["coktan_secmeli"])
-        if not question_types: 
+        if not question_types:
             return {}
-        
         base_count = total_questions // len(question_types)
         remainder = total_questions % len(question_types)
         distribution = {
-            q_type: base_count + (1 if i < remainder else 0) 
+            q_type: base_count + (1 if i < remainder else 0)
             for i, q_type in enumerate(question_types)
         }
         return distribution
@@ -238,6 +249,46 @@ class CrewAISystem:
             )
             tasks.append(fill_task)
             individual_tasks.append(fill_task)
+        
+        # --- DOĞRU-YANLIŞ GÖREVİ ---
+        if question_distribution.get("dogru_yanlis", 0) > 0:
+            true_false_task = Task(
+                description=f"""
+                Verilen dokümandan {question_distribution['dogru_yanlis']} adet doğru-yanlış sorusu oluştur.
+                        
+                Döküman içeriği: {document_content[:2000]}...
+                        
+                Zorluk seviyesi: {preferences.get('zorluk_seviyesi', 'orta')}
+                Öğrenci seviyesi: {preferences.get('ogrenci_seviyesi', 'lise')}
+                Özel konular: {preferences.get('ozel_konular', [])}
+                        
+                Her soru için:
+                - Net ve kesin bir yargı içeren soru metni
+                - Doğru/yanlış cevap (true/false)
+                - Kısa açıklama
+                - Zorluk seviyesi
+
+                **ÇOK ÖNEMLİ ÇIKTI FORMATI:**
+                Sadece aşağıdaki formata birebir uyan bir JSON listesi döndür.
+                
+                ADIM 1: Önce soruları oluştur
+                ADIM 2: JSONValidatorToolForQuestion aracını kullanarak çıktını doğrula
+                ADIM 3: Doğrulanmış JSON formatını döndür
+                
+                [
+                  {{
+                    "soru": "Net bir yargı içeren ifade. Örneğin: Yapay zeka sadece matematik problemlerini çözmek için kullanılır.",
+                    "dogru_cevap": "false",
+                    "aciklama": "Bu cevabın neden doğru veya yanlış olduğuna dair kısa açıklama.",
+                    "zorluk": "Orta"
+                  }}
+                ]
+                """,
+                agent=self.agents["true_false"],
+                expected_output=f"JSON formatında doğru-yanlış soruları - {question_distribution['dogru_yanlis']} adet"
+            )
+            tasks.append(true_false_task)
+            individual_tasks.append(true_false_task)
         
         if not individual_tasks:
              raise ValueError("Üretilecek soru bulunamadı. Lütfen tercihleri kontrol edin.")

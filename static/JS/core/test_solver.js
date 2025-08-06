@@ -699,25 +699,46 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // Ana pencereye değerlendirme isteği gönder
             if (window.opener && !window.opener.closed) {
-                // Promise ile callback bekle
+                // Promise ile callback bekle - timeout süresini 60 saniyeye çıkardık
                 const result = await new Promise((resolve, reject) => {
                     const timeout = setTimeout(() => {
-                        reject(new Error('Değerlendirme timeout'));
-                    }, 30000); // 30 saniye timeout
+                        reject(new Error('Değerlendirme timeout - LLM yanıt vermedi'));
+                    }, 60000); // 60 saniye timeout
                     
                     // Tek seferlik message listener
                     const messageHandler = (event) => {
+                        if (event.origin !== window.location.origin) return;
+                        
                         if (event.data.type === 'classic_evaluation_result' && 
                             event.data.questionIndex === questionIndex) {
                             clearTimeout(timeout);
                             window.removeEventListener('message', messageHandler);
                             resolve(event.data);
+                        } else if (event.data.type === 'llm_evaluation_response' &&
+                                  event.data.questionIndex === questionIndex) {
+                            clearTimeout(timeout);
+                            window.removeEventListener('message', messageHandler);
+                            
+                            // LLM yanıtını parse et
+                            const evaluation = event.data.evaluation;
+                            const isCorrect = evaluation.includes('DOĞRU/YANLIŞ: Doğru') || 
+                                            evaluation.includes('Doğru') && !evaluation.includes('Yanlış');
+                            const feedbackMatch = evaluation.match(/GERİ BİLDİRİM: (.+?)(?:\n|$)/);
+                            const feedback = feedbackMatch ? feedbackMatch[1] : evaluation;
+                            
+                            resolve({
+                                isCorrect: isCorrect,
+                                feedback: feedback,
+                                questionIndex: questionIndex
+                            });
                         }
                     };
                     
                     window.addEventListener('message', messageHandler);
                     
                     // Ana pencereye değerlendirme isteği gönder
+                    console.log("ADIM 1: Test sayfasından ana uygulamaya istek gönderiliyor...");
+
                     window.opener.postMessage({
                         type: 'evaluate_classic_answer',
                         questionIndex: questionIndex,
@@ -726,6 +747,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         sampleAnswer: question.ornek_cevap || question.cevap,
                         criteria: question.degerlendirme_kriterleri
                     }, window.location.origin);
+                    
+                    console.log(`📤 Klasik soru değerlendirme isteği gönderildi (Soru ${questionIndex + 1})`);
                 });
                 
                 // Sonucu işle
@@ -739,16 +762,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     showFeedback(questionIndex, `❌ ${feedback}\n\n📋 Örnek Cevap: ${question.ornek_cevap || question.cevap}`, false);
                 }
                 
+                console.log(`✅ Klasik soru değerlendirmesi tamamlandı (Soru ${questionIndex + 1}):`, isCorrect);
+                
             } else {
                 // Ana pencere yoksa manuel değerlendirme
-                showFeedback(questionIndex, 'Cevabınız kaydedildi. Manuel değerlendirme gerekiyor.', true);
+                console.warn('⚠️ Ana pencere bulunamadı, manuel değerlendirme yapılıyor');
+                showFeedback(questionIndex, 'Cevabınız kaydedildi. Ana pencere bulunamadığı için manuel değerlendirme gerekiyor.', true);
                 score++; // Geçici olarak doğru kabul et
             }
             
         } catch (error) {
             console.error('❌ Klasik soru değerlendirme hatası:', error);
-            // Hata durumunda cevabı doğru kabul et
-            showFeedback(questionIndex, 'Cevabınız kaydedildi. Değerlendirme yapılamadı, geçici olarak doğru kabul edildi.', true);
+            
+            // Hata türüne göre farklı mesajlar
+            if (error.message.includes('timeout')) {
+                showFeedback(questionIndex, 'Değerlendirme çok uzun sürdü. Cevabınız kaydedildi, geçici olarak doğru kabul edildi.', true);
+            } else {
+                showFeedback(questionIndex, 'Cevabınız kaydedildi. Değerlendirme yapılamadı, geçici olarak doğru kabul edildi.', true);
+            }
             score++;
         }
         
