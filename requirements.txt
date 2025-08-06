@@ -1,0 +1,60 @@
+# Hackhaton Project - Core Dependencies
+
+# AI ve Machine Learning Framework'leri
+crewai>=0.28.0
+langchain>=0.1.0
+langchain-core>=0.1.0
+langchain-google-genai>=1.0.0
+langgraph>=0.0.50
+
+# Web Framework ve API
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+websockets>=12.0
+python-multipart>=0.0.6
+
+# Veritabanı ve Vektör Store
+chromadb>=0.4.0
+sentence-transformers>=2.2.0
+
+# PDF ve Doküman İşleme
+PyPDF2>=3.0.0
+python-docx>=0.8.11
+
+# OCR ve Görüntü İşleme
+easyocr>=1.7.0
+Pillow>=10.0.0
+opencv-python>=4.8.0
+
+# Audio ve Video İşleme
+faster-whisper>=0.10.0
+yt-dlp>=2023.10.0
+
+# Google API'leri
+google-api-python-client>=2.0.0
+
+# Utility Kütüphaneleri
+python-dotenv>=1.0.0
+aiofiles>=23.0.0
+pathlib2>=2.3.0
+
+# CrewAI Tools
+crewai-tools>=0.4.0
+
+# Configuration Management
+pydantic>=2.4.0
+
+# Date/Time Processing
+python-dateutil>=2.8.0
+
+# Async and Concurrency
+asyncio
+
+# Type Hints
+typing-extensions>=4.8.0
+
+# HTTP and CORS
+httpx>=0.25.0
+
+# Development and Debugging
+rich>=13.0.0

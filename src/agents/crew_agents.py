@@ -1,4 +1,4 @@
-# src/agents/crew_agents.py (DÜZELTME: Test oluşturma sorunları giderildi)
+# src/agents/crew_agents.py
 
 from crewai import Agent, Task, Crew, Process, LLM
 import json
@@ -6,16 +6,13 @@ from typing import Dict, Any, List
 from datetime import datetime
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-
-# Gerçek araçları tools klasöründen import ediyoruz.
 from tools.tools import JSONValidatorToolForQuestion
 from core.config import Config
 
 class CrewAISystem:
     def __init__(self, api_key: str, websocket_callback=None):
-        # CrewAI'nin kendi LLM wrapper'ını kullan - LiteLLM uyumlu
         self.llm = LLM(
-            model="gemini/gemini-2.5-flash",  # Provider prefix'i ekledik
+            model="gemini/gemini-2.5-flash", 
             api_key=api_key,
             temperature=0.7
         )
@@ -419,7 +416,6 @@ class CrewAISystem:
             elif hasattr(crew_output, 'output'):
                 return crew_output.output
             else:
-                # Son çare olarak string'e çevir
                 return str(crew_output)
         except Exception as e:
             print(f"❌ CrewOutput içerik çıkarma hatası: {e}")
@@ -434,9 +430,8 @@ class CrewAISystem:
                 "document_length": len(document_content)
             })
             
-            # Geliştirilmiş timeout ve retry ayarları
-            max_retries = 2  # Retry sayısını azalt
-            timeout_seconds = 480  # 8 dakika (çok daha uzun)
+            max_retries = 2  
+            timeout_seconds = 480  
             
             # Doküman boyutu kontrol ve optimizasyon
             doc_length = len(document_content)
@@ -477,7 +472,6 @@ class CrewAISystem:
                     except asyncio.TimeoutError:
                         if attempt < max_retries - 1:
                             await self.send_progress_update(f"⏰ Timeout ({timeout_seconds}s) - {attempt + 1}. deneme başarısız, kısaltılmış dokümanla tekrar deneniyor...")
-                            # Bir sonraki denemede daha kısa doküman kullan
                             document_content = self._preprocess_document(document_content, 8000)
                             continue
                         else:
