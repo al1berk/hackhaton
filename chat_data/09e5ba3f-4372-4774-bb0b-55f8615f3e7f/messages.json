@@ -1,0 +1,51 @@
+[
+  {
+    "type": "user",
+    "content": "test oluştur",
+    "timestamp": "2025-08-06T16:11:47.862975"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T16:11:47.902998"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T16:11:53.772195"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T16:11:53.781046"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T16:11:55.289700"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T16:11:55.299283"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T16:11:56.890851"
+  },
+  {
+    "type": "ai",
+    "content": "🎉 **Test Başarıyla Oluşturuldu!**\n\n📊 **Test Detayları:**\n• **Toplam Soru:** 5\n• **Zorluk:** Orta\n• **Seviye:** Lise\n\n🎯 **Soru Dağılımı:**\n• **Çoktan Seçmeli:** 5 soru\n\n🚀 **Hazır!** Aşağıdaki **'Testi Çöz'** butonuna tıklayarak testinizi başlatabilirsiniz.\n📝 Test sonuçlarınız otomatik olarak değerlendirilecek ve eksik konularınız belirlenecek.",
+    "timestamp": "2025-08-06T16:12:36.677857"
+  },
+  {
+    "type": "system",
+    "content": "🧠 **Test Kaydedildi:** Test - 6.08.2025\n📊 Test ID: test_1754485956691\n⏰ 06.08.2025 16:12",
+    "metadata": {
+      "message_type": "test_saved",
+      "test_id": "test_1754485956691"
+    },
+    "timestamp": "2025-08-06T16:12:36.698007"
+  }
+]

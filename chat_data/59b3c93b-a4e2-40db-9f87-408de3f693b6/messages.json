@@ -1,0 +1,22 @@
+[
+  {
+    "type": "user",
+    "content": "flutter nedir",
+    "timestamp": "2025-08-06T16:34:37.060279"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Flutter, Google tarafından geliştirilen, mobil, web ve masaüstü için güzel, yerel olarak derlenmiş uygulamaları tek bir kod tabanından hızlıca oluşturmaya yarayan açık kaynaklı bir UI (kullanıcı arayüzü) yazılım geliştirme kitidir.\n\nFlutter'ı öne çıkaran bazı temel özellikler şunlardır:\n\n*   **Tek Kod Tabanı:** iOS, Android, web ve masaüstü (Windows, macOS, Linux) için uygulamaları aynı kod tabanını kullanarak geliştirebilirsiniz. Bu, geliştirme süresini ve maliyetini önemli ölçüde azaltır.\n*   **Hızlı Geliştirme:** \"Hot Reload\" (Anında Yeniden Yükleme) özelliği sayesinde, yaptığınız değişiklikleri anında uygulamada görebilirsiniz. Bu, geliştirme sürecini çok daha verimli hale getirir.\n*   **İfade Gücü Yüksek ve Esnek UI:** Kendi Widget'larını (arayüz bileşenleri) kullanarak karmaşık ve estetik açıdan zengin arayüzler oluşturmanıza olanak tanır. Malzeme Tasarımı (Material Design) ve Cupertino (iOS) widget'ları ile birlikte gelir.\n*   **Yerel Performans:** Uygulamalarınız doğrudan makine koduna derlendiği için (JIT veya AOT), yerel uygulamalar kadar hızlı ve akıcı performans sunar.\n*   **Dart Dili:** Flutter, Google tarafından geliştirilen, nesne yönelimli ve derlemeye uygun bir dil olan Dart ile yazılmıştır.\n\nKısacası, Flutter, hem geliştiriciler için verimli hem de son kullanıcılar için yüksek performanslı ve görsel olarak çekici uygulamalar oluşturmak isteyenler için güçlü bir araçtır.",
+    "timestamp": "2025-08-06T16:34:40.900062"
+  },
+  {
+    "type": "user",
+    "content": "flutter nedir web de araştır",
+    "timestamp": "2025-08-06T16:34:48.922904"
+  },
+  {
+    "type": "ai",
+    "content": "🔍 **'flutter nedir web de' Araştırması Tamamlandı!**\n\n📋 **CrewAI Multi-Agent Sistemi Tarafından Keşfedilen Konular:**\n1. Flutter'a Genel Bakış\n2. Flutter Web: Tanım ve Çalışma Prensibi\n3. Flutter Web Render Mekanizmaları: CanvasKit Renderer\n4. Flutter Web Render Mekanizmaları: HTML Renderer\n\n🚀 **İlk konu ile başlıyorum:** Flutter'a Genel Bakış\n\n**Flutter'a Genel Bakış Hakkında:**\nGoogle tarafından geliştirilen, açık kaynaklı bir UI yazılım geliştirme kiti (SDK) olan Flutter, mobil, web ve masaüstü platformları için tek bir kod tabanından yüksek performanslı ve görsel olarak çekici uygulamalar oluşturmayı sağlayan güçlü bir araçtır. Temelinde Google'ın optimize edilmiş bir programlama dili olan Dart'ı kullanır. Dart, hem istemci tarafı geliştirme için tasarlanmış olması hem de JIT (Just-in-Time) ve AOT (Ahead-of-Time) derleme yetenekleri sayesinde hızlı geliştirme döngüle...\n📊 **Toplam 4 konu detaylandırıldı**\n🤖 **CrewAI Multi-Agent sistemi (Asenkron) kullanıldı**\n⏰ **Araştırma tarihi:** 2025-08-06 16:38",
+    "timestamp": "2025-08-06T16:38:52.004725"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "type": "user",
+    "content": "merhaba",
+    "timestamp": "2025-08-06T16:27:46.284237"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Size nasıl yardımcı olabilirim? Ben bir yapay zeka asistanıyım ve şunları yapabilirim:\n\n*   Web araştırması\n*   Soru üretimi\n*   Veri analizi\n*   Metin özetleme\n*   PDF dokümanlarından bilgi çıkarma (RAG sistemi)\n*   Önceden yüklenmiş dokümanlar arasında arama\n\nHerhangi bir konuda yardıma ihtiyacınız olursa çekinmeyin.",
+    "timestamp": "2025-08-06T16:27:47.859414"
+  }
+]

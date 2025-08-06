@@ -18,5 +18,45 @@
     "type": "ai",
     "content": "📄 Yüklediğiniz PDF dokümanlarından şu bilgileri buldum:\n\n• **Münevver Nur Topluyürek'in yetenekleri:**\n    * Güçlü analitik düşünme\n    * Detay odaklı çalışma\n    * Problem çözme becerisi\n    Kaynak: Yultuz.pdf, Bölüm 4\n\n• **Ali Berk Yeşilduman'ın yetenekleri:**\n    * Yazılım dilleri bilgisi (örn. Python, C++)\n    * Elektronik ve donanım bilgisi\n    * Yaratıcı tasarım yeteneği\n    Kaynak: Yultuz.pdf, Bölüm 4",
     "timestamp": "2025-08-06T11:21:09.069914"
+  },
+  {
+    "type": "user",
+    "content": "test üret",
+    "timestamp": "2025-08-06T15:14:11.798318"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T15:14:11.828938"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T15:14:23.055822"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T15:14:23.064140"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T15:14:25.238255"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T15:14:25.247347"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T15:14:26.930698"
+  },
+  {
+    "type": "ai",
+    "content": "🎉 **Test Başarıyla Oluşturuldu!**\n\n📊 **Test Detayları:**\n• **Toplam Soru:** 5\n• **Zorluk:** Orta\n• **Seviye:** Lise\n\n🎯 **Soru Dağılımı:**\n• **Çoktan Seçmeli:** 5 soru\n\n🚀 **Hazır!** Aşağıdaki **'Testi Çöz'** butonuna tıklayarak testinizi başlatabilirsiniz.\n📝 Test sonuçlarınız otomatik olarak değerlendirilecek ve eksik konularınız belirlenecek.",
+    "timestamp": "2025-08-06T15:15:27.177989"
   }
 ]

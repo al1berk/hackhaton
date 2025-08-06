@@ -1,7 +1,7 @@
 // static/js/core/WebSocketHandler.js
 
 export class WebSocketHandler {
-    constructor(chatId, onMessage, onConnectionChange) {
+    constructor(chatId, onMessage, onConnectionChange) { // autoConnect parametresini kaldırdım
         this.chatId = chatId;
         this.onMessage = onMessage;
         this.onConnectionChange = onConnectionChange;
@@ -19,6 +19,7 @@ export class WebSocketHandler {
         this.onTestGenerated = null;
         this.onTestEvaluation = null;
         
+        // DÜZELTME: Her zaman otomatik bağlantı kur
         this.connect();
     }
 
@@ -186,8 +187,193 @@ export class WebSocketHandler {
             }
         }
         
+        // YENİ: Test verilerini sunucuda kalıcı olarak kaydet
+        this.saveTestToServer(data);
+        
         // Test sonuçlarını göster ve çözme butonunu ekle
         this.showTestResults(data);
+    }
+
+    // YENİ FONKSIYON: Test verilerini sunucuda kaydet
+    async saveTestToServer(testData) {
+        try {
+            const chatId = window.app?.currentChatId || window.app?.pdfState?.currentChatId;
+            if (!chatId) {
+                console.warn('⚠️ Chat ID bulunamadı, test sunucuda kaydedilmedi');
+                return;
+            }
+
+            const saveData = {
+                test_id: `test_${Date.now()}`,
+                questions: testData.questions,
+                parameters: testData.test_parameters || {},
+                title: `Test - ${new Date().toLocaleDateString('tr-TR')}`
+            };
+
+            const response = await fetch(`/chats/${chatId}/save-test`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(saveData)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('✅ Test sunucuda kaydedildi:', result.test_id);
+                
+                // Test ID'yi localStorage'a da kaydet
+                testData.persistent_test_id = result.test_id;
+                localStorage.setItem('lastGeneratedTest', JSON.stringify(testData));
+                
+            } else {
+                console.error('❌ Test sunucuda kaydedilemedi:', response.status);
+            }
+
+        } catch (error) {
+            console.error('❌ Test kaydetme hatası:', error);
+        }
+    }
+
+    // YENİ FONKSIYON: Kaydedilmiş testleri yükle ve göster
+    async loadSavedTests() {
+        try {
+            const chatId = window.app?.currentChatId || window.app?.pdfState?.currentChatId;
+            if (!chatId) {
+                console.warn('⚠️ Chat ID bulunamadı, kaydedilmiş testler yüklenemedi');
+                return;
+            }
+
+            const response = await fetch(`/chats/${chatId}/tests`);
+            if (response.ok) {
+                const result = await response.json();
+                
+                if (result.success && result.tests.length > 0) {
+                    this.showSavedTestsButtons(result.tests);
+                    console.log(`✅ ${result.tests.length} kaydedilmiş test yüklendi`);
+                }
+            }
+
+        } catch (error) {
+            console.error('❌ Kaydedilmiş testler yüklenirken hata:', error);
+        }
+    }
+
+    // YENİ FONKSIYON: Kaydedilmiş test butonlarını göster
+    showSavedTestsButtons(savedTests) {
+        const messagesContainer = document.getElementById('messagesContainer');
+        if (!messagesContainer) return;
+
+        // Daha önce eklenmiş test butonlarını kontrol et
+        const existingTestButtons = messagesContainer.querySelector('.saved-tests-container');
+        if (existingTestButtons) {
+            existingTestButtons.remove();
+        }
+
+        const savedTestsDiv = document.createElement('div');
+        savedTestsDiv.className = 'message ai-message saved-tests-container';
+        savedTestsDiv.innerHTML = `
+            <div class="message-content">
+                <div class="saved-tests-content">
+                    <div class="saved-tests-header">
+                        <i class="fas fa-history"></i>
+                        <h3>Kaydedilmiş Testler</h3>
+                    </div>
+                    <p>Bu sohbette daha önce oluşturduğunuz testler:</p>
+                    
+                    <div class="saved-tests-list">
+                        ${savedTests.slice(-5).reverse().map(test => `
+                            <div class="saved-test-item">
+                                <div class="test-info">
+                                    <div class="test-title">${test.title}</div>
+                                    <div class="test-date">${new Date(test.created_at).toLocaleDateString('tr-TR')}</div>
+                                </div>
+                                <div class="test-actions">
+                                    <button class="solve-saved-test-btn" data-test-id="${test.test_id}" onclick="window.solveSavedTest('${test.test_id}')">
+                                        <i class="fas fa-play"></i>
+                                        Tekrar Çöz
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+            <div class="message-time">${new Date().toLocaleTimeString('tr-TR')}</div>
+        `;
+
+        messagesContainer.appendChild(savedTestsDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        // Global fonksiyon tanımla
+        window.solveSavedTest = (testId) => {
+            this.solveSavedTest(testId);
+        };
+    }
+
+    // YENİ FONKSIYON: Kaydedilmiş testi çöz
+    async solveSavedTest(testId) {
+        try {
+            const chatId = window.app?.currentChatId || window.app?.pdfState?.currentChatId;
+            if (!chatId) {
+                throw new Error('Chat ID bulunamadı');
+            }
+
+            console.log('📚 Kaydedilmiş test yükleniyor:', testId);
+
+            const response = await fetch(`/chats/${chatId}/tests/${testId}`);
+            if (!response.ok) {
+                throw new Error('Test verisi alınamadı');
+            }
+
+            const result = await response.json();
+            if (result.success) {
+                const testData = result.test.questions;
+                
+                // Test verilerini localStorage'a kaydet
+                localStorage.setItem('currentTestQuestions', JSON.stringify(testData));
+                localStorage.setItem(`testData_${testId}`, JSON.stringify(testData));
+                
+                // YENİ ÇÖZÜM: Link oluştur ve tıklat - pop-up engelleyici sorunu yok
+                const testLink = document.createElement('a');
+                testLink.href = '/static/test_solver.html';
+                testLink.target = '_blank';
+                testLink.rel = 'noopener noreferrer';
+                
+                // Link'i DOM'a ekle (görünmez)
+                testLink.style.display = 'none';
+                document.body.appendChild(testLink);
+                
+                // Programatik tıklama - pop-up engelleyici sorunu yok
+                testLink.click();
+                
+                // Link'i temizle
+                setTimeout(() => {
+                    document.body.removeChild(testLink);
+                }, 100);
+                
+                console.log('✅ Kaydedilmiş test başarıyla başlatıldı');
+                
+                // Kullanıcıya bilgi mesajı göster
+                this.onMessage({
+                    type: 'ai_response',
+                    message: `📚 **Kaydedilmiş Test Açıldı**\n\n"${result.test.title}" testi yeni sekmede açıldı. Test penceresine geçerek soruları çözebilirsiniz.`,
+                    timestamp: new Date().toISOString()
+                });
+                
+            } else {
+                throw new Error('Test verisi bulunamadı');
+            }
+
+        } catch (error) {
+            console.error('❌ Kaydedilmiş test açma hatası:', error);
+            
+            this.onMessage({
+                type: 'error',
+                content: `Kaydedilmiş test açılamadı: ${error.message}`,
+                timestamp: new Date().toISOString()
+            });
+        }
     }
 
     handleTestEvaluation(data) {
@@ -853,12 +1039,23 @@ export class WebSocketHandler {
             localStorage.setItem('currentTestQuestions', JSON.stringify(testData));
             localStorage.setItem('lastGeneratedTest', JSON.stringify(testData));
             
-            // Yeni sekmede test sayfasını aç
-            const testWindow = window.open('/static/test_solver.html', '_blank');
+            // YENİ ÇÖZÜM: Link oluştur ve tıklat - pop-up engelleyici sorunu yok
+            const testLink = document.createElement('a');
+            testLink.href = '/static/test_solver.html';
+            testLink.target = '_blank';
+            testLink.rel = 'noopener noreferrer';
             
-            if (!testWindow) {
-                throw new Error('Pop-up engellendi. Lütfen pop-up engelleyicisini devre dışı bırakın.');
-            }
+            // Link'i DOM'a ekle (görünmez)
+            testLink.style.display = 'none';
+            document.body.appendChild(testLink);
+            
+            // Programatik tıklama - pop-up engelleyici sorunu yok
+            testLink.click();
+            
+            // Link'i temizle
+            setTimeout(() => {
+                document.body.removeChild(testLink);
+            }, 100);
             
         } catch (error) {
             console.error('❌ Test başlatma hatası:', error);
@@ -893,13 +1090,23 @@ export class WebSocketHandler {
                 localStorage.setItem('currentTestQuestions', testDataString);
             }
             
-            // Yeni sekmede test sayfasını aç
-            window.testWindow = window.open('/static/test_solver.html', '_blank');
-
+            // YENİ ÇÖZÜM: Link oluştur ve tıklat - pop-up engelleyici sorunu yok
+            const testLink = document.createElement('a');
+            testLink.href = '/static/test_solver.html';
+            testLink.target = '_blank';
+            testLink.rel = 'noopener noreferrer';
             
-            if (!window.testWindow) {
-                throw new Error('Pop-up engellendi. Lütfen pop-up engelleyicisini devre dışı bırakın.');
-            }
+            // Link'i DOM'a ekle (görünmez)
+            testLink.style.display = 'none';
+            document.body.appendChild(testLink);
+            
+            // Programatik tıklama - pop-up engelleyici sorunu yok
+            testLink.click();
+            
+            // Link'i temizle
+            setTimeout(() => {
+                document.body.removeChild(testLink);
+            }, 100);
             
             console.log('✅ Test başarıyla başlatıldı');
             

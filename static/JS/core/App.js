@@ -21,9 +21,9 @@ class App {
             currentChatId: null
         };
         
-        // WebSocketHandler'ı doğru parametrelerle başlat
+        // DÜZELTME: WebSocket'i normal şekilde başlat - otomatik bağlantı var
         this.ws = new WebSocketHandler(
-            null, // İlk başta chatId yok
+            'default', // Varsayılan chat ID
             this.handleWsMessage.bind(this), // onMessage callback
             this.handleConnectionChange.bind(this) // onConnectionChange callback
         );
@@ -45,8 +45,9 @@ class App {
             pendingResearchTopic: null
         };
         
-        // YENİ: İlk açılış durumu
+        // YENİ: İlk açılış durumu - sohbet oluşturmayacak ama bağlantı var
         this.isFirstLoad = true;
+        this.hasUserInteraction = false; // YENİ: Kullanıcı etkileşimi takibi
         
         this.initializeEventListeners();
         
@@ -88,12 +89,6 @@ class App {
                 e.preventDefault();
                 this.handleViewReportClick();
             }
-            
-            // PDF indirme butonu
-            if (e.target && (e.target.id === 'downloadPdfButton' || e.target.closest('#downloadPdfButton'))) {
-                e.preventDefault();
-                this.handleDownloadPdfClick();
-            }
         });
 
         // Initial state
@@ -108,16 +103,6 @@ class App {
         } else {
             console.error("❌ openDetailedReport fonksiyonu bulunamadı");
             alert('Rapor görüntüleme özelliği şu anda kullanılamıyor.');
-        }
-    }
-
-    handleDownloadPdfClick() {
-        console.log("📄 PDF indirme talep edildi");
-        if (this.ui.progressUI && typeof this.ui.progressUI.downloadPDF === 'function') {
-            this.ui.progressUI.downloadPDF();
-        } else {
-            console.error("❌ downloadPDF fonksiyonu bulunamadı");
-            alert('PDF indirme özelliği şu anda kullanılamıyor.');
         }
     }
 
@@ -188,6 +173,11 @@ class App {
                 this.ui.displayTestButton(data);
                 break;
                 
+            case 'test_evaluation_complete':
+                // YENİ: Test değerlendirmesi tamamlandığında eksik konuları göster
+                this.handleTestEvaluationComplete(data);
+                break;
+                
             case 'connection_established':
                 console.log('✅ Server bağlantısı onaylandı');
                 
@@ -206,9 +196,11 @@ class App {
                         this.pdfManager.onChatChanged(data.chat_id);
                     }
                     
-                    // İlk yüklemede hoş geldin mesajını göster, sonrasında gizle
-                    if (!this.isFirstLoad) {
-                        this.ui.hideWelcomeMessage();
+                    // YENİ: Kaydedilmiş testleri yükle
+                    if (this.ws && typeof this.ws.loadSavedTests === 'function') {
+                        setTimeout(() => {
+                            this.ws.loadSavedTests();
+                        }, 500);
                     }
                 }
                 
@@ -704,10 +696,8 @@ class App {
             
             const data = event.data;
             
-            if (data.type === 'test_completed') {
-                console.log('📊 Test sonuçları alındı:', data.results);
-                this.handleTestCompleted(data.results);
-            } else if (data.type === 'explain_topic') {
+            // Test tamamlama işlevi KALDIRILDI - artık sadece test sayfasında değerlendirme yapılıyor
+            if (data.type === 'explain_topic') {
                 console.log('📖 Konu açıklaması istendi:', data.topic);
                 this.handleTopicExplanationRequest(data.topic);
             } else if (data.type === 'evaluate_classic_answer') {
@@ -719,31 +709,42 @@ class App {
 
     async handleTestCompleted(results) {
         try {
-            // Test sonuçlarını sunucuya gönder
-            const response = await fetch(`/chats/${this.currentChatId}/evaluate-test`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ results: results })
-            });
-
-            if (response.ok) {
-                const evaluation = await response.json();
-                console.log('✅ Test değerlendirmesi tamamlandı:', evaluation);
-                
-                // WebSocket üzerinden test tamamlandı mesajını gönder
-                if (this.ws && this.ws.isConnected()) {
-                    this.ws.sendMessage({
-                        type: 'test_completed',
-                        results: results
-                    });
-                }
+            console.log('📊 Test sonuçları alındı, WebSocket ile gönderiliyor...', results);
+            
+            // WebSocket üzerinden test tamamlandı mesajını gönder (Doğru yöntem)
+            if (this.ws && this.ws.isConnected()) {
+                this.ws.sendMessage({
+                    type: 'test_completed',
+                    results: results
+                });
+                console.log('✅ Test sonuçları WebSocket ile sunucuya gönderildi');
             } else {
-                console.error('❌ Test değerlendirme hatası:', response.status);
+                console.error('❌ WebSocket bağlı değil, HTTP endpoint deneniyor...');
+                
+                // Fallback: HTTP endpoint kullan
+                const response = await fetch(`/chats/${this.currentChatId}/evaluate-test`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ results: results })
+                });
+
+                if (response.ok) {
+                    const evaluation = await response.json();
+                    console.log('✅ Test değerlendirmesi HTTP ile tamamlandı:', evaluation);
+                    
+                    // Manuel olarak UI'ye ekle
+                    this.handleTestEvaluationComplete({ evaluation: evaluation.evaluation });
+                } else {
+                    console.error('❌ HTTP Test değerlendirme hatası:', response.status);
+                }
             }
         } catch (error) {
             console.error('❌ Test sonuçları gönderim hatası:', error);
+            
+            // Hata durumunda kullanıcıya bilgi ver
+            this.ui.addMessage('❌ Test değerlendirmesi sırasında bir hata oluştu. Lütfen tekrar deneyin.', 'system');
         }
     }
 
@@ -873,6 +874,76 @@ Not: Eğer cevap %60 ve üzeri doğruysa "Doğru", altındaysa "Yanlış" olarak
                 feedback: result.feedback,
                 score: result.score || 0
             }, window.location.origin);
+        }
+    }
+
+    // YENİ FONKSIYON: Test değerlendirmesi tamamlandığında eksik konuları göster
+    handleTestEvaluationComplete(data) {
+        console.log('📊 Test değerlendirmesi tamamlandı:', data);
+        
+        if (data.evaluation) {
+            const evaluation = data.evaluation;
+            
+            // Test değerlendirme mesajını ekle
+            let evaluationMessage = `📊 **Test Değerlendirmen Tamamlandı!**\n\n`;
+            evaluationMessage += `🎯 **Başarı Oranı:** %${evaluation.statistics?.success_rate || 0}\n`;
+            evaluationMessage += `✅ **Doğru:** ${evaluation.statistics?.correct_answers || 0}/${evaluation.statistics?.total_questions || 0}\n`;
+            evaluationMessage += `❌ **Yanlış:** ${evaluation.statistics?.wrong_answers || 0}\n\n`;
+            
+            // Performans seviyesine göre emoji ve mesaj
+            const successRate = evaluation.statistics?.success_rate || 0;
+            let performanceEmoji = '💪';
+            let performanceMessage = '';
+            
+            if (successRate >= 90) {
+                performanceEmoji = '🎉';
+                performanceMessage = '**Mükemmel performans!** 🌟';
+            } else if (successRate >= 70) {
+                performanceEmoji = '👍';
+                performanceMessage = '**İyi bir performans!** 👏';
+            } else if (successRate >= 50) {
+                performanceEmoji = '📚';
+                performanceMessage = '**Orta seviye performans.** Gelişime açık.';
+            } else {
+                performanceEmoji = '💪';
+                performanceMessage = '**Çalışmaya devam!** Sen yaparsın! 💪';
+            }
+            
+            evaluationMessage += `${performanceEmoji} ${performanceMessage}\n\n`;
+            
+            // Önerileri ekle
+            if (evaluation.recommendations && evaluation.recommendations.length > 0) {
+                evaluationMessage += `💡 **Önerilerim:**\n`;
+                evaluation.recommendations.forEach((rec, index) => {
+                    evaluationMessage += `${index + 1}. ${rec}\n`;
+                });
+                evaluationMessage += `\n`;
+            }
+            
+            this.ui.addMessage(evaluationMessage, 'ai');
+            
+            // Eksik konuları ayrı bir mesaj olarak göster
+            if (evaluation.weak_areas && evaluation.weak_areas.length > 0) {
+                setTimeout(() => {
+                    let weakAreasMessage = `🎯 **Eksik Olduğun Konular:**\n\n`;
+                    weakAreasMessage += `Bu konularda biraz daha çalışmanda fayda var:\n\n`;
+                    
+                    evaluation.weak_areas.forEach((area, index) => {
+                        const topicName = typeof area === 'object' ? area.topic : area;
+                        weakAreasMessage += `${index + 1}. **${topicName}**\n`;
+                        weakAreasMessage += `   💡 Bu konuyu detaylı açıklamamı istersen: *"${topicName} konusunu açıkla"*\n\n`;
+                    });
+                    
+                    weakAreasMessage += `📝 **Not:** Yukarıdaki konulardan herhangi birini seçerek benden detaylı açıklama isteyebilirsin! Birlikte öğrenelim! 🤝`;
+                    
+                    this.ui.addMessage(weakAreasMessage, 'ai');
+                }, 1000);
+            } else {
+                // Eksik konu yoksa tebrik mesajı
+                setTimeout(() => {
+                    this.ui.addMessage('🎉 **Harika!** Tüm konularda başarılısın! Böyle devam et! 👏', 'ai');
+                }, 1000);
+            }
         }
     }
 }

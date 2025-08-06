@@ -598,6 +598,24 @@ async def evaluate_test_results(chat_id: str, test_results: dict):
             }
         })
         
+        # YENİ: Eksik konuları ayrı mesajlar olarak da kaydet
+        if evaluation_result["weak_areas"]:
+            topics_message = "🎯 **Eksik Olduğun Konular:**\n\n"
+            for i, area in enumerate(evaluation_result["weak_areas"], 1):
+                topics_message += f"{i}. **{area['topic']}**\n"
+                topics_message += f"   💡 Bu konuyu detaylı açıklamamı istersen: \"'{area['topic']}' konusunu açıkla\"\n\n"
+            
+            topics_message += "📝 **Not:** Yukarıdaki konulardan herhangi birini seçerek benden detaylı açıklama isteyebilirsin!"
+            
+            chat_manager.save_message(chat_id, {
+                "type": "ai",
+                "content": topics_message,
+                "metadata": {
+                    "message_type": "weak_areas_suggestions",
+                    "weak_areas": [area["topic"] for area in evaluation_result["weak_areas"]]
+                }
+            })
+        
         return JSONResponse({
             "success": True,
             "evaluation": evaluation_result,
@@ -934,12 +952,50 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str):
                         # Test sonuçlarını analiz et ve chat'e kaydet
                         evaluation_result = await evaluate_test_results_internal(chat_id, test_results)
                         
+                        # YENİ: Eksik konuları WebSocket üzerinden direkt gönder
+                        if evaluation_result.get("weak_areas"):
+                            # Ana değerlendirme mesajını gönder
+                            await websocket.send_text(json.dumps({
+                                "type": "ai_response", 
+                                "message": format_evaluation_message(evaluation_result),
+                                "timestamp": datetime.utcnow().isoformat(),
+                                "chat_id": chat_id
+                            }))
+                            
+                            # Eksik konuları ayrı mesaj olarak gönder
+                            topics_message = "🎯 **Eksik Olduğun Konular:**\n\n"
+                            topics_message += "Bu konularda biraz daha çalışmanda fayda var:\n\n"
+                            
+                            for i, area in enumerate(evaluation_result["weak_areas"], 1):
+                                topic_name = area["topic"] if isinstance(area, dict) else area
+                                topics_message += f"{i}. **{topic_name}**\n"
+                                topics_message += f"   💡 Bu konuyu detaylı açıklamamı istersen: *\"{topic_name} konusunu açıkla\"*\n\n"
+                            
+                            topics_message += "📝 **Not:** Yukarıdaki konulardan herhangi birini seçerek benden detaylı açıklama isteyebilirsin! Birlikte öğrenelim! 🤝"
+                            
+                            await websocket.send_text(json.dumps({
+                                "type": "ai_response",
+                                "message": topics_message,
+                                "timestamp": datetime.utcnow().isoformat(),
+                                "chat_id": chat_id
+                            }))
+                        else:
+                            # Eksik konu yoksa sadece ana değerlendirme mesajını gönder
+                            await websocket.send_text(json.dumps({
+                                "type": "ai_response",
+                                "message": format_evaluation_message(evaluation_result) + "\n\n🎉 **Harika!** Tüm konularda başarılısın! Böyle devam et! 👏",
+                                "timestamp": datetime.utcnow().isoformat(),
+                                "chat_id": chat_id
+                            }))
+                        
+                        # Ayrıca eski formatı da gönder (geriye dönük uyumluluk için)
                         await websocket.send_text(json.dumps({
                             "type": "test_evaluation_complete",
                             "evaluation": evaluation_result,
                             "timestamp": datetime.utcnow().isoformat(),
                             "chat_id": chat_id
                         }))
+                        
                     except Exception as e:
                         logger.error(f"❌ Test değerlendirme hatası: {e}")
                         await websocket.send_text(json.dumps({
@@ -1042,3 +1098,135 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str):
         # Cleanup
         if chat_id in dialog_instances:
             dialog_instances[chat_id].websocket_callback = None
+
+@app.post("/chats/{chat_id}/save-test")
+async def save_test_to_chat(chat_id: str, test_data: dict):
+    """Test verilerini chat'e kalıcı olarak kaydet"""
+    try:
+        chat_info = chat_manager.get_chat_info(chat_id)
+        if not chat_info:
+            raise HTTPException(status_code=404, detail="Sohbet bulunamadı")
+        
+        # Test verilerini chat klasörüne kaydet
+        chat_dir = chat_manager.get_chat_directory(chat_id)
+        test_file = chat_dir / "saved_tests.json"
+        
+        # Mevcut testleri yükle
+        saved_tests = []
+        if test_file.exists():
+            try:
+                with open(test_file, 'r', encoding='utf-8') as f:
+                    saved_tests = json.load(f)
+            except Exception as e:
+                logger.warning(f"Saved tests dosyası okunamadı: {e}")
+                saved_tests = []
+        
+        # Yeni test ekle
+        test_entry = {
+            "test_id": test_data.get("test_id", f"test_{datetime.now().strftime('%Y%m%d_%H%M%S')}"),
+            "created_at": datetime.now().isoformat(),
+            "questions": test_data.get("questions", {}),
+            "parameters": test_data.get("parameters", {}),
+            "title": test_data.get("title", "Oluşturulan Test")
+        }
+        
+        saved_tests.append(test_entry)
+        
+        # Dosyaya kaydet
+        with open(test_file, 'w', encoding='utf-8') as f:
+            json.dump(saved_tests, f, ensure_ascii=False, indent=2)
+        
+        # Chat mesajı olarak da kaydet
+        chat_manager.save_message(chat_id, {
+            "type": "system",
+            "content": f"🧠 **Test Kaydedildi:** {test_entry['title']}\n📊 Test ID: {test_entry['test_id']}\n⏰ {datetime.now().strftime('%d.%m.%Y %H:%M')}",
+            "metadata": {
+                "message_type": "test_saved",
+                "test_id": test_entry['test_id']
+            }
+        })
+        
+        return JSONResponse({
+            "success": True,
+            "message": "Test başarıyla kaydedildi",
+            "test_id": test_entry['test_id']
+        })
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Test kaydetme hatası: {e}")
+        raise HTTPException(status_code=500, detail=f"Test kaydetme hatası: {str(e)}")
+
+@app.get("/chats/{chat_id}/tests")
+async def get_chat_tests(chat_id: str):
+    """Chat'e ait kaydedilmiş testleri getir"""
+    try:
+        chat_info = chat_manager.get_chat_info(chat_id)
+        if not chat_info:
+            raise HTTPException(status_code=404, detail="Sohbet bulunamadı")
+        
+        # Test dosyasını oku
+        chat_dir = chat_manager.get_chat_directory(chat_id)
+        test_file = chat_dir / "saved_tests.json"
+        
+        saved_tests = []
+        if test_file.exists():
+            try:
+                with open(test_file, 'r', encoding='utf-8') as f:
+                    saved_tests = json.load(f)
+            except Exception as e:
+                logger.warning(f"Saved tests dosyası okunamadı: {e}")
+                saved_tests = []
+        
+        return JSONResponse({
+            "success": True,
+            "tests": saved_tests,
+            "chat_id": chat_id
+        })
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Test listesi hatası: {e}")
+        raise HTTPException(status_code=500, detail=f"Test listesi hatası: {str(e)}")
+
+@app.get("/chats/{chat_id}/tests/{test_id}")
+async def get_test_by_id(chat_id: str, test_id: str):
+    """Belirli bir test'i ID ile getir"""
+    try:
+        chat_info = chat_manager.get_chat_info(chat_id)
+        if not chat_info:
+            raise HTTPException(status_code=404, detail="Sohbet bulunamadı")
+        
+        # Test dosyasını oku
+        chat_dir = chat_manager.get_chat_directory(chat_id)
+        test_file = chat_dir / "saved_tests.json"
+        
+        if not test_file.exists():
+            raise HTTPException(status_code=404, detail="Test bulunamadı")
+        
+        with open(test_file, 'r', encoding='utf-8') as f:
+            saved_tests = json.load(f)
+        
+        # Test'i bul
+        test_data = None
+        for test in saved_tests:
+            if test.get("test_id") == test_id:
+                test_data = test
+                break
+        
+        if not test_data:
+            raise HTTPException(status_code=404, detail="Test bulunamadı")
+        
+        return JSONResponse({
+            "success": True,
+            "test": test_data,
+            "chat_id": chat_id
+        })
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Test getirme hatası: {e}")
+        raise HTTPException(status_code=500, detail=f"Test getirme hatası: {str(e)}")

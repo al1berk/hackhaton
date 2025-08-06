@@ -58,28 +58,22 @@
     }
 
     async handleFileSelect(file) {
-        if (this.isUploading) {
-            alert('Şu anda başka bir dosya yükleniyor. Lütfen bekleyin.');
+        if (!file) return;
+
+        // Dosya tipini kontrol et
+        const fileType = file.type;
+        const fileName = file.name.toLowerCase();
+        
+        if (!fileType.includes('pdf') && !fileName.endsWith('.pdf')) {
+            alert('Lütfen sadece PDF dosyalarını yükleyin.');
             return;
         }
 
-        // Dosya doğrulaması
-        if (!file.name.toLowerCase().endsWith('.pdf')) {
-            alert('Sadece PDF dosyaları desteklenir.');
-            return;
-        }
+        // Aktif chat ID'yi kontrol et
+        const currentChatId = this.app.currentChatId || this.app.pdfState.currentChatId;
 
-        const maxSize = 50 * 1024 * 1024; // 50MB
-        if (file.size > maxSize) {
-            alert('Dosya boyutu 50MB\'tan büyük olamaz.');
-            return;
-        }
-
-        // Aktif chat ID'yi al - safe access
-        const currentChatId = this.app.currentChatId || 
-                            (this.app.pdfState && this.app.pdfState.currentChatId);
-        if (!currentChatId) {
-            // Eğer aktif chat yoksa, yeni chat oluştur
+        if (!currentChatId || currentChatId === 'default') {
+            // PDF yükleme için yeni sohbet oluştur
             try {
                 console.log('📁 PDF yükleme için yeni sohbet oluşturuluyor...');
                 const chatId = await this.app.chatHistory.createNewChatForFirstMessage();
@@ -102,10 +96,10 @@
                 console.error('❌ PDF için chat oluşturma hatası:', error);
                 alert('Sohbet oluşturulamadı. Lütfen tekrar deneyin.');
             }
-            return;
+        } else {
+            // Mevcut chat var, direkt yükle
+            this.startUpload(file, currentChatId);
         }
-
-        this.startUpload(file, currentChatId);
     }
 
     async startUpload(file, chatId) {

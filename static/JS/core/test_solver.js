@@ -266,15 +266,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (answeredQuestions === totalQuestions) {
             finishTestBtn.style.display = 'block';
-            finishTestBtn.onclick = showFinalResults;
+            // DÜZELTME: showFinalResults yerine finishTest çağır
+            finishTestBtn.onclick = finishTest;
         }
     }
     
     function showFinalResults() {
-        finalScoreEl.textContent = `${score} / ${totalQuestions}`;
-        resultSummary.style.display = 'block';
-        finishTestBtn.style.display = 'none';
-        // TODO: Sonuçları ana sunucuya göndererek zayıf konuları analiz et.
+        // DÜZELTME: Bu fonksiyonu finishTest() ile birleştir
+        const results = calculateTestResults();
+        showTestResults(results);
+        sendResultsToMainWindow(results);
     }
 
     function finishTest() {
@@ -287,11 +288,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Test sonuçlarını hesapla
         const results = calculateTestResults();
         
-        // Sonuçları göster
+        // Sonuçları göster (sadece test sayfasında)
         showTestResults(results);
         
-        // Ana pencereye sonuçları gönder
-        sendResultsToMainWindow(results);
+        // Ana pencereye gönderme işlevi KALDIRILDI
+        console.log('✅ Test tamamlandı, sonuçlar test sayfasında gösteriliyor');
     }
 
     function calculateTestResults() {
@@ -409,7 +410,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 ${Object.keys(results.topic_errors).length > 0 ? `
                     <div class="weak-topics">
-                        <h3>🎯 Eksik Olduğun Konular</h3>
                         <div class="topic-list">
                             ${Object.entries(results.topic_errors).map(([topic, errorCount]) => `
                                 <div class="topic-item">
@@ -422,18 +422,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             `).join('')}
                         </div>
                     </div>
-                ` : '<div class="perfect-score">🎉 Mükemmel! Hiç hata yapmadın!</div>'}
+                ` : ''}
 
                 <div class="results-actions">
-                    <button class="review-btn" onclick="showDetailedReview()">
-                        📋 Detaylı İnceleme
-                    </button>
                     <button class="close-btn" onclick="window.close()">
                         🏠 Ana Sayfaya Dön
                     </button>
                 </div>
 
-                <div class="detailed-review" id="detailedReview" style="display: none;">
+                <div class="detailed-review">
                     <h3>📋 Detaylı Soru İncelemesi</h3>
                     <div class="question-review-list">
                         ${results.detailed_results.map((result, index) => `

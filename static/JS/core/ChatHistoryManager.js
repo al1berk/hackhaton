@@ -3,8 +3,8 @@
 export class ChatHistoryManager {
     constructor(app) {
         this.app = app;
-        this.currentChatId = null;
         this.chats = [];
+        this.currentChatId = null;
         this.isLoading = false;
         
         this.initializeEventListeners();
@@ -62,6 +62,11 @@ export class ChatHistoryManager {
                 this.chats = data.chats;
                 this.renderChatList();
                 console.log(`✅ ${this.chats.length} sohbet yüklendi`);
+                
+                // YENİ: Eğer hiç sohbet yoksa, welcome ekranını göster
+                if (this.chats.length === 0) {
+                    this.showWelcomeMessage();
+                }
             } else {
                 console.error('❌ Sohbet yükleme başarısız:', data);
             }
@@ -74,7 +79,7 @@ export class ChatHistoryManager {
         }
     }
 
-    // YENİ FONKSIYON: İlk mesaj için yeni chat oluştur
+    // YENİ FONKSIYON: İlk mesaj için yeni chat oluştur - SADECE MESAJ GÖNDERİLDİĞİNDE
     async createNewChatForFirstMessage() {
         try {
             const response = await fetch('/chats/new', {

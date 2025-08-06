@@ -336,10 +336,6 @@ export class ProgressUI {
                     <i class="fas fa-external-link-alt"></i>
                     Detaylı Raporu Görüntüle
                 </button>
-                <button class="download-pdf-btn" id="downloadPdfButton">
-                    <i class="fas fa-file-pdf"></i>
-                    PDF İndir
-                </button>
             </div>
             <div class="report-stats">
                 <span>📊 ${this.subTopics.length} konu detaylandırıldı</span>
@@ -347,12 +343,9 @@ export class ProgressUI {
             </div>
         `;
         
-        // Event listeners
+        // Event listeners - sadece view butonu için
         const viewButton = buttonContainer.querySelector('#viewReportButton');
-        const pdfButton = buttonContainer.querySelector('#downloadPdfButton');
-        
         viewButton.addEventListener('click', () => this.openDetailedReport());
-        pdfButton.addEventListener('click', () => this.downloadPDF());
         
         DOM.messagesContainer.appendChild(buttonContainer);
         this.scrollToBottom();
@@ -370,19 +363,39 @@ export class ProgressUI {
             return;
         }
 
-        // Yeni pencere aç
-        const reportWindow = window.open('', '_blank', 'width=1200,height=800,scrollbars=yes');
-        
-        if (!reportWindow) {
-            alert('Pop-up engelleyici aktif olabilir. Lütfen pop-up\'lara izin verin.');
-            return;
+        try {
+            // Rapor HTML'ini oluştur
+            const reportHTML = this.generateReportHTML();
+            
+            // Blob oluştur
+            const blob = new Blob([reportHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            // YENİ ÇÖZÜM: Link oluştur ve tıklat - pop-up engelleyici sorunu yok
+            const reportLink = document.createElement('a');
+            reportLink.href = url;
+            reportLink.target = '_blank';
+            reportLink.rel = 'noopener noreferrer';
+            
+            // Link'i DOM'a ekle (görünmez)
+            reportLink.style.display = 'none';
+            document.body.appendChild(reportLink);
+            
+            // Programatik tıklama - pop-up engelleyici sorunu yok
+            reportLink.click();
+            
+            // Link'i temizle
+            setTimeout(() => {
+                document.body.removeChild(reportLink);
+                URL.revokeObjectURL(url);
+            }, 100);
+            
+            console.log('✅ Rapor yeni sekmede açıldı');
+            
+        } catch (error) {
+            console.error('❌ Rapor açma hatası:', error);
+            alert('Rapor açılırken bir hata oluştu. Lütfen tekrar deneyin.');
         }
-
-        // Rapor HTML'ini oluştur
-        const reportHTML = this.generateReportHTML();
-        
-        reportWindow.document.write(reportHTML);
-        reportWindow.document.close();
     }
 
     // PDF indirme fonksiyonu - Gelişmiş ve düzenli format
