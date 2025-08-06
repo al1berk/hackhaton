@@ -1,0 +1,32 @@
+[
+  {
+    "type": "user",
+    "content": "pdf deki konu başlıklarını yaz",
+    "timestamp": "2025-08-06T06:38:48.483612"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz PDF dokümanlarından şu konu başlıklarını buldum:\n\n*   **arastirma-raporu-2025-07-30.pdf** dosyasında şu konular var:\n    *   Serebrum (Beyin Korteksi / Büyük Beyin) (Kaynak 1)\n    *   Frontal Lob (Ön Lob) (Kaynak 1)\n    *   Yönetici İşlevler (Kaynak 2)\n    *   Serebrum (Beyin Korteksi) ve Genel Yapısı (Kaynak 3)\n    *   Dürtü Kontrolü ve Davranış Ketleme (Kaynak 4)\n    *   Dikkatin Sürdürülmesi ve Yönlendirilmesi (Kaynak 4)\n    *   Kişilik ve Duygu (Kaynak 4)",
+    "timestamp": "2025-08-06T06:38:56.730088"
+  },
+  {
+    "type": "user",
+    "content": "frontal lobu anlat.",
+    "timestamp": "2025-08-06T06:39:13.339872"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz PDF dokümanlarından şu bilgileri buldum:\n\n*   **Frontal Lob (Ön Lob)**, serebrumun (beyin korteksi / büyük beyin) dört ana lobundan biridir.\n    Kaynak: arastirma-raporu-2025-07-30.pdf, Bölüm 9\n\n*   **Frontal Lob (Ön Lob)**, merkezi sinir sisteminin en büyük ve en karmaşık bölgelerinden biridir. İnsan davranışlarının, düşüncelerinin ve duygularının en üst düzeyde düzenlenmesinden sorumludur ve \"beynin ana kumanda merkezi\" olarak da adlandırılır. İşlevleri, bireyin günlük yaşamdaki adaptasyonunu ve sosyal etkileşimlerini doğrudan etkileyen geniş bir yelpazeyi kapsar. Frontal lobun en kritik rollerinden biri \"yönetici işlevler\" olarak bilinen bilişsel süreçlerdir.\n    Kaynak: arastirma-raporu-2025-07-30.pdf, Bölüm 27\n\n*   **Frontal lobun işlevleri** arasında şunlar bulunur:\n    *   **Dürtü Kontrolü ve Davranış Ketleme**: Anlık tepkileri ve istenmeyen davranışları bastırma, sosyal normlara uygun hareket etme, dürtüsel kararlar almaktan kaçınma veya uygunsuz yorumları yapmama.\n    *   **Dikkatin Sürdürülmesi ve Yönlendirilmesi**: Belirli bir göreve odaklanma ve dikkat dağıtıcı unsurları görmezden gelme yeteneği.\n    *   **Kişilik ve Duygu**: Frontal lob, bireyin kişiliği ve duygusal süreçleriyle de ilişkilidir.\n    Kaynak: arastirma-raporu-2025-07-30.pdf, Bölüm 30\n\nDiğer yüklenen PDF dokümanlarında frontal lob hakkında detaylı bilgi bulunmamaktadır.",
+    "timestamp": "2025-08-06T06:39:20.979157"
+  },
+  {
+    "type": "user",
+    "content": "test üret",
+    "timestamp": "2025-08-06T06:39:32.297416"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T06:39:32.315081"
+  }
+]

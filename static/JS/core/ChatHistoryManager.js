@@ -1,6 +1,6 @@
 // static/js/core/ChatHistoryManager.js
 
-class ChatHistoryManager {
+export class ChatHistoryManager {
     constructor(app) {
         this.app = app;
         this.currentChatId = null;
@@ -447,5 +447,3 @@ class ChatHistoryManager {
         }
     }
 }
-
-export default ChatHistoryManager;

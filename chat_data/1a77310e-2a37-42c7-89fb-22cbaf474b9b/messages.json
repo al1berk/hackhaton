@@ -1,0 +1,12 @@
+[
+  {
+    "type": "user",
+    "content": "pdf deki konu başlıklarını yaz",
+    "timestamp": "2025-08-06T06:13:15.019162"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Elbette, yüklediğiniz bir PDF dokümanındaki konu başlıklarını sizin için çıkarabilirim.\n\nŞu an herhangi bir PDF dokümanı yüklü görünmüyor. Lütfen bana PDF dosyasını yükleyin veya içeriğini sağlayın, böylece konu başlıklarını belirleyebilirim.",
+    "timestamp": "2025-08-06T06:13:17.754640"
+  }
+]

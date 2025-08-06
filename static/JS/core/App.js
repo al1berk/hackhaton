@@ -1,9 +1,9 @@
-// static/js/core/App.js
-import { DOM } from '../ui/DOM.js';
+// static/JS/core/App.js
 import { UIManager } from '../ui/UIManager.js';
-import WebSocketHandler from './WebSocketHandler.js';
-import PDFManager from '../pdf-manager.js';
-import ChatHistoryManager from './ChatHistoryManager.js';
+import { WebSocketHandler } from './WebSocketHandler.js';
+import { PDFManager } from '../pdf-manager.js';
+import { ChatHistoryManager } from './ChatHistoryManager.js';
+import { DOM } from '../ui/DOM.js';
 
 class App {
     constructor() {
@@ -11,6 +11,15 @@ class App {
         
         // Önce currentChatId'yi başlat
         this.currentChatId = null;
+        
+        // Initialize pdfState early, before creating PDFManager
+        this.pdfState = {
+            totalDocuments: 0,
+            totalChunks: 0,
+            ragEnabled: true,
+            isProcessingPdf: false,
+            currentChatId: null
+        };
         
         // WebSocketHandler'ı doğru parametrelerle başlat
         this.ws = new WebSocketHandler(
@@ -36,18 +45,15 @@ class App {
             pendingResearchTopic: null
         };
         
-        this.pdfState = {
-            totalDocuments: 0,
-            totalChunks: 0,
-            ragEnabled: true,
-            isProcessingPdf: false,
-            currentChatId: null
-        };
-        
         // YENİ: İlk açılış durumu
         this.isFirstLoad = true;
         
         this.initializeEventListeners();
+        
+        // Initialize PDF list after everything is set up
+        setTimeout(() => {
+            this.pdfManager.initializePDFList();
+        }, 100);
         
         // Global erişim için window'a ekle
         window.app = this;

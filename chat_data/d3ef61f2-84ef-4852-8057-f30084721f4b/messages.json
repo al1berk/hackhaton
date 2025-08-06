@@ -1,0 +1,57 @@
+[
+  {
+    "type": "user",
+    "content": "pdfdeki konu başlıklarını yaz",
+    "timestamp": "2025-08-06T06:01:44.638421"
+  },
+  {
+    "type": "ai",
+    "content": "Elbette, PDF'deki konu başlıklarını sizin için çıkarabilirim. Ancak, öncelikle hangi PDF'ten bahsettiğinizi bilmem gerekiyor.\n\nLütfen bana PDF dosyasını yükleyin veya daha önce yüklediğiniz bir PDF varsa adını belirtin. Dosya yüklendikten sonra, içeriğini analiz edip konu başlıklarını size iletebilirim.",
+    "timestamp": "2025-08-06T06:01:48.270823"
+  },
+  {
+    "type": "user",
+    "content": "az ince yüklediğim pdf",
+    "timestamp": "2025-08-06T06:02:14.419974"
+  },
+  {
+    "type": "ai",
+    "content": "Anladım, \"az önce yüklediğiniz PDF\"den bahsediyorsunuz.\n\nBenim doğrudan bir \"son yüklenen dosya\" hafızam bulunmuyor. Lütfen hangi PDF dosyasından bahsettiğinizi açıkça belirtir misiniz? Örneğin, dosyanın adını söyleyebilir veya tekrar yükleyerek bana gösterebilirsiniz.\n\nDosyayı tanımlayabilirsem, içeriğini analiz edip konu başlıklarını size hemen sunabilirim.",
+    "timestamp": "2025-08-06T06:02:17.962107"
+  },
+  {
+    "type": "user",
+    "content": "test üret",
+    "timestamp": "2025-08-06T06:02:23.496551"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T06:02:23.512754"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T06:02:28.369090"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T06:02:28.379908"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T06:02:29.951088"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T06:02:29.960021"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T06:02:31.718760"
+  }
+]

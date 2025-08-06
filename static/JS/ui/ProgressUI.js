@@ -656,193 +656,156 @@ export class ProgressUI {
     }
 
     // PDF içindekiler
-    addPDFTableOfContents(doc, margin, yPosition, contentWidth, topics) {
+    addPDFTableOfContents(doc, margin, yPosition, contentWidth, completedTopics) {
+        // İçindekiler başlığı
         doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
-        doc.text('İÇİNDEKİLER', margin, yPosition);
-        yPosition += 15;
+        doc.text('İÇİNDEKİLER', margin, yPosition + 12);
         
+        // İçindekiler listesi
         doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
         
-        topics.forEach((topic, index) => {
-            const topicNumber = index + 1;
-            const title = this.truncateText(topic.title, 60);
-            doc.text(`${topicNumber}. ${title}`, margin + 5, yPosition);
-            yPosition += 6;
+        let currentY = yPosition + 25;
+        completedTopics.forEach((topic, index) => {
+            const topicTitle = `${index + 1}. ${topic.title}`;
+            const pageNumber = `Sayfa ${index + 2}`; // İlk sayfa başlık sayfası
+            
+            // Başlık
+            doc.text(topicTitle, margin, currentY);
+            
+            // Sayfa numarası sağa dayalı
+            const pageNumWidth = doc.getStringUnitWidth(pageNumber) * 11 / doc.internal.scaleFactor;
+            doc.text(pageNumber, pageWidth - margin - pageNumWidth, currentY);
+            
+            // Noktalı çizgi
+            const titleWidth = doc.getStringUnitWidth(topicTitle) * 11 / doc.internal.scaleFactor;
+            const dotsStart = margin + titleWidth + 5;
+            const dotsEnd = pageWidth - margin - pageNumWidth - 5;
+            const dotPattern = '.'.repeat(Math.floor((dotsEnd - dotsStart) / 2));
+            
+            doc.setFontSize(8);
+            doc.text(dotPattern, dotsStart, currentY);
+            doc.setFontSize(11);
+            
+            currentY += 7;
+            
+            // Sayfa kontrolü
+            if (currentY > pageHeight - margin - 20) {
+                // Sayfa doldu
+            }
         });
         
-        return yPosition;
+        return currentY + 10;
     }
 
-    // PDF konu ekleme
+    // PDF'e topic ekleme
     addPDFTopic(doc, topic, topicNumber, margin, yPosition, contentWidth, pageHeight) {
-        // Sayfa kontrolü
-        if (yPosition > pageHeight - 80) {
+        // Yeni sayfa kontrolü
+        if (yPosition > margin + 50) {
             doc.addPage();
             yPosition = margin;
         }
-
-        // Konu başlığı kutusu
-        doc.setFillColor(33, 150, 243);
-        doc.roundedRect(margin, yPosition, contentWidth, 12, 2, 2, 'F');
         
-        // Konu numarası ve başlığı
-        doc.setFontSize(14);
+        // Konu başlığı
+        doc.setFillColor(240, 248, 255);
+        doc.roundedRect(margin, yPosition, contentWidth, 20, 3, 3, 'F');
+        
+        doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
-        doc.setTextColor(255, 255, 255);
-        doc.text(`${topicNumber}. ${this.truncateText(topic.title, 50)}`, margin + 5, yPosition + 8);
+        doc.text(`${topicNumber}. ${topic.title}`, margin + 10, yPosition + 12);
         
-        yPosition += 20;
-
+        yPosition += 30;
+        
         // İçerik
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(10);
+        doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
         
-        // HTML taglerini temizle ve düzenle
-        const cleanContent = this.cleanContentForPDF(topic.content);
-        const lines = doc.splitTextToSize(cleanContent, contentWidth - 10);
+        const content = this.stripHTMLTags(topic.content);
+        const lines = doc.splitTextToSize(content, contentWidth - 20);
         
         lines.forEach(line => {
-            if (yPosition > pageHeight - 20) {
+            if (yPosition > pageHeight - margin - 10) {
                 doc.addPage();
                 yPosition = margin;
             }
-            doc.text(line, margin + 5, yPosition);
-            yPosition += 5;
+            
+            doc.text(line, margin + 10, yPosition);
+            yPosition += 6;
         });
         
-        yPosition += 15; // Konular arası boşluk
-        
-        // Ayırıcı çizgi
-        doc.setLineWidth(0.3);
-        doc.setDrawColor(200, 200, 200);
-        doc.line(margin, yPosition - 10, pageWidth - margin, yPosition - 10);
-        
-        return yPosition;
+        return yPosition + 15;
     }
 
     // PDF footer ekleme
     addPDFFooters(doc) {
-        const totalPages = doc.internal.getNumberOfPages();
-        const pageWidth = doc.internal.pageSize.width;
-        const pageHeight = doc.internal.pageSize.height;
+        const pageCount = doc.internal.getNumberOfPages();
         
-        for (let i = 1; i <= totalPages; i++) {
+        for (let i = 1; i <= pageCount; i++) {
             doc.setPage(i);
-            doc.setFontSize(9);
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(128, 128, 128);
+            
+            // Footer çizgisi
+            doc.setLineWidth(0.5);
+            doc.line(margin, pageHeight - 15, pageWidth - margin, pageHeight - 15);
             
             // Sayfa numarası
-            doc.text(`Sayfa ${i} / ${totalPages}`, 
-                pageWidth - 30, 
-                pageHeight - 10, 
-                { align: 'center' }
-            );
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Sayfa ${i} / ${pageCount}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
             
-            // Alt çizgi
-            doc.setLineWidth(0.3);
-            doc.setDrawColor(200, 200, 200);
-            doc.line(20, pageHeight - 15, pageWidth - 20, pageHeight - 15);
-            
-            // Footer metni
-            doc.text('Bu rapor CrewAI tarafından otomatik olarak oluşturulmuştur.', 
-                pageWidth/2, 
-                pageHeight - 5, 
-                { align: 'center' }
-            );
+            // Tarih
+            const currentDate = new Date().toLocaleDateString('tr-TR');
+            doc.text(currentDate, pageWidth - margin, pageHeight - 8, { align: 'right' });
         }
     }
 
-    // PDF için içerik temizleme
-    cleanContentForPDF(content) {
-        if (!content || typeof content !== 'string') return 'İçerik mevcut değil.';
+    // İçerik formatlama
+    formatContent(content) {
+        if (!content) return 'İçerik mevcut değil.';
         
-        return content
-            // HTML taglerini kaldır
-            .replace(/<[^>]*>/g, '')
-            // HTML entity'lerini dönüştür
-            .replace(/&nbsp;/g, ' ')
-            .replace(/&amp;/g, '&')
-            .replace(/&lt;/g, '<')
-            .replace(/&gt;/g, '>')
-            .replace(/&quot;/g, '"')
-            .replace(/&#39;/g, "'")
-            // Çoklu boşlukları tek boşluğa çevir
-            .replace(/\s+/g, ' ')
-            // Başlangıç ve bitiş boşluklarını kaldır
-            .trim()
-            // Markdown işaretlerini temizle
-            .replace(/\*\*(.*?)\*\*/g, '$1')
-            .replace(/\*(.*?)\*/g, '$1')
-            .replace(/`(.*?)`/g, '$1')
-            // Satır sonlarını düzenle
-            .replace(/\n\s*\n/g, '\n\n')
-            .replace(/\n/g, ' ');
+        // HTML etiketlerini temizle ve basit formatlama ekle
+        let formatted = content
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // **bold** -> <strong>bold</strong>
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')              // *italic* -> <em>italic</em>
+            .replace(/\n\n/g, '</p><p>')                       // Çift satır sonu -> paragraf
+            .replace(/\n/g, '<br>')                            // Tek satır sonu -> <br>
+            .replace(/^/, '<p>')                               // Başlangıca <p>
+            .replace(/$/, '</p>');                             // Sona </p>
+        
+        // Liste formatlaması
+        formatted = formatted.replace(/^[\-\*\+]\s+(.+)/gm, '<li>$1</li>');
+        formatted = formatted.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+        
+        // Başlık formatlaması
+        formatted = formatted.replace(/^#+\s+(.+)/gm, '<h3>$1</h3>');
+        
+        return formatted;
     }
 
-    // Metin kısaltma yardımcı fonksiyonu
-    truncateText(text, maxLength) {
-        if (!text || text.length <= maxLength) return text;
-        return text.substring(0, maxLength - 3) + '...';
+    // HTML etiketlerini temizle (PDF için)
+    stripHTMLTags(html) {
+        if (!html) return '';
+        
+        return html
+            .replace(/<[^>]*>/g, '')           // HTML etiketlerini kaldır
+            .replace(/&nbsp;/g, ' ')          // &nbsp; -> boşluk
+            .replace(/&amp;/g, '&')           // &amp; -> &
+            .replace(/&lt;/g, '<')            // &lt; -> <
+            .replace(/&gt;/g, '>')            // &gt; -> >
+            .replace(/&quot;/g, '"')          // &quot; -> "
+            .replace(/&#39;/g, "'")           // &#39; -> '
+            .trim();
     }
 
-    // HTML taglerini temizleme yardımcı fonksiyonu
-    stripHtmlTags(html) {
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html;
-        return tmp.textContent || tmp.innerText || '';
+    // Scroll fonksiyonu ekleme
+    scrollToBottom() {
+        if (DOM && DOM.messagesContainer) {
+            DOM.messagesContainer.scrollTop = DOM.messagesContainer.scrollHeight;
+        }
     }
-    
-    // Araştırma verilerini kaydet
+
+    // Research data setter
     setResearchData(data) {
         this.currentResearchData = data;
     }
-    
-    formatContent(content) {
-        if (!content || typeof content !== 'string') return '<p>İçerik mevcut değil.</p>';
-        
-        return content
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/`(.*?)`/g, '<code>$1</code>')
-            .replace(/\n\n/g, '</p><p>')
-            .replace(/\n/g, '<br>')
-            .replace(/^(.*)$/, '<p>$1</p>');
-    }
-    
-    // Utility functions
-    scrollToBottom() {
-        setTimeout(() => {
-            DOM.messagesContainer.scrollTop = DOM.messagesContainer.scrollHeight;
-        }, 100);
-    }
-    
-    // Temizlik fonksiyonu
-    cleanup() {
-        const containers = ['mainStepsContainer', 'subTopicsContainer', 'viewReportButton'];
-        containers.forEach(id => {
-            const element = document.getElementById(id);
-            if (element) element.remove();
-        });
-        
-        this.mainSteps = [];
-        this.subTopics = [];
-        this.completedTopics = {};
-        this.expandedTopics.clear();
-        this.currentResearchData = null;
-    }
-    
-    // Debugging için
-    getStatus() {
-        return {
-            mainSteps: this.mainSteps.length,
-            subTopics: this.subTopics.length,
-            completed: this.subTopics.filter(t => t.status === 'completed').length,
-            expanded: this.expandedTopics.size,
-            hasResearchData: !!this.currentResearchData
-        };
-    }
-}  
+}

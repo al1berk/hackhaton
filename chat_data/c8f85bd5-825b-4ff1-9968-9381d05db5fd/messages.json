@@ -68,5 +68,15 @@
     "type": "ai",
     "content": "Anlıyorum, bir PDF dokümanı yüklü olduğunu belirtiyorsunuz ve konu başlıklarını öğrenmek istiyorsunuz.\n\nAncak, şu anki sistem durumumda aktif olarak erişebildiğim veya yakın zamanda yüklenmiş bir PDF dokümanı görünmüyor. Bu teknik bir aksaklık veya önceki yüklemenin tam olarak tamamlanmamış olmasından kaynaklanıyor olabilir.\n\nLütfen bana yardımcı olabilmem için şu adımlardan birini deneyebilir misiniz:\n\n1.  **PDF'i Tekrar Yükleyin:** Lütfen analiz etmemi istediğiniz PDF dosyasını tekrar yükleyebilir misiniz?\n2.  **Dosya Adını Belirtin:** Eğer daha önce yüklediğinizi düşünüyorsanız, lütfen dosyanın adını belirtin. Belki de doğru dosyayı bulmama yardımcı olur.\n\nDosyayı başarıyla yüklediğinizde veya adını belirttiğinizde, hemen içerisindeki konu başlıklarını çıkarıp size ileteceğim.",
     "timestamp": "2025-08-06T04:35:42.726748"
+  },
+  {
+    "type": "user",
+    "content": "test oluştur",
+    "timestamp": "2025-08-06T04:36:32.144275"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T04:36:32.169322"
   }
 ]

@@ -1,0 +1,42 @@
+[
+  {
+    "type": "user",
+    "content": "konu başlıklarını yaz",
+    "timestamp": "2025-08-06T05:47:58.448079"
+  },
+  {
+    "type": "ai",
+    "content": "Elbette, işte benim yapabildiğim ana konu başlıkları (özelliklerim):\n\n*   **Web Araştırması:** İnternet üzerinden güncel ve kapsamlı bilgi edinebilirim.\n*   **Soru Üretimi:** Belirli bir konu hakkında sorular oluşturabilirim.\n*   **Veri Analizi:** Sağlanan verileri inceleyip anlamlı sonuçlar çıkarabilirim.\n*   **Metin Özetleme:** Uzun metinleri kısa ve öz bir şekilde özetleyebilirim.\n*   **PDF Dokümanlarından Bilgi Çıkarma (RAG):** Yüklediğiniz PDF dosyalarından spesifik bilgiler bulabilir ve size sunabilirim.\n*   **Doküman Arama:** Önceden yüklenmiş dokümanlar arasında anahtar kelime veya konu bazlı arama yapabilirim.\n\nBaşka bir konuda yardımcı olabilir miyim?",
+    "timestamp": "2025-08-06T05:48:01.285224"
+  },
+  {
+    "type": "user",
+    "content": "pdf deki konu başlıklarını yaz",
+    "timestamp": "2025-08-06T05:48:19.215632"
+  },
+  {
+    "type": "ai",
+    "content": "Anladım! Eğer bana bir PDF dokümanı yüklerseniz veya daha önce yüklenmiş dokümanlar arasında arama yapmamı isterseniz, o PDF'in içindeki konu başlıklarını, bölüm isimlerini veya ana fikirleri sizin için çıkarabilirim.\n\nŞu an için herhangi bir PDF yüklenmediği veya belirtilmediği için size spesifik bir PDF'in konu başlıklarını veremiyorum.\n\nBana hangi PDF'ten konu başlıklarını istediğinizi söyleyebilir veya bir PDF yükleyebilirsiniz.",
+    "timestamp": "2025-08-06T05:48:21.043905"
+  },
+  {
+    "type": "user",
+    "content": "dökümanı attım",
+    "timestamp": "2025-08-06T05:48:29.328354"
+  },
+  {
+    "type": "ai",
+    "content": "Anladım, \"dökümanı attım\" dediniz. Ancak, şu anki etkileşimimizde doğrudan bir dosya yükleme veya \"atılan\" bir belgeyi alma yeteneğim bulunmamaktadır. Ben bir sohbet arayüzü üzerinden çalışıyorum ve dosya ekleri doğrudan bana ulaşmıyor.\n\nEğer bahsettiğiniz doküman, benim önceden yüklenmiş veya erişimim olan bir bilgi tabanında bulunan bir PDF ise, lütfen bana o dokümanın adını veya içeriği hakkında bir bilgi verin ki üzerinde arama yapabileyim.\n\nYoksa, dokümanın içeriğini buraya kopyalayıp yapıştırabilir veya ana hatlarını bana anlatarak yardımcı olmamı sağlayabilirsiniz.\n\nNasıl devam etmek istersiniz?",
+    "timestamp": "2025-08-06T05:48:32.922555"
+  },
+  {
+    "type": "user",
+    "content": "test üret",
+    "timestamp": "2025-08-06T05:49:01.267785"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T05:49:01.283648"
+  }
+]

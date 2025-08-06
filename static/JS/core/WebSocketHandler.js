@@ -1,6 +1,6 @@
 // static/js/core/WebSocketHandler.js
 
-export default class WebSocketHandler {
+export class WebSocketHandler {
     constructor(chatId, onMessage, onConnectionChange) {
         this.chatId = chatId;
         this.onMessage = onMessage;

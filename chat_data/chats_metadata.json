@@ -1758,10 +1758,10 @@
     "id": "c8f85bd5-825b-4ff1-9968-9381d05db5fd",
     "title": "test üret",
     "created_at": "2025-08-06T03:57:25.082724",
-    "updated_at": "2025-08-06T04:35:42.727370",
-    "message_count": 14,
+    "updated_at": "2025-08-06T04:36:32.169779",
+    "message_count": 16,
     "pdf_count": 2,
-    "last_message": "pdf deki konu başlıklarını yaz"
+    "last_message": "test oluştur"
   },
   "35aee574-f38e-455b-a896-a875ed1633d1": {
     "id": "35aee574-f38e-455b-a896-a875ed1633d1",
@@ -1780,5 +1780,230 @@
     "message_count": 0,
     "pdf_count": 0,
     "last_message": null
+  },
+  "ebc233c7-966d-4769-b361-adc380261a14": {
+    "id": "ebc233c7-966d-4769-b361-adc380261a14",
+    "title": "ai nedir",
+    "created_at": "2025-08-06T04:36:38.767573",
+    "updated_at": "2025-08-06T04:40:59.467605",
+    "message_count": 6,
+    "pdf_count": 0,
+    "last_message": "ai nedir araştır"
+  },
+  "93c6a776-f6df-442c-b17c-ba805a475ebf": {
+    "id": "93c6a776-f6df-442c-b17c-ba805a475ebf",
+    "title": "Sohbet 200",
+    "created_at": "2025-08-06T04:42:01.528676",
+    "updated_at": "2025-08-06T04:42:01.528676",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "b119febf-77ed-49ef-8b8f-55eab2a03d1f": {
+    "id": "b119febf-77ed-49ef-8b8f-55eab2a03d1f",
+    "title": "konu başlıklarını yaz",
+    "created_at": "2025-08-06T05:47:25.291713",
+    "updated_at": "2025-08-06T05:49:01.284305",
+    "message_count": 8,
+    "pdf_count": 1,
+    "last_message": "test üret"
+  },
+  "1ead6281-24a7-41ce-a467-830be47c9f7a": {
+    "id": "1ead6281-24a7-41ce-a467-830be47c9f7a",
+    "title": "Sohbet 202",
+    "created_at": "2025-08-06T05:49:38.767481",
+    "updated_at": "2025-08-06T05:49:38.767481",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "929b2ed4-8e7f-4965-afaf-79b1c46e1ca4": {
+    "id": "929b2ed4-8e7f-4965-afaf-79b1c46e1ca4",
+    "title": "konu başlıklarını yaz",
+    "created_at": "2025-08-06T05:54:04.157858",
+    "updated_at": "2025-08-06T05:55:04.397208",
+    "message_count": 4,
+    "pdf_count": 1,
+    "last_message": "yüklediğim pdf in konu başlıklarını yaz"
+  },
+  "d3ef61f2-84ef-4852-8057-f30084721f4b": {
+    "id": "d3ef61f2-84ef-4852-8057-f30084721f4b",
+    "title": "pdfdeki konu başlıklarını yaz",
+    "created_at": "2025-08-06T06:01:06.952001",
+    "updated_at": "2025-08-06T06:02:31.719286",
+    "message_count": 11,
+    "pdf_count": 1,
+    "last_message": "Kullanıcı test parametrelerini seçti."
+  },
+  "1a77310e-2a37-42c7-89fb-22cbaf474b9b": {
+    "id": "1a77310e-2a37-42c7-89fb-22cbaf474b9b",
+    "title": "pdf deki konu başlıklarını yaz",
+    "created_at": "2025-08-06T06:12:41.773597",
+    "updated_at": "2025-08-06T06:13:17.755187",
+    "message_count": 2,
+    "pdf_count": 1,
+    "last_message": "pdf deki konu başlıklarını yaz"
+  },
+  "70f8f708-2d1f-4fa8-bc29-431ff624036f": {
+    "id": "70f8f708-2d1f-4fa8-bc29-431ff624036f",
+    "title": "frontal lob  nedir",
+    "created_at": "2025-08-06T06:18:16.320011",
+    "updated_at": "2025-08-06T06:19:27.182171",
+    "message_count": 3,
+    "pdf_count": 1,
+    "last_message": "pdf I incele. frontal lob nedir"
+  },
+  "4a58585e-aeba-4d8e-8598-90d35f09c845": {
+    "id": "4a58585e-aeba-4d8e-8598-90d35f09c845",
+    "title": "Sohbet 207",
+    "created_at": "2025-08-06T06:19:37.952054",
+    "updated_at": "2025-08-06T06:19:37.952054",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "58f4a741-1f90-4c9c-894d-11075394cbe3": {
+    "id": "58f4a741-1f90-4c9c-894d-11075394cbe3",
+    "title": "dökümanı incele frontal lob nedir",
+    "created_at": "2025-08-06T06:20:15.194067",
+    "updated_at": "2025-08-06T06:20:55.825395",
+    "message_count": 2,
+    "pdf_count": 1,
+    "last_message": "dökümanı incele. frontal lob nedir"
+  },
+  "6f41356c-5122-4188-90e6-c895a1918a3b": {
+    "id": "6f41356c-5122-4188-90e6-c895a1918a3b",
+    "title": "frontal lobun görevi nedir",
+    "created_at": "2025-08-06T06:24:52.227943",
+    "updated_at": "2025-08-06T06:25:29.602400",
+    "message_count": 2,
+    "pdf_count": 0,
+    "last_message": "frontal lobun görevi nedir"
+  },
+  "69c7d20f-fcf7-42c3-824b-d8077f5226b3": {
+    "id": "69c7d20f-fcf7-42c3-824b-d8077f5226b3",
+    "title": "Sohbet 210",
+    "created_at": "2025-08-06T06:25:00.915578",
+    "updated_at": "2025-08-06T06:25:14.573011",
+    "message_count": 0,
+    "pdf_count": 1,
+    "last_message": null
+  },
+  "d08157da-fbba-419c-ac3e-f758a10daa9c": {
+    "id": "d08157da-fbba-419c-ac3e-f758a10daa9c",
+    "title": "Sohbet 211",
+    "created_at": "2025-08-06T06:25:44.098652",
+    "updated_at": "2025-08-06T06:25:44.098652",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "0975ecab-c8e9-4924-a5b3-25f5eca17cb4": {
+    "id": "0975ecab-c8e9-4924-a5b3-25f5eca17cb4",
+    "title": "Sohbet 212",
+    "created_at": "2025-08-06T06:25:44.105480",
+    "updated_at": "2025-08-06T06:25:44.105480",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "6863d769-c687-4efd-a9b1-720cd89a0f83": {
+    "id": "6863d769-c687-4efd-a9b1-720cd89a0f83",
+    "title": "Sohbet 213",
+    "created_at": "2025-08-06T06:25:52.885684",
+    "updated_at": "2025-08-06T06:25:52.885684",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "a72da868-9416-4afb-9bc1-452bd116edc0": {
+    "id": "a72da868-9416-4afb-9bc1-452bd116edc0",
+    "title": "Sohbet 214",
+    "created_at": "2025-08-06T06:25:59.235289",
+    "updated_at": "2025-08-06T06:25:59.235289",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "6bedfb6c-a793-44ea-ae3f-4e8e07623ae9": {
+    "id": "6bedfb6c-a793-44ea-ae3f-4e8e07623ae9",
+    "title": "pdf I incele frontal lob nedir",
+    "created_at": "2025-08-06T06:26:02.183213",
+    "updated_at": "2025-08-06T06:26:31.075084",
+    "message_count": 1,
+    "pdf_count": 1,
+    "last_message": "pdf I incele. frontal lob nedir"
+  },
+  "49b9a3dd-4799-4357-bb39-3c99d7e218e1": {
+    "id": "49b9a3dd-4799-4357-bb39-3c99d7e218e1",
+    "title": "Sohbet 216",
+    "created_at": "2025-08-06T06:26:36.979456",
+    "updated_at": "2025-08-06T06:26:36.979456",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "f4660d41-d535-4de1-adbc-20257a04dd84": {
+    "id": "f4660d41-d535-4de1-adbc-20257a04dd84",
+    "title": "Sohbet 217",
+    "created_at": "2025-08-06T06:29:47.408122",
+    "updated_at": "2025-08-06T06:29:47.408122",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "21b17fa1-7e16-4927-90a7-3b89af0d2944": {
+    "id": "21b17fa1-7e16-4927-90a7-3b89af0d2944",
+    "title": "Sohbet 218",
+    "created_at": "2025-08-06T06:29:55.406134",
+    "updated_at": "2025-08-06T06:29:55.406134",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "4fcde144-e46e-4188-a44b-9081db302e6c": {
+    "id": "4fcde144-e46e-4188-a44b-9081db302e6c",
+    "title": "Sohbet 219",
+    "created_at": "2025-08-06T06:29:56.429866",
+    "updated_at": "2025-08-06T06:29:56.429866",
+    "message_count": 0,
+    "pdf_count": 0,
+    "last_message": null
+  },
+  "06173c07-db8d-4993-a4e1-af9014fd5774": {
+    "id": "06173c07-db8d-4993-a4e1-af9014fd5774",
+    "title": "frontal lob nedir",
+    "created_at": "2025-08-06T06:30:04.427430",
+    "updated_at": "2025-08-06T06:31:16.381000",
+    "message_count": 6,
+    "pdf_count": 1,
+    "last_message": "test üret"
+  },
+  "3e7e24ce-3300-4d7e-b2e3-1e0ea7f1e36c": {
+    "id": "3e7e24ce-3300-4d7e-b2e3-1e0ea7f1e36c",
+    "title": "pdf deki konu başlıklarını yaz",
+    "created_at": "2025-08-06T06:35:04.359685",
+    "updated_at": "2025-08-06T06:37:18.789231",
+    "message_count": 6,
+    "pdf_count": 1,
+    "last_message": "hayır pdf yüklü"
+  },
+  "d6697772-25ba-4128-8550-6dace6ff70e3": {
+    "id": "d6697772-25ba-4128-8550-6dace6ff70e3",
+    "title": "pdf deki konu başlıklarını yaz",
+    "created_at": "2025-08-06T06:38:17.542322",
+    "updated_at": "2025-08-06T06:39:32.315974",
+    "message_count": 6,
+    "pdf_count": 1,
+    "last_message": "test üret"
+  },
+  "b68725dc-e871-4526-96fe-04913f885874": {
+    "id": "b68725dc-e871-4526-96fe-04913f885874",
+    "title": "temporal lobu da anlat",
+    "created_at": "2025-08-06T06:41:02.503865",
+    "updated_at": "2025-08-06T06:41:42.389000",
+    "message_count": 4,
+    "pdf_count": 0,
+    "last_message": "pdf den referansla anlat"
   }
 }

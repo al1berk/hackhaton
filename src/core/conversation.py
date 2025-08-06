@@ -187,7 +187,7 @@ class AsyncLangGraphDialog:
         try:
             last_message = state["messages"][-1].content
             
-            # Vektör deposında ara
+            # Vektör deposunda ara
             search_results = self.vector_store.search_similar(
                 query=last_message,
                 n_results=Config.RAG_TOP_K
@@ -225,10 +225,14 @@ class AsyncLangGraphDialog:
             state["rag_context"] = ""
             state["has_pdf_context"] = False
         
+        # KRİTİK DÜZELTME: State'i return et!
+        return state
     
     def format_rag_context(self, search_results: List[dict]) -> str:
         """RAG arama sonuçlarını LLM için uygun formatta hazırla"""
-        context = f"YÜKLENEN PDF DOKÜMANLARINDAN BULUNAN BİLGİLER (Sohbet: {self.chat_id}):\n\n"
+        context = f"===== YÜKLENEN PDF DOKÜMANLARINDAN BULUNAN BİLGİLER =====\n"
+        context += f"Sohbet ID: {self.chat_id}\n"
+        context += f"Bulunan parça sayısı: {len(search_results)}\n\n"
         
         for i, result in enumerate(search_results, 1):
             filename = result['metadata'].get('filename', 'Bilinmeyen dosya')
@@ -236,11 +240,17 @@ class AsyncLangGraphDialog:
             similarity = result.get('similarity', 0)
             content = result['content']
             
-            context += f"{i}. KAYNAK: {filename} (Bölüm {chunk_index + 1}, Benzerlik: %{similarity*100:.1f})\n"
-            context += f"İÇERİK: {content}\n\n"
+            context += f"KAYNAK {i}:\n"
+            context += f"📄 Dosya: {filename}\n"
+            context += f"📍 Bölüm: {chunk_index + 1}\n"
+            context += f"🎯 Benzerlik: %{similarity*100:.1f}\n"
+            context += f"📝 İÇERİK:\n{content}\n"
+            context += f"{'='*50}\n\n"
         
-        context += f"TOPLAM KAYNAK: {len(search_results)} doküman parçası\n"
-        context += f"ARAMA TARİHİ: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        context += f"ÖNEMLİ: Bu bilgiler kullanıcının bu sohbete yüklediği PDF dokümanlarından geliyor.\n"
+        context += f"Kullanıcının sorusunu bu PDF içeriğine dayanarak yanıtla.\n"
+        context += f"Arama tarihi: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+        context += "=" * 60
         
         return context
 
@@ -436,7 +446,7 @@ class AsyncLangGraphDialog:
         # Test oluşturma komutları - GENİŞLETİLMİŞ LİSTE
         test_keywords = [
             "test oluştur", "test olustur", "soru hazırla", "sınav yap", "test yap", 
-            "soru üret", "soru uret", "test hazırla", "test hazırla", "quiz oluştur",
+            "soru üret", "soru uret", "test hazırla", "quiz oluştur",
             "quiz olustur", "sınav oluştur", "sinav olustur", "test üret", "test uret",
             "sorular oluştur", "sorular olustur", "değerlendirme yap", "degerlendirme yap"
         ]
@@ -447,7 +457,6 @@ class AsyncLangGraphDialog:
             logger.info("✅ Intent detected: generate_test")
             return state
 
-        
         # Araştırma tamamlandıysa ve research data varsa
         if state.get("research_completed", False) and state.get("research_data"):
             research_keywords = ["araştırma", "rapor", "bulgu", "sonuç", "detay", "açıkla", "anlatır mısın", 
@@ -478,14 +487,16 @@ class AsyncLangGraphDialog:
                 direct_pdf_references = [
                     "bu doküman", "bu dokuman", "bu dosya", "bu pdf", "bu rapor",
                     "bu belge", "yüklediğim", "yukledıgım", "gönderdiğim", "gonderdigim",
-                    "dokümanı", "dokumanı", "dosyayı", "pdf'i", "raporu", "belgeyi"
+                    "dokümanı", "dokumanı", "dosyayı", "pdf'i", "raporu", "belgeyi",
+                    "dosyada", "dosyadan", "pdf'te", "pdf'de", "belgede", "dökümanı", "dokumanı"
                 ]
                 
                 # PDF içerik soruları
                 pdf_content_questions = [
                     "özet", "özetle", "içerik", "içinde", "neler var", "ne diyor",
                     "bahsediyor", "yaziyor", "yazıyor", "anlatıyor", "gösteriyor",
-                    "açıklıyor", "hangi konular", "nasıl açıklıyor"
+                    "açıklıyor", "hangi konular", "nasıl açıklıyor", "konu başlıkları",
+                    "başlıklar", "konular", "bölümler", "detaylar", "bilgiler", "içindekiler"
                 ]
                 
                 # Dosya ismi referansları
@@ -512,12 +523,17 @@ class AsyncLangGraphDialog:
                     should_use_rag = True
                     reason = "Direct PDF reference"
                 
-                # 2. Dosya ismi + içerik sorusu
+                # 2. **KONU BAŞLIĞI SORGUSU - GÜÇLENDİRİLMİŞ**
+                elif any(kw in last_message for kw in ["konu başlıkları", "başlıklar", "konular", "bölümler", "içindekiler", "pdf deki", "pdfdeki", "pdf in", "pdfin", "başlık", "konu", "içerik"]):
+                    should_use_rag = True
+                    reason = "Table of contents/content request"
+                
+                # 3. Dosya ismi + içerik sorusu
                 elif file_name_matches and any(q in last_message for q in pdf_content_questions):
                     should_use_rag = True
                     reason = f"File name match ({file_name_matches}) + content question"
                 
-                # 3. PDF kelimesi + içerik sorusu 
+                # 4. PDF kelimesi + içerik sorusu 
                 elif ("pdf" in last_message or "doküman" in last_message or "dokuman" in last_message) and \
                      any(q in last_message for q in pdf_content_questions):
                     should_use_rag = True
@@ -542,7 +558,7 @@ class AsyncLangGraphDialog:
         # Web araştırması otomatik algılama - SADECE kesin durumlar
         research_keywords_explicit = ["araştır", "araştırma yap", "incele", "analiz et", "web'de ara", "internette ara"]
         
-        detected_intent = "general_chat"
+        detected_intent = "gemini"  # Varsayılan olarak gemini response
         task_topic = original_message
         
         # Açık araştırma talepleri
@@ -650,31 +666,43 @@ class AsyncLangGraphDialog:
             messages_for_llm = state["messages"]
             
             if state.get("has_pdf_context") and state.get("rag_context"):
-                # RAG context'i kullan
+                # RAG context'i kullan - GÜÇLENDİRİLMİŞ VE KEMİK GIBI SERT PROMPT
                 user_question = messages_for_llm[-1].content
                 rag_context = state["rag_context"]
                 
-                contextual_prompt = f"""
-Kullanıcının sorusu: {user_question}
+                # Çok daha güçlü ve net bir prompt oluştur
+                enhanced_prompt = f"""SEN BİR PDF ANALİZ ASİSTANISIN VE SAKİN GENEL BİLGİNİ KULLANMA!
 
-Aşağıda bu sohbette yüklenmiş PDF dokümanlarından bulunan ilgili bilgiler var. 
-Bu bilgileri kullanarak kullanıcının sorusuna doğru ve detaylı bir şekilde cevap ver.
+KULLANICININ SORUSU: "{user_question}"
 
-PDF DOKÜMANLARINDAN BULUNAN BİLGİLER:
+YÜKLENEN PDF DOKÜMANLARINDAN BULUNAN BİLGİLER:
 {rag_context}
 
-Cevabında:
-1. PDF dokümanlarından elde edilen bilgileri kullan
-2. Hangi dokümanlardan geldiğini belirt
-3. Spesifik detayları vurgula
-4. Eğer PDF'lerde olmayan bir şey soruyorsa, web araştırması önerebilirsin
-5. Kullanıcı dostu ve bilgilendirici bir ton kullan
+ZORUNLU CEVAPLAMA KURALLARI:
+1. Yukarıdaki PDF dokümanlarından bulduğun bilgileri kullanarak cevap ver
+2. "Yüklediğiniz PDF'te şu bilgiler var:" diye başla
+3. Hangi dosyadan hangi bilgiyi aldığını belirt
+4. Konu başlıkları soruluyorsa, PDF'ten çıkan başlıkları listele
+5. PDF'te olmayan bilgiler hakkında "Bu konuda PDF'te bilgi yok" de
+6. Asla "hangi PDF" diye sorma, zaten PDF'lerin listesi yukarıda var
+7. Kesinlikle genel internet bilgisi kullanma, sadece PDF içeriği kullan
 
-NOT: Bu bilgiler kullanıcının bu sohbete yüklediği PDF dokümanlarından geliyor.
-Sohbet ID: {self.chat_id}
-"""
+ÖRNEK YANIT FORMATI:
+"📄 Yüklediğiniz PDF dokümanlarından şu bilgileri buldum:
+
+• [Dosya adı]'nda şu konular var: [listele]
+• [Belirli konu] hakkında: [PDF'ten alıntı]
+
+Kaynak: [Dosya adı], Bölüm [X]"
+
+ŞİMDİ BU KURALLARA UYARAK CEVAP VER:"""
                 
-                contextual_messages = messages_for_llm[:-1] + [HumanMessage(content=contextual_prompt)]
+                # Sadece system message + yeni prompt gönder
+                contextual_messages = [
+                    SystemMessage(content="Sen PDF analiz asistanısın. Sadece yüklenen dokümanlardan bilgi ver."),
+                    HumanMessage(content=enhanced_prompt)
+                ]
+                
                 response = await self.llm.ainvoke(contextual_messages)
                 
             elif state.get("current_intent") == "research_question" and state.get("research_data"):
@@ -705,6 +733,7 @@ Kullanıcı dostu ve bilgilendirici bir ton kullan.
                 response = await self.llm.ainvoke(contextual_messages)
                 
             else:
+                # Normal Gemini response
                 if messages_for_llm and "araştırma başlatılmadı" in messages_for_llm[-1].content:
                     messages_for_llm = messages_for_llm[:-1]
                 response = await self.llm.ainvoke(messages_for_llm)

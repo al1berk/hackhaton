@@ -1,0 +1,32 @@
+[
+  {
+    "type": "user",
+    "content": "ai nedir",
+    "timestamp": "2025-08-06T04:37:27.727469"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Size \"yapay zeka\" (AI) kavramını açıklayabilirim.\n\n**Yapay Zeka (AI - Artificial Intelligence)**, bilgisayar sistemlerinin genellikle insan zekası gerektiren görevleri yerine getirme yeteneğidir. Bu görevler arasında öğrenme, problem çözme, karar verme, algılama, dil anlama ve üretme gibi beceriler bulunur.\n\nBasitçe söylemek gerekirse, makinelerin insan gibi düşünmesini, öğrenmesini ve hareket etmesini sağlayan bir teknoloji dalıdır.\n\nYapay zeka günümüzde birçok alanda karşımıza çıkar:\n\n*   **Sesli asistanlar** (Siri, Google Asistan)\n*   **Öneri sistemleri** (Netflix'in size film önermesi, e-ticaret sitelerinin ürün önermesi)\n*   **Otonom araçlar**\n*   **Görüntü tanıma** (yüz tanıma, tıbbi görüntülerde hastalık tespiti)\n*   **Doğal dil işleme** (metin çevirisi, spam filtreleme)\n*   **Oyunlar** (bilgisayar rakipleri)\n\nAmacı, makineleri daha akıllı ve verimli hale getirerek insanlara çeşitli görevlerde yardımcı olmaktır.\n\nBaşka bir konuda yardımcı olmamı ister misiniz?",
+    "timestamp": "2025-08-06T04:37:30.555534"
+  },
+  {
+    "type": "user",
+    "content": "ai nedir",
+    "timestamp": "2025-08-06T04:37:39.878105"
+  },
+  {
+    "type": "ai",
+    "content": "Tekrar merhaba!\n\nYapay Zeka (AI), bilgisayar sistemlerinin genellikle insan zekası gerektiren görevleri yerine getirme yeteneğidir. Yani, makinelerin insan gibi öğrenmesini, düşünmesini, problem çözmesini ve karar vermesini sağlayan bir teknoloji dalıdır.\n\nÖrnek olarak, akıllı telefonunuzdaki sesli asistanlar, öneri sistemleri (Netflix'deki film önerileri) ve hatta otonom araçlar yapay zekanın farklı uygulamalarıdır.\n\nBu konuda başka bir sorunuz var mıydı, yoksa yapay zekanın farklı bir yönünü mü merak ediyordunuz?",
+    "timestamp": "2025-08-06T04:37:41.410998"
+  },
+  {
+    "type": "user",
+    "content": "ai nedir araştır",
+    "timestamp": "2025-08-06T04:37:47.773105"
+  },
+  {
+    "type": "ai",
+    "content": "🔍 **'ai nedir' Araştırması Tamamlandı!**\n\n📋 **CrewAI Multi-Agent Sistemi Tarafından Keşfedilen Konular:**\n1. Yapay Zekanın (AI) Tanımı ve Genel Bakış\n2. Yapay Zekanın Temel Çalışma Prensibi\n3. Yapay Zekanın Alt Dalları: Makine Öğrenmesi ve Derin Öğrenme\n4. Yapay Zekanın Bilişsel Yetenekleri\n\n🚀 **İlk konu ile başlıyorum:** Yapay Zekanın (AI) Tanımı ve Genel Bakış\n\n**Yapay Zekanın (AI) Tanımı ve Genel Bakış Hakkında:**\nYapay Zeka (AI), makinelerin insan benzeri zihinsel süreçleri taklit etmesini sağlayan bir bilgisayar bilimi dalıdır. Bu, makinelerin deneyimlerden öğrenmesini, yeni girdilere uyum sağlamasını, örüntüleri tanımasını, sorunları çözmesini ve insan zekası gerektiren görevleri yerine getirmesini mümkün kılar. AI'nın temel amacı, insan düşünme biçimlerini analiz ederek, bu yöntemlerin doğal olmayan bir şekilde bilgisayar sistemleri tarafından uygulanmasını sağlamaktır.\n\nGünümüzdeki teknolojik önemini...\n📊 **Toplam 4 konu detaylandırıldı**\n🤖 **CrewAI Multi-Agent sistemi (Asenkron) kullanıldı**\n⏰ **Araştırma tarihi:** 2025-08-06 04:40",
+    "timestamp": "2025-08-06T04:40:59.466838"
+  }
+]

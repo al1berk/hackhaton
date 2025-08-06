@@ -1,6 +1,6 @@
 // static/js/pdf-manager.js
 
-class PDFManager {
+ export class PDFManager {
     constructor(app) {
         this.app = app;
         this.isUploading = false;
@@ -9,7 +9,7 @@ class PDFManager {
         
         this.initializeElements();
         this.setupEventListeners();
-        this.loadPDFList();
+        // Remove immediate loadPDFList call - will be called after app initialization
     }
 
     initializeElements() {
@@ -75,8 +75,9 @@ class PDFManager {
             return;
         }
 
-        // Aktif chat ID'yi al - app üzerinden direkt
-        const currentChatId = this.app.currentChatId || this.app.pdfState.currentChatId;
+        // Aktif chat ID'yi al - safe access
+        const currentChatId = this.app.currentChatId || 
+                            (this.app.pdfState && this.app.pdfState.currentChatId);
         if (!currentChatId) {
             // Eğer aktif chat yoksa, yeni chat oluştur
             try {
@@ -260,8 +261,9 @@ class PDFManager {
 
     async loadPDFList() {
         try {
-            // App üzerinden currentChatId'yi al
-            const currentChatId = this.app.currentChatId || this.app.pdfState.currentChatId;
+            // Safe access to app.pdfState - check if it exists first
+            const currentChatId = this.app.currentChatId || 
+                                (this.app.pdfState && this.app.pdfState.currentChatId);
             if (!currentChatId) {
                 this.renderEmptyPDFList();
                 return;
@@ -278,8 +280,8 @@ class PDFManager {
             if (data.success) {
                 this.renderPDFList(data.documents);
                 
-                // Stats'i güncelle
-                if (data.stats) {
+                // Stats'i güncelle - safe access
+                if (data.stats && this.app.updatePDFStats) {
                     this.app.updatePDFStats(data.stats);
                 }
                 
@@ -362,8 +364,9 @@ class PDFManager {
         }
 
         try {
-            // App üzerinden currentChatId'yi al
-            const currentChatId = this.app.currentChatId || this.app.pdfState.currentChatId;
+            // Safe access to app.pdfState
+            const currentChatId = this.app.currentChatId || 
+                                (this.app.pdfState && this.app.pdfState.currentChatId);
             if (!currentChatId) {
                 throw new Error('Aktif sohbet bulunamadı');
             }
@@ -382,8 +385,8 @@ class PDFManager {
                 // PDF listesini yenile
                 this.loadPDFList();
                 
-                // Stats'i güncelle
-                if (data.stats) {
+                // Stats'i güncelle - safe access
+                if (data.stats && this.app.updatePDFStats) {
                     this.app.updatePDFStats(data.stats);
                 }
                 
@@ -479,6 +482,10 @@ class PDFManager {
     isUploadInProgress() {
         return this.isUploading;
     }
+
+    // Public method to initialize PDF list after app is fully loaded
+    initializePDFList() {
+        this.loadPDFList();
+    }
 }
 
-export default PDFManager;
