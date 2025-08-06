@@ -172,6 +172,7 @@ export class ChatHistoryManager {
             if (data.success) {
                 // Önce mevcut chat state'ini güncelle
                 this.currentChatId = chatId;
+                this.app.currentChatId = chatId; // YENİ: App'teki currentChatId'yi de güncelle
                 this.app.pdfState.currentChatId = chatId;
                 
                 // Sohbet listesindeki aktif durumu güncelle
@@ -191,8 +192,10 @@ export class ChatHistoryManager {
                     this.app.pdfManager.onChatChanged(chatId);
                 }
                 
-                // WebSocket bağlantısını bu chat için yeniden kur
-                this.app.ws.reconnectWithChatId(chatId);
+                // YENİ DÜZELTME: WebSocket'i doğru sırada yeniden bağla
+                setTimeout(() => {
+                    this.app.ws.reconnectWithChatId(chatId);
+                }, 100);
                 
                 // isFirstLoad false yap
                 this.app.isFirstLoad = false;

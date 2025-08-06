@@ -1061,13 +1061,16 @@ export class WebSocketHandler {
     reconnectWithChatId(chatId) {
         console.log(`🔄 WebSocket yeniden bağlanıyor (Chat ID: ${chatId})`);
         
+        // YENİ DÜZELTME: Chat ID'yi güncelle
+        this.chatId = chatId;
+        
         // Mevcut bağlantıyı kapat
         if (this.ws) {
             this.ws.close();
         }
         
         // Yeni chat ID ile bağlan
-        this.connect(chatId);
+        this.connect();
     }
     
     handleConnectionError() {
