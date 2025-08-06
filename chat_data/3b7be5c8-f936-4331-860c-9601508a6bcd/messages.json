@@ -1,0 +1,22 @@
+[
+  {
+    "type": "user",
+    "content": "LLM lerin tarihini araştır",
+    "timestamp": "2025-08-06T21:04:45.353135"
+  },
+  {
+    "type": "ai",
+    "content": "🔍 **'LLM lerin tarihini' Araştırması Tamamlandı!**\n\n📋 **CrewAI Multi-Agent Sistemi Tarafından Keşfedilen Konular:**\n1. BÜYÜK DİL MODELLERİNE GİRİŞ VE TANIM\n2. DİL İŞLEMENİN İLK ADIMLARI: KURAL TABANLI SİSTEMLER\n3. İSTATİSTİKSEL DİL MODELLERİNİN YÜKSELİŞİ\n4. ERKEN DÖNEM MODELLERİNİN KATKILARI VE SINIRLILIKLARI\n\n🚀 **İlk konu ile başlıyorum:** BÜYÜK DİL MODELLERİNE GİRİŞ VE TANIM\n\n**BÜYÜK DİL MODELLERİNE GİRİŞ VE TANIM Hakkında:**\nBüyük Dil Modelleri (LLM'ler), doğal dil işleme (NLP) alanında devrim yaratan, insan dilini anlama, yorumlama ve üretme yeteneğine sahip ileri düzey yapay zeka sistemleridir. Bu modellerin temelini, geniş ölçekli metin verileri üzerinde kendi kendine denetimli öğrenme (self-supervised learning) prensipleri ve özellikle \"Transformer mimarisi\" oluşturur.\n\nLLM'lerin tarihi, NLP'nin erken dönemlerine dayanır. Başlangıçta, dil modelleri istatistiksel yöntemlere (örneğin, N-gram modelleri) ve kural ta...\n📊 **Toplam 4 konu detaylandırıldı**\n🤖 **CrewAI Multi-Agent sistemi (Asenkron) kullanıldı**\n⏰ **Araştırma tarihi:** 2025-08-06 21:10",
+    "timestamp": "2025-08-06T21:10:27.501142"
+  },
+  {
+    "type": "user",
+    "content": "araştırma alt başlıklarını yaz",
+    "timestamp": "2025-08-06T21:11:10.505017"
+  },
+  {
+    "type": "ai",
+    "content": "Harika bir soru! LLM'lerin (Büyük Dil Modelleri) tarihi üzerine yapılan araştırmanın alt başlıkları ve kısa açıklamaları aşağıdadır:\n\n🔍 **LLM'lerin Tarihi Araştırmasının Alt Başlıkları:**\n\n1.  **BÜYÜK DİL MODELLERİNE GİRİŞ VE TANIM:**\n    Bu bölüm, Büyük Dil Modelleri'nin ne olduğunu, temel prensiplerini (kendi kendine denetimli öğrenme ve Transformer mimarisi) ve NLP alanındaki devrim niteliğindeki yerini tanımlar. Ayrıca, LLM'lerin erken dönem istatistiksel ve kural tabanlı modellerden nasıl evrildiğini, özellikle 2017'deki Transformer mimarisinin ve GPT serisi gibi modellerin yükselişini anlatır. Günümüzdeki geniş uygulama alanlarına da değinilir.\n\n2.  **DİL İŞLEMENİN İLK ADIMLARI: KURAL TABANLI SİSTEMLER:**\n    Bu başlık, 1950'lerden 1970'lere kadar uzanan \"sembolik yapay zeka\" dönemini ve dil işlemenin ilk çabalarını ele alır. ELIZA ve SHRDLU gibi kural tabanlı sistemlerin nasıl çalıştığını, insan dilini önceden tanımlanmış kurallar ve kalıp eşleştirmelerle işlemeye çalıştıklarını açıklar. Bu sistemlerin katkıları ve sınırlılıkları (gerçek anlama eksikliği, ölçeklenememe) detaylandırılır.\n\n3.  **İSTATİSTİKSEL DİL MODELLERİNİN YÜKSELİŞİ:**\n    1980'lerden itibaren kural tabanlı sistemlerin sınırlılıklarına bir yanıt olarak ortaya çıkan istatistiksel dil modelleri bu bölümde incelenir. Özellikle N-gram modellerinin (örneğin, bigram, trigram) bir kelimenin bağlam içinde ortaya çıkma olasılığını nasıl tahmin ettiğini açıklar. Konuşma tanıma ve makine çevirisi gibi alanlardaki başarıları vurgulanırken, \"seyreklik problemi\" ve uzun menzilli bağımlılıkları yakalayamama gibi sınırlılıklarına da değinilir.\n\n4.  **ERKEN DÖNEM MODELLERİNİN KATKILARI VE SINIRLILIKLARI:**\n    Bu son bölüm, ELIZA, SHRDLU ve N-gram modelleri gibi erken dönem dil işleme yaklaşımlarının genel bir değerlendirmesini sunar. Her bir modelin doğal dil işlemeye getirdiği önemli katkıları (insan-bilgisayar etkileşimi, sınırlı alanda anlama, istatistiksel modelleme) ve aynı zamanda karşılaştıkları temel sınırlılıkları (gerçek anlama eksikliği, ölçeklenememe, seyreklik problemi, kısa bağlam penceresi) özetler. Bu sınırlılıkların, daha sofistike ve bağlama duyarlı modern LLM'lerin geliştirilmesinin önünü nasıl açtığı belirtilir.\n\nUmarım bu alt başlıklar, LLM'lerin tarihini anlamanız için size iyi bir çerçeve sunar! Başka bir sorunuz olursa çekinmeyin.",
+    "timestamp": "2025-08-06T21:11:16.054597"
+  }
+]

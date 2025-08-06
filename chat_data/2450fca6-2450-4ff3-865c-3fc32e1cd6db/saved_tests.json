@@ -1,0 +1,121 @@
+[
+  {
+    "test_id": "test_1754497914237",
+    "created_at": "2025-08-06T19:31:54.243655",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2024-07-30T10:00:00.000000",
+        "question_count": 8,
+        "question_types": {
+          "coktan_secmeli": 5,
+          "klasik": 3
+        },
+        "difficulty_distribution": {
+          "kolay": 0,
+          "orta": 8,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [
+          {
+            "soru": "İnsan beyni ile ilgili aşağıdaki ifadelerden hangisi yanlıştır?",
+            "secenekler": {
+              "A": "Yaklaşık 1.3 - 1.4 kilogram ağırlığındadır.",
+              "B": "Sinir hücreleri (nöronlar) ve destekleyici hücrelerden (nöroglia) oluşur.",
+              "C": "Merkezi sinir sisteminin ana kontrol merkezidir.",
+              "D": "Sadece bilinçli süreçleri yönetir, bilinçsiz süreçlerde rol oynamaz."
+            },
+            "dogru_cevap": "D",
+            "aciklama": "Metinde beynin hem bilinçli hem de bilinçsiz süreçleri yönettiği açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Aşağıdakilerden hangisi insan beyninin yönettiği yaşamsal veya bilişsel fonksiyonlardan biri değildir?",
+            "secenekler": {
+              "A": "Solunum ve kalp atışı",
+              "B": "Hafıza ve duygular",
+              "C": "Vücut dışı dengeyi sağlamak",
+              "D": "Düşünme ve öğrenme"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Metinde beynin vücut içi dengeyi (homeostaz) yönettiği belirtilmiştir, vücut dışı denge değil.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beynin en büyük kısmı olan serebrum (beyin kabuğu) temel olarak hangi fonksiyonlardan sorumludur?",
+            "secenekler": {
+              "A": "Sadece solunum ve kalp atışı gibi otomatik yaşamsal fonksiyonlar.",
+              "B": "Düşünme, problem çözme, dil ve bilinçli hareketler gibi yüksek bilişsel fonksiyonlar.",
+              "C": "Yalnızca duyusal algıları (görme, işitme) yönetmek.",
+              "D": "Vücut içi dengeyi (homeostaz) sağlamak."
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde serebrumun düşünme, problem çözme, dil, bilinçli hareketler ve duyusal yorumlama gibi yüksek bilişsel fonksiyonlardan sorumlu olduğu belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrumun dört ana lobundan biri olan frontal lobun başlıca görevleri arasında aşağıdakilerden hangisi yer alır?",
+            "secenekler": {
+              "A": "Duyusal yorumlama",
+              "B": "Planlama ve karar verme",
+              "C": "Görme duyusu",
+              "D": "Hafıza oluşumu"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde frontal lobun planlama ve karar vermeden sorumlu olduğu açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Raporda belirtilen bilgilere göre, insan beyni kaç kilogram ağırlığındadır?",
+            "secenekler": {
+              "A": "Yaklaşık 0.5 - 0.7 kilogram",
+              "B": "Yaklaşık 1.0 - 1.1 kilogram",
+              "C": "Yaklaşık 1.3 - 1.4 kilogram",
+              "D": "Yaklaşık 2.0 - 2.5 kilogram"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Metinde insan beyninin yaklaşık 1.3 - 1.4 kilogram ağırlığında olduğu belirtilmiştir.",
+            "zorluk": "Orta"
+          }
+        ],
+        "klasik": [
+          {
+            "soru": "Metinde insan beyninin \"çok yönlü kontrol yeteneği\"ne sahip olduğu ve bunun insan varoluşu için vazgeçilmez olduğu belirtilmektedir. Beynin hem üst düzey bilişsel fonksiyonları hem de otomatik yaşamsal fonksiyonları aynı anda yönetmesinin, bir bireyin günlük yaşamdaki adaptasyonu ve hayatta kalması açısından ne gibi avantajlar sağladığını örneklerle açıklayınız.",
+            "ornek_cevap": "Beynin çok yönlü kontrol yeteneği, bir bireyin hem karmaşık düşünebilmesini hem de temel yaşamsal faaliyetlerini sürdürebilmesini sağlar. Örneğin, bir öğrenci ders çalışırken (üst düzey bilişsel fonksiyon: öğrenme, düşünme) aynı anda nefes alıp vermesi, kalbinin atması gibi otomatik süreçler beyni tarafından yönetilir. Bu sayede insan, bilinçli faaliyetlerine odaklanabilirken, hayati fonksiyonları kesintisiz devam eder. Ayrıca, tehlike anında hızlı karar verme (bilişsel) ve kaçma (hareket, otomatik yaşamsal) gibi entegre tepkiler verebilmesi, hayatta kalma adaptasyonunu artırır. Bu entegrasyon, insanın çevresiyle etkileşimini, öğrenmesini ve karmaşık sosyal yapılar kurmasını mümkün kılar, böylece türün devamlılığına katkıda bulunur.",
+            "degerlendirme_kriterleri": "Beynin hem bilişsel hem de otomatik fonksiyonları yönettiği bilgisini doğru kullanma; Bu iki tür fonksiyonun bir aradalığının günlük yaşam adaptasyonuna ve hayatta kalmaya sağladığı avantajları açıklayabilme; Somut ve ilgili örnekler verebilme; Analitik düşünme ve sentez yeteneği.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metinde serebrumun (beyin kabuğu) \"yüksek bilişsel fonksiyonlardan sorumlu\" olduğu ve farklı loblara ayrıldığı, her lobun kendine özgü görevleri olduğu belirtilmektedir. Beyin loblarının görevlerindeki bu özelleşme (örneğin frontal lobun planlama ve karar vermedeki rolü), insan bilişsel kapasitesinin gelişimine nasıl bir katkı sağlamaktadır? Bu özelleşmenin olmaması durumunda ne gibi kısıtlamalar yaşanabileceğini tartışınız.",
+            "ornek_cevap": "Beyin loblarının görevlerindeki özelleşme, insan bilişsel kapasitesinin çok daha verimli ve karmaşık bir şekilde işlemesine olanak tanır. Her lobun belirli bir göreve odaklanması (örneğin frontal lobun planlama ve karar verme gibi yürütücü işlevler, oksipital lobun görme, temporal lobun işitme ve hafıza), beynin aynı anda birçok farklı bilgiyi işleyebilmesini ve daha sofistike bilişsel süreçleri gerçekleştirebilmesini sağlar. Bu özelleşme sayesinde insan, problem çözme, dil öğrenme, soyut düşünme gibi karmaşık becerileri geliştirebilir. Eğer bu özelleşme olmasaydı, beyin tüm işlevleri tek bir merkezden yürütmeye çalışacağı için bilgi işleme hızı ve kapasitesi ciddi şekilde düşerdi. Bireylerin karmaşık görevleri yerine getirmesi, öğrenmesi ve çevreye uyum sağlaması çok daha zorlaşır, hatta imkansız hale gelebilirdi. Bu durum, insan türünün bugünkü bilişsel seviyesine ulaşmasını engellerdi.",
+            "degerlendirme_kriterleri": "Beyin loblarındaki özelleşmenin bilişsel kapasiteye katkısını doğru açıklama; Özelleşme olmaması durumunda ortaya çıkacak kısıtlamaları mantıklı bir şekilde tartışabilme; Analiz ve çıkarım yapma yeteneği.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metinde insan beyninin \"vücudumuzun en karmaşık ve en hayati organı\" olduğu vurgulanmaktadır. Bu karmaşıklık ve hayatiyetin, beynin korunması ve sağlığının sürdürülmesi açısından ne gibi zorluklar ve sorumluluklar doğurduğunu açıklayınız. Ayrıca, beynin bu özelliklerinin modern tıp ve araştırmalar üzerindeki etkilerini tartışınız.",
+            "ornek_cevap": "Beynin \"en karmaşık ve en hayati organ\" olması, onun korunması ve sağlığının sürdürülmesi konusunda büyük zorluklar ve sorumluluklar yaratır. Karmaşıklığı nedeniyle, beyin hastalıklarının (Alzheimer, Parkinson, inme vb.) teşhisi ve tedavisi oldukça zordur, çünkü birçok farklı nöronal ağ ve kimyasal süreç işin içine girer. Hayati bir organ olması ise, beyindeki en küçük bir hasarın bile ciddi ve kalıcı sonuçlara yol açabileceği anlamına gelir; bu da koruyucu önlemlerin ve hızlı müdahalenin önemini artırır. Bu özellikler, modern tıp ve araştırmalar için beyni merkezi bir ilgi alanı haline getirmiştir. Nörobilim alanındaki araştırmalar, beynin yapısını, işleyişini ve hastalıklarını anlamak için büyük yatırımlar almaktadır. Görüntüleme teknikleri, genetik çalışmalar ve yeni tedavi yöntemleri, beynin karmaşıklığını çözmeye ve hayati fonksiyonlarını sürdürmeye yönelik çabaların bir sonucudur. Beyin sağlığı, genel insan sağlığı ve yaşam kalitesi için kritik olduğundan, bu alandaki çalışmalar sürekli gelişmektedir.",
+            "degerlendirme_kriterleri": "Beynin karmaşıklığı ve hayatiyetinin korunma ve sağlık açısından doğurduğu zorlukları ve sorumlulukları doğru açıklama; Modern tıp ve araştırmalar üzerindeki etkilerini (nörobilim, tedavi yöntemleri vb.) tartışabilme; Neden-sonuç ilişkisi kurabilme.",
+            "puan": 10,
+            "zorluk": "Orta"
+          }
+        ],
+        "bosluk_doldurma": []
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "coktan_secmeli": 5,
+        "klasik": 3
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

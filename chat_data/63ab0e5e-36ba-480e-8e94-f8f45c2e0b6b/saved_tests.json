@@ -1,0 +1,202 @@
+[
+  {
+    "test_id": "test_1754502666441",
+    "created_at": "2025-08-06T20:51:06.446890",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2024-07-30T10:00:00.000000",
+        "question_count": 18,
+        "question_types": {
+          "coktan_secmeli": 5,
+          "klasik": 3,
+          "bosluk_doldurma": 5,
+          "dogru_yanlis": 5
+        },
+        "difficulty_distribution": {
+          "kolay": 0,
+          "orta": 18,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [
+          {
+            "soru": "İnsan beyninin ortalama ağırlığı ve temel bileşenleri aşağıdakilerden hangisidir?",
+            "secenekler": {
+              "A": "Yaklaşık 0.5 kg; sadece nöronlar",
+              "B": "Yaklaşık 1.3 - 1.4 kg; nöronlar, nöroglia ve kan damarları",
+              "C": "Yaklaşık 2.0 kg; kas hücreleri ve sinirler",
+              "D": "Yaklaşık 1.0 kg; sadece kan damarları"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde insan beyninin yaklaşık 1.3 - 1.4 kilogram ağırlığında olduğu ve sinir hücreleri (nöronlar), destekleyici hücreler (nöroglia) ile kan damarlarından oluştuğu belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Aşağıdakilerden hangisi beynin kontrol ettiği yaşamsal fonksiyonlardan biri DEĞİLDİR?",
+            "secenekler": {
+              "A": "Solunum",
+              "B": "Kalp atışı",
+              "C": "Sindirim",
+              "D": "Kan grubu belirleme"
+            },
+            "dogru_cevap": "D",
+            "aciklama": "Metinde beynin solunum, kalp atışı ve sindirim gibi otomatik yaşamsal fonksiyonları yönettiği belirtilmiştir. Kan grubu belirleme beynin bir fonksiyonu değildir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beynin en büyük kısmı olan serebrum (beyin kabuğu) temel olarak hangi fonksiyonlardan sorumludur?",
+            "secenekler": {
+              "A": "Sadece solunum ve kalp atışı",
+              "B": "Düşünme, problem çözme, dil ve bilinçli hareketler",
+              "C": "Sadece duyusal algılar (görme, işitme)",
+              "D": "Vücut ısısını düzenleme"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde serebrumun düşünme, problem çözme, dil, bilinçli hareketler ve duyusal yorumlama gibi yüksek bilişsel fonksiyonlardan sorumlu olduğu açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrum (beyin kabuğu) kaç ana loba ayrılır ve bu loblar hangi isimlerle anılır?",
+            "secenekler": {
+              "A": "Üç ana loba: Frontal, Parietal, Temporal",
+              "B": "Dört ana loba: Frontal, Parietal, Temporal, Oksipital",
+              "C": "İki ana loba: Sağ ve Sol Lob",
+              "D": "Beş ana loba: Frontal, Parietal, Temporal, Oksipital, Serebellum"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde serebrumun frontal, parietal, temporal ve oksipital loblar olmak üzere dört ana loba ayrıldığı ifade edilmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metne göre, frontal lobun başlıca görevleri nelerdir?",
+            "secenekler": {
+              "A": "Duyusal algıları yorumlama",
+              "B": "Solunum ve kalp atışını düzenleme",
+              "C": "Planlama ve karar verme",
+              "D": "Hafıza oluşumu"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Metinde 'Frontal lob, planlama, karar verme...' ifadeleriyle frontal lobun bu görevlerden sorumlu olduğu belirtilmiştir.",
+            "zorluk": "Orta"
+          }
+        ],
+        "klasik": [
+          {
+            "soru": "Beyin, metinde belirtildiği gibi hem üst düzey bilişsel fonksiyonları (düşünme, öğrenme, hafıza, duygu) hem de otomatik yaşamsal fonksiyonları (solunum, kalp atışı, sindirim) aynı anda yönetme yeteneğine sahiptir. Bu çok yönlü kontrol yeteneği, beynin insan varoluşu için vazgeçilmez bir organ olmasını nasıl açıklar? Farklı fonksiyon kategorilerinden örnekler vererek açıklayınız.",
+            "ornek_cevap": "Beynin hem bilişsel hem de yaşamsal fonksiyonları eş zamanlı yönetmesi, insan yaşamının devamlılığı ve kalitesi için kritik öneme sahiptir. Bilişsel fonksiyonlar (örn. öğrenme, problem çözme) bireyin çevresine uyum sağlamasını, yeni bilgiler edinmesini ve karmaşık kararlar almasını mümkün kılarak kişisel gelişimini ve sosyal etkileşimini sağlar. Otomatik yaşamsal fonksiyonlar (örn. solunum, kalp atışı) ise bireyin hayatta kalması için temel biyolojik süreçleri kesintisiz yürütür. Bu iki kategori arasındaki eşgüdüm, bireyin bilinçli faaliyetlerini sürdürürken aynı zamanda hayati sistemlerinin otomatik olarak işlemesini garanti eder. Örneğin, bir sınavda düşünürken veya yazı yazarken, beynimiz aynı anda kalp atışımızı ve nefes alıp vermemizi de düzenler. Bu entegre kontrol, beynin sadece zihinsel kapasitemizi değil, aynı zamanda fiziksel varlığımızı da sürdüren merkezi bir orkestra şefi olduğunu gösterir.",
+            "degerlendirme_kriterleri": "Beynin hem bilişsel hem de yaşamsal fonksiyonları aynı anda yönetmesinin insan varoluşu için önemini doğru bir şekilde açıklaması.\nHer iki fonksiyon kategorisinden (bilişsel ve yaşamsal) metinde belirtilen en az birer örnek vermesi.\nBu iki fonksiyon grubunun entegrasyonunun ve eşgüdümünün önemini vurgulaması.\nDilbilgisi ve ifade netliği.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metinde beynin en büyük kısmı olan serebrumun (beyin kabuğu) düşünme, problem çözme, dil gibi yüksek bilişsel fonksiyonlardan sorumlu olduğu ve frontal, parietal, temporal, oksipital olmak üzere dört ana loba ayrıldığı belirtilmektedir. Her bir lobun kendine özgü görevlere sahip olmasının, beynin genel işlevselliği ve karmaşıklığı üzerindeki etkisini detaylandırınız. Bu yapısal özelleşmenin avantajları nelerdir?",
+            "ornek_cevap": "Serebrum'un farklı loblara ayrılması ve her lobun özelleşmiş görevlere sahip olması, beynin genel işlevselliğini ve karmaşıklığını artırır. Bu yapısal özelleşme, iş yükünün dağıtılmasına ve her bir görevin daha verimli bir şekilde yerine getirilmesine olanak tanır. Örneğin, frontal lob planlama ve karar verme gibi yürütücü işlevlerden sorumluyken, oksipital lob görme duyusunu işler. Bu sayede beyin, aynı anda farklı türde bilgileri işleyebilir ve karmaşık görevleri paralel olarak yürütebilir. Bu özelleşmenin avantajları şunlardır: Birincisi, belirli bir bölgedeki hasarın etkilerinin diğer bölgelere yayılmasını sınırlayarak genel beyin fonksiyonlarının tamamen çökmesini engeller. İkinci, her lobun belirli bir göreve odaklanması, o görevin daha hızlı ve doğru bir şekilde yerine getirilmesini sağlar. Üçüncü, farklı loblar arasında kurulan karmaşık bağlantılar sayesinde, basit duyusal girdilerden karmaşık düşüncelere kadar geniş bir yelpazede işlevsellik mümkün olur. Bu sistem, beynin adaptasyon yeteneğini ve öğrenme kapasitesini de artırır.",
+            "degerlendirme_kriterleri": "Serebrumun loblara ayrılmasının beynin işlevselliği ve karmaşıklığına katkısını açıklaması.\nLobların özelleşmiş görevlere sahip olmasının avantajlarını (iş yükü dağılımı, verimlilik, hasar sınırlaması, adaptasyon vb.) belirtmesi.\nMetinde geçen lob isimlerine atıfta bulunması.\nAnalitik düşünme ve sentez becerisi sergilemesi.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metinde frontal lobun \"planlama, karar verme\" gibi görevlerden sorumlu olduğu belirtilmiştir. Bu bilgi ışığında, frontal lobda ciddi bir hasar meydana gelmesi durumunda bir bireyin günlük yaşamında ve davranışlarında ne tür değişiklikler gözlemlenebileceğini tartışınız. Bu hasarın bireyin bilişsel yetenekleri, duygusal durumu ve sosyal etkileşimleri üzerindeki potansiyel yansımalarını açıklayınız.",
+            "ornek_cevap": "Frontal lob, metinde belirtildiği gibi planlama ve karar verme gibi üst düzey yürütücü işlevlerden sorumlu olduğu için, bu bölgede meydana gelen ciddi bir hasar bireyin günlük yaşamını köklü bir şekilde etkileyebilir. Bilişsel olarak, bireyde inisiyatif alma, problem çözme, geleceği planlama ve soyut düşünme becerilerinde ciddi aksaklıklar görülebilir. Örneğin, basit bir günlük rutini bile organize etmekte zorlanabilirler. Duygusal durumda ise, bireylerde duygu kontrolünde zorluklar, dürtüsellik, ani öfke patlamaları veya tam tersi apati (duygusuzluk) gibi değişiklikler ortaya çıkabilir. Kişilikte de belirgin değişimler yaşanabilir; eski benliklerinden farklı, daha sorumsuz veya uygunsuz davranışlar sergileyebilirler. Sosyal etkileşimlerde ise, empati kurma, başkalarının bakış açılarını anlama ve sosyal kurallara uyma yeteneklerinde bozulmalar görülebilir, bu da sosyal izolasyona yol açabilir. Bu durumlar, bireyin iş hayatını, kişisel ilişkilerini ve genel yaşam kalitesini olumsuz etkileyebilir, çünkü frontal lob hasarı bireyin \"kişilik\" ve \"yönetici\" fonksiyonlarının merkezidir.",
+            "degerlendirme_kriterleri": "Frontal lobun metinde belirtilen görevlerini doğru bir şekilde ilişkilendirmesi.\nFrontal lob hasarının bilişsel yetenekler (planlama, karar verme, problem çözme), duygusal durum (duygu kontrolü, dürtüsellik) ve sosyal etkileşimler üzerindeki potansiyel etkilerini kapsamlı bir şekilde açıklaması.\nÖrneklerle veya detaylı açıklamalarla argümanlarını desteklemesi.\nKonuyu derinlemesine analiz etme yeteneği sergilemesi.",
+            "puan": 10,
+            "zorluk": "Orta"
+          }
+        ],
+        "bosluk_doldurma": [
+          {
+            "soru": "İnsan beyni, yaklaşık 1.3 - 1.4 kilogram ağırlığında olup, sinir hücreleri (nöronlar), destekleyici hücreler (nöroglia) ve _____ oluşur.",
+            "dogru_cevap": "kan damarlarından",
+            "alternatif_cevaplar": [
+              "kan damarları"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beyin, merkezi sinir sisteminin ana kontrol merkezi olarak, tüm bilinçli ve bilinçsiz süreçlerimizin _____ yapar.",
+            "dogru_cevap": "orkestra şefliğini",
+            "alternatif_cevaplar": [
+              "orkestra şefi"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beyin, düşünme, öğrenme, hafıza ve duygu gibi üst düzey _____ yönetir.",
+            "dogru_cevap": "bilişsel fonksiyonları",
+            "alternatif_cevaplar": [
+              "bilişsel işlevleri",
+              "bilişsel fonksiyonlarını",
+              "bilişsel işlevlerini"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beynin en büyük kısmı olan _____, düşünme, problem çözme ve dil gibi yüksek bilişsel fonksiyonlardan sorumludur.",
+            "dogru_cevap": "serebrum (beyin kabuğu)",
+            "alternatif_cevaplar": [
+              "serebrum",
+              "beyin kabuğu"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrum, frontal, parietal, temporal ve _____ olmak üzere dört ana loba ayrılır.",
+            "dogru_cevap": "oksipital loblar",
+            "alternatif_cevaplar": [
+              "oksipital",
+              "oksipital lob"
+            ],
+            "zorluk": "Orta"
+          }
+        ],
+        "dogru_yanlis": [
+          {
+            "soru": "İnsan beyni yaklaşık 1.0 kilogram ağırlığında olup sadece sinir hücrelerinden oluşur.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde insan beyninin yaklaşık 1.3 - 1.4 kilogram ağırlığında olduğu ve sinir hücreleri (nöronlar), destekleyici hücreler (nöroglia) ile kan damarlarından oluştuğu belirtilmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beyin, sadece solunum ve kalp atışı gibi otomatik yaşamsal fonksiyonları yönetir, düşünme ve öğrenme gibi bilişsel fonksiyonlardan sorumlu değildir.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde beynin hem düşünme, öğrenme, hafıza ve duygu gibi üst düzey bilişsel fonksiyonları hem de solunum, kalp atışı, sindirim gibi otomatik yaşamsal fonksiyonları yönettiği açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrum (beyin kabuğu), beynin en büyük kısmı olup, düşünme, problem çözme ve dil gibi yüksek bilişsel fonksiyonlardan sorumludur.",
+            "dogru_cevap": "true",
+            "aciklama": "Metinde serebrumun beynin en büyük kısmı olduğu ve düşünme, problem çözme, dil, bilinçli hareketler ve duyusal yorumlama gibi yüksek bilişsel fonksiyonlardan sorumlu olduğu ifade edilmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrum, sadece frontal, parietal ve temporal olmak üzere üç ana loba ayrılır.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde serebrumun frontal, parietal, temporal ve oksipital olmak üzere dört ana loba ayrıldığı açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Frontal lobun başlıca görevleri arasında planlama ve karar verme yer almaktadır.",
+            "dogru_cevap": "true",
+            "aciklama": "Metinde frontal lobun planlama ve karar verme gibi görevlerden sorumlu olduğu açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "coktan_secmeli": 5,
+        "klasik": 3,
+        "bosluk_doldurma": 5,
+        "dogru_yanlis": 5
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

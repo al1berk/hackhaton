@@ -1,0 +1,61 @@
+[
+  {
+    "type": "user",
+    "content": "pdf in konu başlıklarını yaz",
+    "timestamp": "2025-08-06T20:44:56.733929"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz PDF dokümanlarından şu konu başlıklarını buldum:\n\n*   **arastirma-raporu-2025-07-30.pdf** dosyasında şu konular var:\n    *   Serebrum (Beyin Korteksi / Büyük Beyin)\n    *   Frontal Lob (Ön Lob)\n    *   3. Serebrum (Beyin Korteksi) ve Genel Yapısı\n    *   5. Paryetal Lob (Yan Kafa Lobu) ve Konumu\n\nKaynak: arastirma-raporu-2025-07-30.pdf, Bölüm 9, 18, 19, 34.",
+    "timestamp": "2025-08-06T20:45:02.900030"
+  },
+  {
+    "type": "user",
+    "content": "test oluştur",
+    "timestamp": "2025-08-06T20:47:49.269352"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T20:47:49.283652"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T20:47:59.678999"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T20:47:59.684694"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T20:48:02.380061"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T20:48:02.387297"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T20:48:09.295729"
+  },
+  {
+    "type": "ai",
+    "content": "🎉 **Test Başarıyla Oluşturuldu!**\n\n📊 **Test Detayları:**\n• **Toplam Soru:** 18\n• **Zorluk:** Orta\n• **Seviye:** Lise\n\n🎯 **Soru Dağılımı:**\n• **Çoktan Seçmeli:** 5 soru\n• **Klasik (Açık Uçlu):** 3 soru\n• **Boşluk Doldurma:** 5 soru\n• **Doğru-Yanlış:** 5 soru\n\n🚀 **Hazır!** Aşağıdaki **'Testi Çöz'** butonuna tıklayarak testinizi başlatabilirsiniz.\n📝 Test sonuçlarınız otomatik olarak değerlendirilecek ve eksik konularınız belirlenecek.",
+    "timestamp": "2025-08-06T20:51:06.436943"
+  },
+  {
+    "type": "system",
+    "content": "🧠 **Test Kaydedildi:** Test - 6.08.2025\n📊 Test ID: test_1754502666441\n⏰ 06.08.2025 20:51",
+    "metadata": {
+      "message_type": "test_saved",
+      "test_id": "test_1754502666441"
+    },
+    "timestamp": "2025-08-06T20:51:06.447580"
+  }
+]

@@ -1,0 +1,60 @@
+[
+  {
+    "test_id": "test_1754496888835",
+    "created_at": "2025-08-06T19:14:48.841030",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2024-05-15T14:30:00.000000",
+        "question_count": 3,
+        "question_types": {
+          "coktan_secmeli": 0,
+          "klasik": 3
+        },
+        "difficulty_distribution": {
+          "kolay": 0,
+          "orta": 3,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [],
+        "klasik": [
+          {
+            "soru": "Yultuz Takımı'nın belgede belirtilen vizyonu, sadece Teknofest gibi yarışmalarda başarılı olmanın ötesinde, topluma fayda sağlama ve teknolojik gelişmelere öncülük etme hedeflerini nasıl birleştirmektedir? Bu geniş kapsamlı vizyonun takımın çalışma prensiplerine ve proje seçimlerine yansımalarını açıklayınız.",
+            "ornek_cevap": "Yultuz Takımı'nın vizyonu, Teknofest'teki başarıyı bir araç olarak görerek, asıl amacını toplumsal fayda sağlayan, çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretmek üzerine kurmuştur. Bu, sadece birincilik elde etmek yerine, geliştirilen projelerin gerçek dünya sorunlarına sürdürülebilir ve yenilikçi çözümler sunmasını hedefler. Bu geniş kapsamlı vizyon, takımın proje seçimlerinde sadece teknik zorluklara değil, aynı zamanda projenin potansiyel sosyal etkisine ve uygulanabilirliğine odaklanmasına neden olur. Çalışma prensiplerinde ise, \"sürekli öğrenmeye ve gelişmeye açık bir ruhla\" çalışarak, projelerin kalitesini ve etkisini artırmayı amaçlarlar. Böylece, teorik bilgiyi pratik uygulamaya dökme ve topluma somut katkılar sağlama motivasyonuyla hareket ederler.",
+            "degerlendirme_kriterleri": "Vizyonun Teknofest başarısının ötesindeki boyutunu (toplumsal fayda, teknolojik öncülük) doğru tanımlama.\nBu vizyonun takımın proje seçimlerine (uygulanabilirlik, sosyal etki) ve çalışma prensiplerine (sürekli öğrenme, teoriyi pratiğe dökme) yansımalarını açıklama.\nAnalitik ve sentezleyici bir dil kullanma.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın iki üyesi, Münevver Nur Topluyürek ve Ali Berk Yeşilduman'ın görevleri ve yetenekleri birbirini nasıl tamamlamaktadır? Bu tamamlayıcı rollerin takımın genel performansı ve hedeflerine ulaşmasındaki kritik önemi hakkında bir değerlendirme yapınız.",
+            "ornek_cevap": "Münevver Nur Topluyürek, Takım Kaptanı/Proje Yöneticisi olarak projenin idari ve organizasyonel yönlerini yönetirken (planlama, bütçe, zaman, koordinasyon), Ali Berk Yeşilduman ise Teknik Sorumlu/Yazılımcı olarak projenin teknik altyapısını (kodlama, prototip, test) oluşturmaktadır. Münevver'in güçlü analitik düşünme ve problem çözme becerileri, projenin genel stratejik yönünü belirlerken, Ali Berk'in yazılım ve donanım bilgisi ve yaratıcı tasarım yeteneği, bu stratejileri teknik olarak hayata geçirmeyi sağlar. Bu tamamlayıcı yapı, takımın hem vizyoner hem de uygulama odaklı olmasını sağlar. Bir taraftan projenin düzgün bir şekilde planlanıp yönetilmesi, diğer taraftan da teknik olarak sağlam ve yenilikçi bir ürün ortaya konulması, takımın hedeflerine ulaşmasında kritik bir rol oynar. Bu iş bölümü sayesinde her üye kendi güçlü yönlerine odaklanarak verimliliği artırır ve potansiyel eksiklikleri giderir.",
+            "degerlendirme_kriterleri": "Her bir üyenin görev ve yeteneklerini doğru bir şekilde belirtme.\nBu görev ve yeteneklerin birbirini nasıl tamamladığını açıklama.\nTamamlayıcı rollerin takımın performansı ve hedeflerine ulaşmasındaki önemini analiz etme.\nDüşüncelerini tutarlı ve mantıklı bir şekilde ifade etme.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın \"sürekli öğrenmeye ve gelişmeye açık bir ruhla çalıştığı\" ifadesi, takımın Teknofest'te fark yaratma ve topluma faydalı çözümler üretme hedeflerine ulaşmasında ne gibi avantajlar sağlamaktadır? Bu yaklaşımın, öğrencilerin kişisel ve akademik gelişimlerine olası katkılarını da göz önünde bulundurarak açıklayınız.",
+            "ornek_cevap": "\"Sürekli öğrenmeye ve gelişmeye açık bir ruhla çalışma\" prensibi, Yultuz Takımı'na Teknofest'te fark yaratma ve topluma faydalı çözümler üretme konusunda önemli avantajlar sunar. Bu yaklaşım, takımın yeni teknolojileri, yöntemleri ve problem çözme tekniklerini hızla benimsemesini sağlar. Gelişen teknoloji dünyasında güncel kalmak ve yenilikçi fikirler üretmek için bu esneklik hayati önem taşır. Hatalardan ders çıkarma, geri bildirimlere açık olma ve sürekli iyileştirme döngüsü, projelerinin kalitesini artırır ve daha uygulanabilir çözümler geliştirmelerine olanak tanır. Öğrencilerin kişisel ve akademik gelişimleri açısından ise bu yaklaşım, onları sadece bilgi tüketen bireyler olmaktan çıkarıp, aktif bilgi üreten ve uygulayan bireylere dönüştürür. Eleştirel düşünme, adaptasyon yeteneği, öz-yönetim ve takım çalışması gibi 21. yüzyıl becerilerini geliştirir. Ayrıca, teknolojiye olan tutkularını somut projelere yansıtarak teorik bilgilerini pekiştirir ve gelecekteki kariyerleri için sağlam bir temel oluşturur.",
+            "degerlendirme_kriterleri": "\"Sürekli öğrenme ve gelişme\" prensibinin takımın hedeflerine ulaşmasındaki avantajlarını açıklama.\nBu yaklaşımın öğrencilerin kişisel ve akademik gelişimlerine katkılarını belirtme.\nKonuyu derinlemesine analiz etme ve farklı boyutlarını ele alma.\nGerekçeli ve ikna edici argümanlar sunma.",
+            "puan": 10,
+            "zorluk": "Orta"
+          }
+        ],
+        "bosluk_doldurma": []
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "coktan_secmeli": 5,
+        "klasik": 3
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

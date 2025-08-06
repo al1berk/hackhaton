@@ -1,0 +1,58 @@
+[
+  {
+    "test_id": "test_1754498237988",
+    "created_at": "2025-08-06T19:37:17.993622",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2025-08-06T19:36:05.057173",
+        "question_count": 3,
+        "question_types": {
+          "klasik": 3
+        },
+        "difficulty_distribution": {
+          "kolay": 0,
+          "orta": 3,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [],
+        "klasik": [
+          {
+            "soru": "Yultuz Takımı'nın \"topluma fayda sağlayan, çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretme\" vizyonuna ulaşmasında, Münevver Nur Topluyürek'in proje yönetimi ve Ali Berk Yeşilduman'ın teknik uzmanlık alanlarının birleşimi nasıl bir sinerji yaratmaktadır? Bu sinerjinin takımın başarısındaki kritik rolünü açıklayınız.",
+            "ornek_cevap": "Münevver Nur'un güçlü analitik düşünme, detay odaklı çalışma ve problem çözme becerileri, projenin planlamasından bütçe yönetimine kadar tüm süreçleri etkin bir şekilde koordine etmesini sağlar. Bu sayede yenilikçi fikirler somut bir yol haritasına dönüşür. Ali Berk'in yazılım dilleri, elektronik ve donanım bilgisi ile yaratıcı tasarım yeteneği ise bu planları teknik olarak hayata geçirecek pratik çözümlerin geliştirilmesini sağlar. Münevver'in stratejik bakış açısı ve organizasyon becerisi ile Ali Berk'in teknik uygulama kapasitesi birleştiğinde, sadece iyi planlanmış değil, aynı zamanda teknik olarak sağlam ve yenilikçi projeler ortaya çıkar. Bu sinerji, takımın vizyonundaki \"uygulanabilir\" ve \"öncü\" çözümler üretme hedefine ulaşmasında temel bir rol oynar, çünkü fikirler sadece hayal ürünü kalmaz, gerçek dünya problemlerine uygulanabilir teknolojik ürünlere dönüşür.",
+            "degerlendirme_kriterleri": "Münevver ve Ali Berk'in rollerini ve yeteneklerini doğru tanımlama, bu yeteneklerin takım vizyonuyla nasıl örtüştüğünü açıklama, sinerji kavramını doğru anlama ve örneklerle açıklama, takım başarısındaki kritik rolü vurgulama.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın \"yenilikçi fikirleri somut ve uygulanabilir projelere dönüştürme\" amacını göz önünde bulundurarak, lise öğrencilerinin veya yerel bir topluluğun karşılaşabileceği güncel bir teknolojik problemi belirleyiniz. Belirlediğiniz bu problemi, Yultuz Takımı'nın (Münevver'in proje yönetimi ve Ali Berk'in teknik uzmanlığı) birleşik yeteneklerini kullanarak nasıl çözebileceğini detaylı bir şekilde açıklayınız.",
+            "ornek_cevap": "Belirlenen Problem: Okul kantinindeki atık yönetiminin yetersizliği ve geri dönüştürülebilir atıkların ayrıştırılmaması.\nYultuz Takımı'nın Çözüm Yaklaşımı:\n1. Münevver (Proje Yöneticisi): Öncelikle mevcut atık yönetim sistemini analiz eder, atık türlerini ve miktarlarını belirlemek için bir fizibilite çalışması yapar. Bütçe, zaman çizelgesi ve gerekli materyaller için bir proje planı oluşturur. Okul yönetimi ve kantin işletmecisi ile iletişime geçerek projenin uygulanabilirliğini ve desteklerini alır. Hedef kitlenin (öğrenciler ve kantin çalışanları) beklentilerini ve mevcut sorunları anlamak için anketler düzenler.\n2. Ali Berk (Teknik Sorumlu): Atıkların otomatik olarak ayrıştırılmasını sağlayacak bir prototip tasarlar. Bu prototip, sensörler (örn. ağırlık veya görüntü tanıma) ve basit bir mekanizma kullanarak farklı atık türlerini (kağıt, plastik, organik) algılayıp ayrı depolama alanlarına yönlendirebilir. Yazılım olarak Python veya C++ kullanarak sensör verilerini işleyecek ve mekanizmayı kontrol edecek bir kod yazar. Elektronik ve donanım bilgisiyle sistemi kurar ve test eder.\n3. Sinerji: Münevver'in planlaması ve koordinasyonu sayesinde Ali Berk, projenin teknik kısmına odaklanabilir ve belirlenen zaman çizelgesi içinde çalışır. Münevver, Ali Berk'in teknik ihtiyaçlarını (malzeme temini, test ortamı) yönetirken, Ali Berk de Münevver'e projenin teknik ilerlemesi hakkında düzenli raporlar sunar. Birlikte, prototipi sürekli test ederek ve geri bildirimleri değerlendirerek \"somut ve uygulanabilir\" bir çözüme dönüştürürler. Bu sayede okulda geri dönüşüm bilinci artırılır ve atık miktarı azaltılır.",
+            "degerlendirme_kriterleri": "Gerçekçi ve güncel bir teknolojik problem belirleme, Münevver ve Ali Berk'in rollerini problem çözüm sürecine entegre etme, çözüm adımlarını mantıklı ve detaylı bir şekilde açıklama, takımın birleşik yeteneklerinin problem çözümündeki önemini vurgulama.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın Teknofest'i \"hayallerini gerçeğe dönüştürmek ve teknolojiye olan sevgilerini somut projelere yansıtmak için bir fırsat\" olarak görmesi, sadece teknik başarıya odaklanmadıklarını göstermektedir. Bu bağlamda, Münevver ve Ali Berk'in Teknofest gibi bir platforma katılımının kişisel gelişimleri, kariyer hedefleri ve toplumsal duyarlılıkları üzerindeki potansiyel etkilerini çok yönlü olarak değerlendiriniz.",
+            "ornek_cevap": "Teknofest'e katılım, Münevver ve Ali Berk için sadece bir yarışmadan öte, çok boyutlu bir gelişim fırsatıdır.\n1. Kişisel Gelişim: Proje yönetimi, teknik uygulama, zaman yönetimi, ekip çalışması ve problem çözme gibi becerilerini gerçek bir baskı altında geliştirirler. Başarısızlıkları öğrenme fırsatı olarak görmeyi, esnek olmayı ve sürekli öğrenmeye açık kalmayı deneyimlerler. Bu süreç, özgüvenlerini artırır ve karmaşık sorunlara yaklaşma kapasitelerini güçlendirir.\n2. Kariyer Hedefleri: Teknofest, onlara potansiyel işverenler, mentorlar ve sektör liderleriyle tanışma imkanı sunar. Geliştirdikleri somut projeler, gelecekteki üniversite başvuruları veya stajlar için güçlü referanslar oluşturur. Teknoloji alanındaki güncel trendleri ve ihtiyaçları yakından görmeleri, kariyer yollarını daha bilinçli şekillendirmelerine yardımcı olur. Özellikle lise seviyesinde bu tür bir deneyim, onları yaşıtlarından ayırır ve gelecek akademik/profesyonel yaşamları için sağlam bir temel oluşturur.\n3. Toplumsal Duyarlılık: Vizyonlarındaki \"topluma fayda sağlayan, çevreye duyarlı\" çözümler üretme hedefi, onların sadece teknik becerilere değil, aynı zamanda sosyal sorumluluğa da sahip olduklarını gösterir. Bu tür projelerde yer almak, toplumsal sorunlara teknolojiyle nasıl katkı sağlayabileceklerini anlamalarını sağlar. Bu duyarlılık, onları gelecekte daha etik ve toplumsal fayda odaklı mühendisler veya bilim insanı olmaya teşvik edebilir.\nKısacası, Teknofest katılımı, onların sadece teknik bilgi birikimlerini değil, aynı zamanda karakterlerini, liderlik vasıflarını ve dünyaya bakış açılarını da şekillendiren kapsamlı bir deneyimdir.",
+            "degerlendirme_kriterleri": "Katılımın kişisel gelişim, kariyer hedefleri ve toplumsal duyarlılık üzerindeki etkilerini ayrı ayrı ve detaylı olarak açıklama, verilen metindeki \"fırsat\" ve \"vizyon\" kelimeleriyle bağlantı kurma, lise öğrencisi seviyesine uygun derinlikte analiz sunma.",
+            "puan": 10,
+            "zorluk": "Orta"
+          }
+        ],
+        "bosluk_doldurma": []
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "klasik": 3
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

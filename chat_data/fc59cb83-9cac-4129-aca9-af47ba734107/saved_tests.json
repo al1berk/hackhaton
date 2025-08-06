@@ -1,0 +1,201 @@
+[
+  {
+    "test_id": "test_1754500503764",
+    "created_at": "2025-08-06T20:15:03.773190",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2025-08-06T20:12:36.240786",
+        "question_count": 18,
+        "question_types": {
+          "coktan_secmeli": 5,
+          "klasik": 3,
+          "bosluk_doldurma": 5,
+          "dogru_yanlis": 5
+        },
+        "difficulty_distribution": {
+          "kolay": 0,
+          "orta": 18,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [
+          {
+            "soru": "Metne göre, insan beyninin yaklaşık ağırlığı ve temel bileşenleri hangi seçenekte doğru verilmiştir?",
+            "secenekler": {
+              "A": "0.5 - 1 kg; sadece nöronlar",
+              "B": "1.3 - 1.4 kg; nöronlar, nöroglia ve kan damarları",
+              "C": "2 - 2.5 kg; kas hücreleri ve kemikler",
+              "D": "1 kg; sadece kan damarları"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde insan beyninin yaklaşık 1.3 - 1.4 kg ağırlığında olduğu ve sinir hücreleri (nöronlar), destekleyici hücreler (nöroglia) ve kan damarlarından oluştuğu belirtilmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "İnsan beyni, merkezi sinir sisteminin ana kontrol merkezi olarak hangi süreçleri yönetir?",
+            "secenekler": {
+              "A": "Sadece bilinçli hareketleri",
+              "B": "Sadece duyusal algıları",
+              "C": "Tüm bilinçli ve bilinçsiz süreçleri",
+              "D": "Yalnızca hafıza ve duyguları"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Metinde beynin 'Merkezi sinir sisteminin ana kontrol merkezi olarak, tüm bilinçli ve bilinçsiz süreçlerimizin orkestra şefliğini yapar.' ifadesi yer almaktadır.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Aşağıdakilerden hangisi metinde beynin doğrudan yönettiği fonksiyonlardan biri olarak bahsedilmemiştir?",
+            "secenekler": {
+              "A": "Solunum",
+              "B": "Hafıza",
+              "C": "Kan pıhtılaşması",
+              "D": "Görme"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Metinde solunum, hafıza ve görme beynin yönettiği fonksiyonlar arasında sayılırken, kan pıhtılaşmasından bahsedilmemektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beynin en büyük kısmı olan serebrum (beyin kabuğu), metne göre hangi yüksek bilişsel fonksiyonlardan sorumludur?",
+            "secenekler": {
+              "A": "Sadece solunum ve kalp atışı",
+              "B": "Düşünme, problem çözme, dil ve bilinçli hareketler",
+              "C": "Vücut içi denge (homeostaz)",
+              "D": "Sadece duyusal algıların yönetimi"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde serebrumun 'düşünme, problem çözme, dil, bilinçli hareketler ve duyusal yorumlama gibi yüksek bilişsel fonksiyonlardan sorumlu' olduğu açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrum'un dört ana lobundan biri olan frontal lobun başlıca görevleri nelerdir?",
+            "secenekler": {
+              "A": "Duyusal yorumlama ve hafıza",
+              "B": "Görme ve işitme",
+              "C": "Planlama ve karar verme",
+              "D": "Solunum ve sindirim"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Metinde 'Frontal lob, planlama, karar verme...' şeklinde belirtilmiştir.",
+            "zorluk": "Orta"
+          }
+        ],
+        "klasik": [
+          {
+            "soru": "Metinde insan beyninin \"tüm bilinçli ve bilinçsiz süreçlerimizin orkestra şefliğini yapar\" ifadesiyle önemi vurgulanmaktadır. Beynin düşünme, öğrenme gibi üst düzey bilişsel fonksiyonlarla birlikte solunum, kalp atışı gibi otomatik yaşamsal fonksiyonları da yönetebilmesi, insan varoluşu için neden vazgeçilmez bir öneme sahiptir? Bu çok yönlü kontrol yeteneğinin günlük yaşamdaki etkilerini açıklayınız.",
+            "ornek_cevap": "İnsan beyninin hem üst düzey bilişsel fonksiyonları (düşünme, öğrenme, hafıza) hem de otomatik yaşamsal fonksiyonları (solunum, kalp atışı, sindirim) aynı anda yönetebilmesi, karmaşık bir canlı olarak hayatta kalmamız ve çevremizle etkileşim kurabilmemiz için temeldir. Üst düzey fonksiyonlar, problem çözme, karar verme, iletişim kurma gibi insanı diğer canlılardan ayıran yetenekleri sağlar. Otomatik fonksiyonlar ise, bilinçli çaba gerektirmeden vücudun temel yaşam destek sistemlerinin sürekli çalışmasını garanti eder. Bu çift yönlü kontrol, bireyin hem karmaşık sosyal ve entelektüel yaşamını sürdürmesini hem de hayati organlarının kesintisiz çalışmasını sağlayarak homeostazı korur. Örneğin, bir yandan ders çalışırken (bilişsel), bir yandan da kalbimizin atması ve nefes almamız (otomatik) bu entegre kontrol sayesinde gerçekleşir. Bu entegrasyon olmadan, günlük basit aktiviteler bile imkansız hale gelirdi, çünkü her nefes veya kalp atışı için bilinçli bir çaba harcamak zorunda kalırdık.",
+            "degerlendirme_kriterleri": "Beynin hem bilişsel hem de otomatik fonksiyonları yönetme yeteneğinin insan varoluşundaki vazgeçilmez önemini kavramış olması.\nBu iki tür fonksiyon arasındaki dengeyi ve entegrasyonu açıklayabilmesi.\nGünlük yaşamdan ilgili ve mantıklı örnekler verebilmesi.\nCevabın kapsamlı ve tutarlı olması.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metinde serebrumun (beyin kabuğu) \"düşünme, problem çözme, dil, bilinçli hareketler ve duyusal yorumlama gibi yüksek bilişsel fonksiyonlardan sorumlu\" olduğu belirtilmektedir. Serebrumda meydana gelebilecek ciddi bir hasarın, bireyin günlük yaşamındaki bilişsel yeteneklerini ve çevresiyle etkileşimini nasıl etkileyebileceğini tartışınız. Özellikle, metinde bahsedilen fonksiyonlar bağlamında olası sonuçları açıklayınız.",
+            "ornek_cevap": "Serebrum, metinde belirtildiği gibi, düşünme, problem çözme, dil, bilinçli hareketler ve duyusal yorumlama gibi en temel bilişsel fonksiyonlardan sorumlu olduğu için, bu bölgedeki ciddi bir hasar bireyin günlük yaşamını kökten değiştirecektir. Örneğin, düşünme ve problem çözme yeteneğindeki bozukluklar, basit kararlar alma veya günlük sorunları aşmada (yemek hazırlama, faturaları ödeme gibi) zorluklara yol açabilir. Dil fonksiyonlarındaki hasar (afazi), konuşma, anlama, okuma veya yazma yeteneklerini etkileyerek iletişimi imkansız hale getirebilir. Bilinçli hareketlerdeki bozukluklar (apraksi), yürüme, nesneleri tutma gibi motor becerileri etkileyerek bağımsızlığı ciddi şekilde kısıtlar. Duyusal yorumlama yeteneğindeki sorunlar ise, görme, işitme veya dokunma duyularından gelen bilgileri anlamlandırmayı engelleyebilir, bu da bireyin çevresini doğru algılamasını zorlaştırır. Sonuç olarak, serebrum hasarı olan bir birey, bağımsız yaşama, iletişim kurma ve çevresine uyum sağlama konusunda büyük güçlükler yaşayarak, sürekli yardıma muhtaç hale gelebilir.",
+            "degerlendirme_kriterleri": "Serebrumun fonksiyonlarını doğru şekilde anlamış olması.\nBu fonksiyonlardaki bozuklukların günlük yaşama etkilerini mantıklı ve kapsamlı bir şekilde açıklayabilmesi.\nMetindeki bilgilerle ilişkilendirme yapabilmesi.\nOlası sonuçları net ve tutarlı bir dille ifade etmesi.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metinde beynin \"vücudumuzun en karmaşık ve en hayati organı\" olduğu belirtilmiştir. Bu karmaşıklığı sağlayan temel yapısal bileşenler nelerdir ve bu bileşenlerin her birinin beynin genel işleyişindeki rolünü kısaca açıklayınız. Beynin bu yapısal karmaşıklığının fonksiyonel çeşitliliğini nasıl desteklediğini değerlendiriniz.",
+            "ornek_cevap": "Metne göre beynin karmaşıklığını sağlayan temel yapısal bileşenler sinir hücreleri (nöronlar), destekleyici hücreler (nöroglia) ve kan damarlarıdır.\n\n*   **Nöronlar (Sinir Hücreleri):** Beynin temel bilgi işleme birimleridir. Elektriksel ve kimyasal sinyaller aracılığıyla bilgiyi iletir, alır ve işlerler. Düşünme, öğrenme, hafıza, hareket kontrolü ve duyusal algı gibi tüm bilişsel ve fizyolojik fonksiyonların temelini oluştururlar.\n*   **Nöroglia (Destekleyici Hücreler):** Nöronlara fiziksel destek sağlar, besin taşır, atıkları temizler, yalıtım (miyelin kılıfı oluşturarak) sağlar ve bağışıklık tepkilerinde rol oynar. Nöronların düzgün çalışması için gerekli ortamı yaratırlar.\n*   **Kan Damarları:** Beyne sürekli olarak oksijen ve besin taşıyan, aynı zamanda atık maddeleri uzaklaştıran hayati bir ağ oluştururlar. Beynin yüksek enerji ihtiyacını karşılayarak kesintisiz çalışmasını sağlarlar.\n\nBu yapısal bileşenlerin birbiriyle etkileşimi, beynin inanılmaz fonksiyonel çeşitliliğini destekler. Milyarlarca nöronun karmaşık ağlar oluşturması, farklı nöroglia tiplerinin bu ağları optimize etmesi ve kan damarlarının kesintisiz enerji sağlaması sayesinde, beyin aynı anda hem bilinçli düşünceleri hem de otomatik yaşamsal fonksiyonları yürütebilir. Bu entegre ve çok katmanlı yapı, beynin adaptasyon yeteneğini, öğrenme kapasitesini ve dış dünyaya verdiği tepkilerin karmaşıklığını mümkün kılar.",
+            "degerlendirme_kriterleri": "Beynin temel yapısal bileşenlerini (nöronlar, nöroglia, kan damarları) doğru tanımlaması.\nHer bir bileşenin beynin işleyişindeki rolünü doğru ve özlü bir şekilde açıklaması.\nYapısal karmaşıklık ile fonksiyonel çeşitlilik arasındaki ilişkiyi değerlendirebilmesi.\nCevabın metindeki bilgilerle tutarlı ve bilimsel olarak doğru olması.",
+            "puan": 10,
+            "zorluk": "Orta"
+          }
+        ],
+        "bosluk_doldurma": [
+          {
+            "soru": "İnsan beyni, kafatası içinde yer alan, yaklaşık _____ kilogram ağırlığında, sinir hücreleri (nöronlar), destekleyici hücreler (nöroglia) ve kan damarlarından oluşan bir organdır.",
+            "dogru_cevap": "1.3 - 1.4",
+            "alternatif_cevaplar": [
+              "1.3-1.4"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beyin, merkezi sinir sisteminin ana kontrol merkezi olarak, tüm _____ ve _____ süreçlerimizin orkestra şefliğini yapar.",
+            "dogru_cevap": "bilinçli ve bilinçsiz",
+            "alternatif_cevaplar": [
+              "bilinçli, bilinçsiz",
+              "bilinçli ve bilinçsiz"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beyin, üst düzey bilişsel fonksiyonların yanı sıra solunum, kalp atışı ve sindirim gibi _____ yaşamsal fonksiyonları da yönetir.",
+            "dogru_cevap": "otomatik",
+            "alternatif_cevaplar": [
+              "otomatik",
+              "yaşamsal"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beynin en büyük kısmı olan serebrum (beyin kabuğu), düşünme, problem çözme, dil ve bilinçli hareketler gibi yüksek _____ fonksiyonlardan sorumludur.",
+            "dogru_cevap": "bilişsel",
+            "alternatif_cevaplar": [
+              "bilişsel",
+              "zihinsel"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrum'un dört ana lobundan biri olan _____ lob, planlama ve karar verme gibi önemli görevlerden sorumludur.",
+            "dogru_cevap": "frontal",
+            "alternatif_cevaplar": [
+              "frontal"
+            ],
+            "zorluk": "Orta"
+          }
+        ],
+        "dogru_yanlis": [
+          {
+            "soru": "İnsan beyni yaklaşık 1.3 - 1.4 kilogram ağırlığındadır ve sadece sinir hücrelerinden (nöronlar) oluşur.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde insan beyninin sinir hücreleri (nöronlar) ile birlikte destekleyici hücreler (nöroglia) ve kan damarlarından da oluştuğu belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beyin, merkezi sinir sisteminin ana kontrol merkezi olarak yalnızca bilinçli süreçleri yönetir.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde beynin 'tüm bilinçli ve bilinçsiz süreçlerimizin orkestra şefliğini yapar' ifadesi yer almaktadır.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Solunum, kalp atışı ve sindirim gibi otomatik yaşamsal fonksiyonlar beynin kontrolü altında değildir.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde beynin solunum, kalp atışı ve sindirim gibi otomatik yaşamsal fonksiyonları da yönettiği açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrum (beyin kabuğu), düşünme, problem çözme ve dil gibi yüksek bilişsel fonksiyonlardan sorumlu olan beynin en küçük kısmıdır.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde serebrumun beynin en büyük kısmı olduğu ve düşünme, problem çözme, dil gibi yüksek bilişsel fonksiyonlardan sorumlu olduğu belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Frontal lob, insan beyninde planlama ve karar verme gibi görevlerden sorumlu olan serebrumun bir parçasıdır.",
+            "dogru_cevap": "true",
+            "aciklama": "Metinde frontal lobun planlama ve karar verme görevlerinden sorumlu olduğu ve serebrumun dört ana lobundan biri olduğu belirtilmiştir.",
+            "zorluk": "Orta"
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "coktan_secmeli": 5,
+        "klasik": 3,
+        "bosluk_doldurma": 5,
+        "dogru_yanlis": 5
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

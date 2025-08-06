@@ -1,172 +1,311 @@
 /* static/css/components/buttons.css */
 
+/* Primary Buttons */
 .new-chat-btn {
     width: 100%;
-    padding: 0.75rem 1rem;
-    background: var(--primary-color);
+    padding: var(--space-md) var(--space-lg);
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
     color: white;
     border: none;
-    border-radius: var(--radius-md);
-    font-weight: 500;
+    border-radius: var(--radius-xl);
+    font-weight: 600;
+    font-size: 0.9375rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-sm);
     justify-content: center;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.new-chat-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left var(--transition-slow);
 }
 
 .new-chat-btn:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
+.new-chat-btn:hover::before {
+    left: 100%;
+}
+
+.new-chat-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Settings Button */
 .settings-btn {
-    padding: 0.5rem;
-    background: transparent;
-    border: none;
-    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    background: var(--background-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
     cursor: pointer;
     color: var(--text-secondary);
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.125rem;
 }
 
 .settings-btn:hover {
-    background: var(--background-color);
+    background: var(--primary-50);
     color: var(--primary-color);
+    border-color: var(--primary-200);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .settings-btn:hover {
+    background: var(--primary-900);
+    border-color: var(--primary-700);
+}
+
+.settings-btn:active {
+    transform: translateY(0);
+}
+
+/* Input Action Buttons */
+.input-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md);
 }
 
 .input-actions button {
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border: none;
-    border-radius: 50%;
+    border-radius: var(--radius-lg);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 1rem;
+    position: relative;
+    overflow: hidden;
 }
 
 .attach-btn, .emoji-btn {
-    background: transparent;
+    background: var(--background-secondary);
     color: var(--text-muted);
+    border: 1px solid var(--border-color);
 }
 
 .attach-btn:hover, .emoji-btn:hover {
-    background: var(--border-color);
-    color: var(--text-primary);
+    background: var(--primary-50);
+    color: var(--primary-color);
+    border-color: var(--primary-200);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .attach-btn:hover, 
+[data-theme="dark"] .emoji-btn:hover {
+    background: var(--primary-900);
+    border-color: var(--primary-700);
 }
 
 .send-btn {
-    background: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
     color: white;
+    border: 1px solid var(--primary-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.send-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left var(--transition-normal);
 }
 
 .send-btn:hover:not(:disabled) {
-    background: var(--primary-hover);
-    transform: scale(1.05);
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
+.send-btn:hover:not(:disabled)::before {
+    left: 100%;
 }
 
 .send-btn:disabled {
-    background: var(--text-muted);
+    background: var(--text-disabled);
+    border-color: var(--text-disabled);
     cursor: not-allowed;
     transform: none;
+    box-shadow: none;
 }
 
+.send-btn:disabled::before {
+    display: none;
+}
+
+/* Modal Buttons */
 .close-btn {
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border: none;
-    background: transparent;
-    border-radius: 50%;
+    background: var(--background-secondary);
+    border-radius: var(--radius-lg);
     cursor: pointer;
     color: var(--text-muted);
-    transition: all 0.2s ease;
-}
-
-.close-btn:hover {
-    background: var(--background-color);
-    color: var(--text-primary);
-}
-
-.confirmation-btn {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.confirmation-btn.yes {
-    background-color: var(--success-color);
-    color: white;
-}
-
-.confirmation-btn.yes:hover {
-    background-color: #047857;
-}
-
-.confirmation-btn.no {
-    background-color: var(--danger-color);
-    color: white;
-}
-
-.confirmation-btn.no:hover {
-    background-color: #b91c1c;
-}
-
-.export-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 10px 20px;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.export-btn:hover {
-    background: #0056b3;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
-}
-
-.view-report-btn {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
+    transition: all var(--transition-normal);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin: 0 auto;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 15px rgba(40,167,69,0.3);
-    min-width: 250px;
+    border: 1px solid var(--border-color);
 }
 
-.view-report-btn:hover {
-    background: linear-gradient(135deg, #218838 0%, #1e7e8c 100%);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(40,167,69,0.4);
-}
-
-.view-report-btn:active {
+.close-btn:hover {
+    background: var(--danger-light);
+    color: var(--danger-color);
+    border-color: var(--danger-color);
     transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(40,167,69,0.3);
+    box-shadow: var(--shadow-sm);
 }
 
-.view-report-btn i {
-    font-size: 18px;
+.close-btn:active {
+    transform: translateY(0);
+}
+
+/* Test Finish Button */
+#finishTestBtn {
+    padding: var(--space-lg) var(--space-2xl);
+    background: linear-gradient(135deg, var(--success-color), #047857);
+    color: white;
+    border: none;
+    border-radius: var(--radius-xl);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+#finishTestBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left var(--transition-slow);
+}
+
+#finishTestBtn:hover {
+    background: linear-gradient(135deg, #059669, #065f46);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+#finishTestBtn:hover::before {
+    left: 100%;
+}
+
+/* Upload Buttons */
+.upload-pdf-btn {
+    padding: var(--space-sm) var(--space-lg);
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    box-shadow: var(--shadow-xs);
+}
+
+.upload-pdf-btn:hover {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.cancel-upload-btn {
+    padding: var(--space-md) var(--space-xl);
+    background: var(--background-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.cancel-upload-btn:hover {
+    background: var(--danger-light);
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+    transform: translateY(-1px);
+}
+
+/* Button States */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1rem;
+    height: 1rem;
+    margin: -0.5rem 0 0 -0.5rem;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: var(--radius-full);
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive Button Styles */
+@media (max-width: 768px) {
+    .input-actions button {
+        width: 2.25rem;
+        height: 2.25rem;
+        font-size: 0.9375rem;
+    }
+    
+    .new-chat-btn {
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.875rem;
+    }
+    
+    #finishTestBtn {
+        padding: var(--space-md) var(--space-xl);
+        font-size: 0.9375rem;
+    }
 }

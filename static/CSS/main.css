@@ -20,57 +20,90 @@
 
 @import url('pdf-manager.css');
 
-/* Web Araştırması Checkbox Stilleri */
+/* Research Options - Modern Design */
 .research-options {
-    margin-bottom: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    background: var(--background-secondary);
-    border-radius: var(--radius-md);
+    margin-bottom: var(--space-md);
+    padding: var(--space-lg);
+    background: linear-gradient(135deg, var(--primary-50), var(--background-secondary));
+    border-radius: var(--radius-xl);
     border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-xs);
+    transition: all var(--transition-normal);
+}
+
+[data-theme="dark"] .research-options {
+    background: linear-gradient(135deg, var(--primary-900), var(--background-tertiary));
+    border-color: var(--border-secondary);
+}
+
+.research-options:hover {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
 }
 
 .research-checkbox {
     display: flex;
     align-items: center;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     user-select: none;
+    position: relative;
+    padding: var(--space-sm);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-normal);
+}
+
+.research-checkbox:hover {
+    background: var(--primary-100);
+}
+
+[data-theme="dark"] .research-checkbox:hover {
+    background: var(--primary-800);
 }
 
 .research-checkbox input[type="checkbox"] {
     position: absolute;
     opacity: 0;
     cursor: pointer;
+    width: 0;
+    height: 0;
 }
 
 .research-checkbox .checkmark {
-    height: 18px;
-    width: 18px;
-    background-color: var(--background-color);
+    height: 20px;
+    width: 20px;
+    background-color: var(--surface-color);
     border: 2px solid var(--border-color);
-    border-radius: 4px;
-    margin-right: 0.5rem;
+    border-radius: var(--radius-md);
+    margin-right: var(--space-md);
     position: relative;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-xs);
 }
 
 .research-checkbox:hover .checkmark {
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+[data-theme="dark"] .research-checkbox:hover .checkmark {
+    box-shadow: 0 0 0 3px var(--primary-900);
 }
 
 .research-checkbox input:checked ~ .checkmark {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
     border-color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
 }
 
 .research-checkbox .checkmark:after {
     content: "";
     position: absolute;
     display: none;
-    left: 5px;
+    left: 6px;
     top: 2px;
-    width: 4px;
-    height: 8px;
+    width: 5px;
+    height: 10px;
     border: solid white;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
@@ -82,48 +115,111 @@
 
 .research-checkbox .label-text {
     color: var(--text-primary);
-    font-weight: 500;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
 }
 
 .research-checkbox input:checked ~ .label-text {
     color: var(--primary-color);
 }
 
-/* Dark mode için */
-[data-theme="dark"] .research-options {
-    background: var(--background-tertiary);
-    border-color: var(--border-dark);
+/* Input Textarea Modern Design */
+#messageInput {
+    width: 100%;
+    min-height: 50px;
+    max-height: 200px;
+    padding: var(--space-lg);
+    border: none;
+    background: transparent;
+    resize: none;
+    font-family: inherit;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    outline: none;
+    overflow-y: auto;
 }
 
-[data-theme="dark"] .research-checkbox .checkmark {
-    background-color: var(--background-secondary);
-    border-color: var(--border-dark);
+#messageInput::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
 }
 
-[data-theme="dark"] .research-checkbox:hover .checkmark {
-    border-color: var(--primary-light);
+#messageInput:focus::placeholder {
+    opacity: 0.5;
 }
 
-/* Welcome Message İyileştirmeleri */
+/* Welcome Message Enhancements */
 .welcome-tip {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    background: var(--background-tertiary);
-    border-radius: var(--radius-md);
-    border-left: 4px solid var(--primary-color);
+    margin-top: var(--space-2xl);
+    padding: var(--space-xl);
+    background: linear-gradient(135deg, var(--info-light), var(--background-secondary));
+    border-radius: var(--radius-xl);
+    border-left: 4px solid var(--info-color);
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .welcome-tip {
+    background: linear-gradient(135deg, var(--info-light), var(--background-tertiary));
+}
+
+.welcome-tip::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    pointer-events: none;
 }
 
 .welcome-tip p {
     margin: 0;
     color: var(--text-secondary);
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-md);
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
 }
 
 .welcome-tip i {
-    color: var(--primary-color);
-    font-size: 1rem;
+    color: var(--info-color);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+}
+
+/* Loading Spinner Modern Design */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--primary-color);
+    border-radius: var(--radius-full);
+    animation: spin 1s linear infinite;
+    margin: 0 auto var(--space-lg);
+}
+
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3xl);
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.loading-state p {
+    margin: 0;
+    font-weight: 500;
+    color: var(--text-primary);
 }
 

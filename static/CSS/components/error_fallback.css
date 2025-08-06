@@ -1,88 +1,320 @@
 /* static/css/components/error_fallback.css */
 
-.error-fallback {
+.error-boundary {
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    padding: 2rem;
+    background: linear-gradient(135deg, var(--background-color), var(--background-secondary));
+    padding: var(--space-2xl);
+}
+
+.error-container {
+    max-width: 600px;
+    width: 100%;
     text-align: center;
-    background: var(--background-primary);
-    color: var(--text-primary);
+    background: var(--surface-color);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-3xl);
+    box-shadow: var(--shadow-2xl);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    animation: errorFadeIn 0.5s ease-out;
+}
+
+.error-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--danger-color), #dc2626, var(--danger-color));
 }
 
 .error-icon {
-    font-size: 4rem;
-    color: var(--error-color);
-    margin-bottom: 1.5rem;
-    animation: pulse 2s infinite;
+    width: 5rem;
+    height: 5rem;
+    background: linear-gradient(135deg, var(--danger-color), #dc2626);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-2xl);
+    color: white;
+    font-size: 2.5rem;
+    box-shadow: var(--shadow-lg);
+    animation: errorIconPulse 2s infinite;
 }
 
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.7;
-        transform: scale(1.05);
-    }
-}
-
-.error-fallback h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 1rem 0;
+.error-title {
+    font-size: 2rem;
+    font-weight: 700;
     color: var(--text-primary);
+    margin-bottom: var(--space-lg);
+    background: linear-gradient(135deg, var(--danger-color), #dc2626);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
-.error-fallback p {
-    font-size: 1rem;
-    margin: 0 0 1.5rem 0;
+.error-message {
+    font-size: 1.125rem;
     color: var(--text-secondary);
-    max-width: 500px;
+    line-height: 1.6;
+    margin-bottom: var(--space-2xl);
 }
 
 .error-details {
     background: var(--background-secondary);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    margin: var(--space-xl) 0;
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    padding: 1rem;
-    margin-bottom: 2rem;
-    font-family: 'Courier New', monospace;
-    font-size: 0.875rem;
-    color: var(--error-color);
-    max-width: 600px;
-    word-break: break-word;
     text-align: left;
 }
 
-.error-details strong {
+.error-details summary {
+    font-weight: 600;
     color: var(--text-primary);
-}
-
-.retry-btn {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
+    padding: var(--space-sm);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-normal);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-sm);
 }
 
-.retry-btn:hover {
-    background: var(--primary-dark);
+.error-details summary:hover {
+    background: var(--background-tertiary);
+}
+
+.error-details summary::marker {
+    display: none;
+}
+
+.error-details summary::before {
+    content: '\f078';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    transition: transform var(--transition-normal);
+}
+
+.error-details[open] summary::before {
+    transform: rotate(180deg);
+}
+
+.error-stack {
+    margin-top: var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--background-color);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.error-actions {
+    display: flex;
+    gap: var(--space-lg);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: var(--space-2xl);
+}
+
+.error-action {
+    padding: var(--space-md) var(--space-2xl);
+    border-radius: var(--radius-xl);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.error-action.primary {
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
+    color: white;
+}
+
+.error-action.primary:hover {
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
 }
 
-.retry-btn i {
+.error-action.secondary {
+    background: var(--background-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.error-action.secondary:hover {
+    background: var(--background-tertiary);
+    color: var(--text-primary);
+    border-color: var(--border-secondary);
+    transform: translateY(-1px);
+}
+
+.error-action.danger {
+    background: linear-gradient(135deg, var(--danger-color), #dc2626);
+    color: white;
+}
+
+.error-action.danger:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.error-info {
+    margin-top: var(--space-2xl);
+    padding: var(--space-xl);
+    background: linear-gradient(135deg, var(--info-light), var(--background-secondary));
+    border-radius: var(--radius-xl);
+    border-left: 4px solid var(--info-color);
+}
+
+.error-info h4 {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.error-info h4 i {
+    color: var(--info-color);
+}
+
+.error-info ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.error-info li {
+    padding: var(--space-sm) 0;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.error-info li::before {
+    content: '\f058';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--success-color);
     font-size: 0.875rem;
+}
+
+/* Network Error Specific */
+.network-error {
+    border-left-color: var(--warning-color);
+}
+
+.network-error .error-icon {
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
+}
+
+.network-error .error-title {
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* JavaScript Error Specific */
+.js-error {
+    border-left-color: var(--danger-color);
+}
+
+/* 404 Error Specific */
+.not-found-error {
+    border-left-color: var(--info-color);
+}
+
+.not-found-error .error-icon {
+    background: linear-gradient(135deg, var(--info-color), #0891b2);
+}
+
+.not-found-error .error-title {
+    background: linear-gradient(135deg, var(--info-color), #0891b2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Animations */
+@keyframes errorFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes errorIconPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: var(--shadow-lg);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-xl);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .error-boundary {
+        padding: var(--space-lg);
+    }
+    
+    .error-container {
+        padding: var(--space-2xl);
+    }
+    
+    .error-icon {
+        width: 4rem;
+        height: 4rem;
+        font-size: 2rem;
+    }
+    
+    .error-title {
+        font-size: 1.5rem;
+    }
+    
+    .error-message {
+        font-size: 1rem;
+    }
+    
+    .error-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .error-action {
+        justify-content: center;
+    }
+    
+    .error-stack {
+        font-size: 0.75rem;
+    }
 }

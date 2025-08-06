@@ -1,0 +1,193 @@
+[
+  {
+    "test_id": "test_1754495740741",
+    "created_at": "2025-08-06T18:55:40.747545",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2024-07-30T14:35:00.123456",
+        "question_count": 18,
+        "question_types": {
+          "coktan_secmeli": 5,
+          "klasik": 3,
+          "bosluk_doldurma": 5,
+          "dogru_yanlis": 5
+        },
+        "difficulty_distribution": {
+          "kolay": 0,
+          "orta": 18,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [
+          {
+            "soru": "Yultuz Takımı kaç lise öğrencisinden oluşmaktadır?",
+            "secenekler": {
+              "A": "Bir",
+              "B": "İki",
+              "C": "Üç",
+              "D": "Dört"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde 'iki lise öğrencisi, Münevver Nur Topluyürek ve Ali Berk Yeşilduman'dan oluşan Yultuz Takımı'yız' ifadesi geçmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın Teknofest platformunu bir fırsat olarak görmelerinin temel amacı nedir?",
+            "secenekler": {
+              "A": "Sadece yarışmalarda başarılı olmak.",
+              "B": "Hayallerini gerçeğe dönüştürmek ve teknoloji sevgilerini somut projelere yansıtmak.",
+              "C": "Yeni arkadaşlar edinmek.",
+              "D": "Okul derslerinde başarılı olmak."
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde 'Teknofest platformunu, hayallerimizi gerçeğe dönüştürmek ve teknolojiye olan sevgimizi somut projelere yansıtmak için bir fırsat olarak görüyoruz' denilmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Münevver Nur Topluyürek'in Yultuz Takımı içindeki görevi ve temel sorumlulukları arasında aşağıdakilerden hangisi bulunmaz?",
+            "secenekler": {
+              "A": "Takım Kaptanı / Proje Yöneticisi",
+              "B": "Proje planlaması",
+              "C": "Kod yazma ve prototip geliştirme",
+              "D": "Bütçe yönetimi"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Münevver Nur Topluyürek'in görevleri arasında proje planlaması, bütçe yönetimi, zaman çizelgesi takibi, raporlama ve takım içi koordinasyon bulunurken, kod yazma ve prototip geliştirme Ali Berk Yeşilduman'ın sorumluluğundadır.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Ali Berk Yeşilduman'ın yetenekleri arasında aşağıdakilerden hangisi belirtilmiştir?",
+            "secenekler": {
+              "A": "Güçlü analitik düşünme ve detay odaklı çalışma.",
+              "B": "Proje planlaması ve bütçe yönetimi.",
+              "C": "Yazılım dilleri bilgisi (örn. Python, C++) ve elektronik bilgisi.",
+              "D": "Takım içi koordinasyon ve raporlama."
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Ali Berk Yeşilduman'ın yetenekleri arasında 'Yazılım dilleri bilgisi (örn. Python, C++), elektronik ve donanım bilgisi, yaratıcı tasarım yeteneği' yer almaktadır.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın vizyonu, sadece yarışmalarda başarılı olmanın ötesinde neyi hedeflemektedir?",
+            "secenekler": {
+              "A": "Sadece yeni teknolojileri takip etmek.",
+              "B": "Uluslararası arenada tanınmış bir takım olmak.",
+              "C": "Geliştirdikleri projelerle topluma fayda sağlayan, çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretmek.",
+              "D": "Daha fazla lise öğrencisini takıma katmak."
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Metinde 'Yultuz Takımı olarak vizyonumuz, sadece yarışmalarda başarılı olmak değil, aynı zamanda geliştirdiğimiz projelerle topluma fayda sağlayan, çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretmektir' ifadesi yer almaktadır.",
+            "zorluk": "Orta"
+          }
+        ],
+        "klasik": [
+          {
+            "soru": "Yultuz Takımı'nın iki üyesi olan Münevver Nur Topluyürek ve Ali Berk Yeşilduman'ın farklı uzmanlık alanları (Proje Yöneticisi ve Teknik Sorumlu), takımın \"güçlü analitik düşünme yetenekleri ile yaratıcı ve teknik çözümleri bir araya getirme\" hedefine ulaşmasında nasıl bir sinerji yaratmaktadır? Bu sinerjinin takımın proje geliştirme süreçlerine somut katkılarını tartışınız.",
+            "ornek_cevap": "Münevver Nur Topluyürek'in proje planlaması, bütçe yönetimi ve koordinasyon gibi yönetsel yetenekleri, Ali Berk Yeşilduman'ın yazılım, elektronik ve prototipleme gibi teknik becerileriyle birleştiğinde güçlü bir sinerji oluşur. Münevver, projenin genel çerçevesini, hedeflerini ve zaman çizelgesini belirleyerek teknik ekibin odaklanmasını sağlar. Ali Berk ise bu çerçeve içinde yenilikçi teknik çözümleri hayata geçirir. Örneğin, Münevver'in detay odaklı problem çözme yeteneği, teknik bir aksaklık durumunda Ali Berk'in yaratıcı tasarım yeteneğiyle birleşerek hızlı ve etkili çözümler üretilmesine olanak tanır. Bu iş bölümü, hem projenin teknik sağlamlığını hem de yönetimsel disiplinini garanti altına alarak, yenilikçi fikirlerin uygulanabilir projelere dönüşmesini kolaylaştırır ve takımın \"yaratıcı ve teknik çözümleri bir araya getirme\" hedefine ulaşmasını sağlar.",
+            "degerlendirme_kriterleri": "Münevver ve Ali Berk'in görev ve yeteneklerini doğru bir şekilde ilişkilendirme.\nBu rollerin nasıl bir sinerji yarattığını açıklama.\nSinerjinin proje geliştirme süreçlerine somut katkılarını örneklerle açıklama (örn. yönetimsel disiplin, teknik uygulama, problem çözme).\nAnalitik düşünme ve çıkarım yapma becerisi.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın vizyonunda \"sadece yarışmalarda başarılı olmak değil, aynı zamanda geliştirdiğimiz projelerle topluma fayda sağlayan, çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretmek\" ifadesi yer almaktadır. Bu vizyon doğrultusunda, takımın Teknofest'teki bir projesi için nasıl bir konu seçimi yapması gerektiğini ve bu projenin toplumsal, çevresel ve teknolojik açıdan faydalarını nasıl maksimize edebileceğini detaylandırınız.",
+            "ornek_cevap": "Takım, bu vizyonu doğrultusunda örneğin, su kaynaklarının verimli kullanımı veya atık yönetimi gibi çevresel bir soruna odaklanan bir proje seçebilir. Örneğin, akıllı sulama sistemleri geliştirmek, tarımda su israfını önleyerek hem çevreye fayda sağlar hem de çiftçiler için ekonomik bir çözüm sunar. Teknolojik olarak, sensörler, yapay zeka destekli analizler ve otomasyon kullanarak mevcut sistemlerden daha verimli ve akıllı bir çözüm sunulabilir. Projenin toplumsal faydası, doğal kaynakların korunmasına katkı sağlaması ve sürdürülebilir tarım uygulamalarını teşvik etmesiyle maksimize edilebilir. Ayrıca, geliştirilen prototipin açık kaynaklı hale getirilmesi veya düşük maliyetli üretim modellerinin araştırılması, çözümün daha geniş kitlelere ulaşmasını sağlayarak toplumsal etkiyi artırabilir.",
+            "degerlendirme_kriterleri": "Vizyonu doğru anlama ve yorumlama.\nVizyona uygun somut bir proje konusu önerme.\nÖnerilen projenin toplumsal, çevresel ve teknolojik faydalarını ayrı ayrı ve ilişkilendirerek açıklama.\nFaydaları maksimize etmek için atılabilecek adımları belirtme (örn. açık kaynak, düşük maliyet, yaygınlaştırma).\nYaratıcılık ve problem çözme becerisi.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın tanıtım metninde \"sürekli öğrenmeye ve gelişmeye açık bir ruhla çalıştıkları\" vurgulanmaktadır. Teknofest gibi dinamik ve hızla değişen bir teknoloji platformunda bu yaklaşım, takımın karşılaşabileceği teknik zorlukların (örn. beklenmedik hatalar, yeni teknolojilere adaptasyon) üstesinden gelmesinde ve rekabet avantajı elde etmesinde nasıl bir kritik rol oynar? Somut örneklerle açıklayınız.",
+            "ornek_cevap": "Sürekli öğrenmeye ve gelişmeye açık olmak, Teknofest gibi rekabetçi bir ortamda takımın esnekliğini ve adaptasyon yeteneğini artırır. Örneğin, bir projenin prototip aşamasında beklenmedik bir teknik hata veya performans sorunu ortaya çıktığında, bu zihniyetle çalışan bir takım, sorunu bir öğrenme fırsatı olarak görür. Mevcut bilgileriyle yetinmeyip yeni kaynakları araştırır, farklı çözüm yaklaşımlarını dener ve gerekirse yeni bir programlama dili veya donanım bilgisi edinmekten çekinmez. Bu sayede, hızla değişen teknoloji trendlerine ayak uydurabilir, rakiplerinin henüz keşfetmediği yenilikçi yaklaşımları projelerine entegre edebilirler. Bu açık zihniyet, aynı zamanda takım üyelerinin birbirlerinden öğrenmelerini teşvik eder, bilgi paylaşımını artırır ve takımın genel yetkinlik seviyesini sürekli yükseltir, böylece hem zorlukların üstesinden gelirler hem de rekabet avantajı elde ederler.",
+            "degerlendirme_kriterleri": "\"Sürekli öğrenme ve gelişme\" kavramını doğru anlama.\nBu yaklaşımın teknik zorlukların üstesinden gelmedeki rolünü açıklama.\nRekabet avantajı elde etmedeki rolünü açıklama.\nSomut örneklerle (örn. hata giderme, yeni teknoloji adaptasyonu, bilgi paylaşımı) argümanlarını destekleme.\nEleştirel düşünme ve çıkarım yapma becerisi.",
+            "puan": 10,
+            "zorluk": "Orta"
+          }
+        ],
+        "bosluk_doldurma": [
+          {
+            "soru": "Yultuz Takımı, iki lise öğrencisi olan Münevver Nur Topluyürek ve Ali Berk Yeşilduman'dan oluşan bir _____.",
+            "dogru_cevap": "takımdır",
+            "alternatif_cevaplar": [
+              "ekiptir",
+              "gruptur"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı, geleceğin teknolojisine yön vermeyi _____ iki lise öğrencisinden oluşmaktadır.",
+            "dogru_cevap": "hedefleyen",
+            "alternatif_cevaplar": [
+              "amaçlayan"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Takım, güçlü analitik düşünme yetenekleri ile yaratıcı ve _____ çözümleri bir araya getirmektedir.",
+            "dogru_cevap": "teknik",
+            "alternatif_cevaplar": [],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Münevver Nur Topluyürek, Yultuz Takımı'nda _____ ve Proje Yöneticisi görevlerini üstlenmektedir.",
+            "dogru_cevap": "Takım Kaptanı",
+            "alternatif_cevaplar": [],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Ali Berk Yeşilduman'ın yetenekleri arasında yazılım dilleri bilgisi (örn. Python, C++), elektronik ve _____ bilgisi bulunmaktadır.",
+            "dogru_cevap": "donanım",
+            "alternatif_cevaplar": [],
+            "zorluk": "Orta"
+          }
+        ],
+        "dogru_yanlis": [
+          {
+            "soru": "Yultuz Takımı, üç lise öğrencisinden oluşmaktadır.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde 'iki lise öğrencisi, Münevver Nur Topluyürek ve Ali Berk Yeşilduman'dan oluşan Yultuz Takımı'yız' ifadesi geçmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın temel amacı sadece Teknofest yarışmalarında başarılı olmaktır.",
+            "dogru_cevap": "false",
+            "aciklama": "Takımın vizyonu, sadece yarışmalarda başarılı olmak değil, aynı zamanda topluma fayda sağlayan, çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretmektir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Münevver Nur Topluyürek'in sorumlulukları arasında kod yazma ve prototip geliştirme bulunmaktadır.",
+            "dogru_cevap": "false",
+            "aciklama": "Kod yazma ve prototip geliştirme Ali Berk Yeşilduman'ın sorumlulukları arasındadır. Münevver'in sorumlulukları proje planlaması, bütçe yönetimi, zaman çizelgesi takibi, raporlama ve takım içi koordinasyondur.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Ali Berk Yeşilduman'ın yetenekleri arasında güçlü analitik düşünme ve detay odaklı çalışma becerisi yer almaktadır.",
+            "dogru_cevap": "false",
+            "aciklama": "Güçlü analitik düşünme ve detay odaklı çalışma Münevver Nur Topluyürek'in yetenekleridir. Ali Berk'in yetenekleri yazılım dilleri bilgisi (örn. Python, C++), elektronik ve donanım bilgisi, yaratıcı tasarım yeteneğidir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı, projelerinde yenilikçi fikirleri somut ve uygulanabilir projelere dönüştürerek topluma fayda sağlayan çözümler üretmeyi amaçlamaktadır.",
+            "dogru_cevap": "true",
+            "aciklama": "Metinde 'Projelerimizde, yenilikçi fikirleri somut ve uygulanabilir projelere dönüştürerek topluma fayda sağlayan çözümler üretmeyi amaçlıyoruz' ifadesi açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "coktan_secmeli": 5,
+        "klasik": 3,
+        "bosluk_doldurma": 5,
+        "dogru_yanlis": 5
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

@@ -1,59 +1,109 @@
-/* static/css/components/pdf-manager.css */
+/* static/css/pdf-manager.css */
 
 /* PDF Section Styles */
 .pdf-section {
-    padding: 1rem;
+    padding: var(--space-lg);
     border-bottom: 1px solid var(--border-color);
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-lg);
+    background: linear-gradient(135deg, var(--danger-50), var(--surface-color));
+    position: relative;
+}
+
+[data-theme="dark"] .pdf-section {
+    background: linear-gradient(135deg, var(--danger-900), var(--surface-color));
+}
+
+.pdf-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, var(--danger-color), #dc2626);
 }
 
 .pdf-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .pdf-header h3 {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.9375rem;
     color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .pdf-header h3 i {
     color: var(--danger-color);
+    font-size: 1.125rem;
+    padding: var(--space-sm);
+    background: var(--danger-light);
+    border-radius: var(--radius-lg);
 }
 
 .upload-pdf-btn {
-    padding: 0.5rem 0.75rem;
-    background: var(--primary-color);
+    padding: var(--space-sm) var(--space-lg);
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
     color: white;
     border: none;
-    border-radius: var(--radius-sm);
-    font-size: 0.8rem;
+    border-radius: var(--radius-xl);
+    font-size: 0.8125rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-sm);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-pdf-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left var(--transition-normal);
 }
 
 .upload-pdf-btn:hover {
-    background: var(--primary-hover);
+    background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
     transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.upload-pdf-btn:hover::before {
+    left: 100%;
+}
+
+.upload-pdf-btn i {
+    font-size: 0.9375rem;
 }
 
 /* PDF Stats */
 .pdf-stats {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    padding: 0.75rem;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md);
     background: var(--background-secondary);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
 }
 
 .stat-item {
@@ -61,275 +111,418 @@
     flex-direction: column;
     align-items: center;
     flex: 1;
+    padding: var(--space-sm);
+    background: var(--surface-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+    transition: all var(--transition-normal);
+}
+
+.stat-item:hover {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-1px);
 }
 
 .stat-label {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--space-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .stat-value {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: var(--primary-color);
+    background: var(--primary-50);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    min-width: 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-xs);
+}
+
+[data-theme="dark"] .stat-value {
+    background: var(--primary-900);
+    color: var(--primary-300);
 }
 
 /* PDF List */
 .pdf-list {
-    max-height: 200px;
+    max-height: 300px;
     overflow-y: auto;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    background: var(--background-secondary);
 }
 
 .pdf-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
-    background: var(--background-secondary);
-    border-radius: var(--radius-sm);
-    transition: all 0.2s ease;
+    padding: var(--space-lg);
+    margin: var(--space-sm);
+    background: var(--surface-color);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-xs);
+    position: relative;
+    overflow: hidden;
+}
+
+.pdf-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--danger-color);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
 }
 
 .pdf-item:hover {
-    background: var(--border-color);
-    transform: translateX(2px);
+    background: var(--background-secondary);
+    border-color: var(--danger-200);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
 }
 
-.pdf-info {
+.pdf-item:hover::before {
+    opacity: 1;
+}
+
+.pdf-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--danger-light);
+    color: var(--danger-color);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-right: var(--space-md);
+    box-shadow: var(--shadow-xs);
+    flex-shrink: 0;
+}
+
+.pdf-details {
     flex: 1;
     min-width: 0;
 }
 
 .pdf-name {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.25rem;
-}
-
-.pdf-name i {
-    color: var(--danger-color);
-    font-size: 0.9rem;
-}
-
-.pdf-name span {
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.9375rem;
+    font-weight: 600;
     color: var(--text-primary);
+    margin-bottom: var(--space-xs);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.pdf-meta small {
-    font-size: 0.7rem;
+.pdf-meta {
+    display: flex;
+    gap: var(--space-md);
+    font-size: 0.75rem;
     color: var(--text-muted);
 }
 
-.delete-pdf-btn {
-    width: 1.75rem;
-    height: 1.75rem;
-    border: none;
-    background: transparent;
+.pdf-size {
+    background: var(--background-tertiary);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-full);
+    font-weight: 500;
+}
+
+.pdf-chunks {
+    background: var(--success-light);
+    color: var(--success-color);
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.pdf-chunks i {
+    font-size: 0.6875rem;
+}
+
+.pdf-actions {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.pdf-action-btn {
+    width: 2rem;
+    height: 2rem;
+    background: var(--background-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--text-muted);
-    border-radius: 50%;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
+    font-size: 0.8125rem;
+}
+
+.pdf-action-btn:hover {
+    background: var(--primary-50);
+    color: var(--primary-color);
+    border-color: var(--primary-200);
+    transform: scale(1.1);
+}
+
+[data-theme="dark"] .pdf-action-btn:hover {
+    background: var(--primary-900);
+    border-color: var(--primary-700);
+}
+
+.delete-pdf-btn {
+    background: var(--background-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: var(--space-xs);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-normal);
+    font-size: 0.75rem;
+    width: 2rem;
+    height: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .delete-pdf-btn:hover {
-    background: var(--danger-color);
-    color: white;
+    background: var(--danger-light);
+    color: var(--danger-color);
+    border-color: var(--danger-color);
     transform: scale(1.1);
 }
 
-.no-pdfs {
+/* Empty PDF List */
+.empty-pdf-list {
     text-align: center;
-    padding: 2rem 1rem;
+    padding: var(--space-3xl) var(--space-lg);
     color: var(--text-muted);
-    font-size: 0.85rem;
-    font-style: italic;
+    background: var(--surface-color);
+    border-radius: var(--radius-xl);
+    border: 2px dashed var(--border-color);
+    margin: var(--space-md);
 }
 
-/* Upload Modal Styles */
-.upload-modal {
-    max-width: 500px;
-    width: 90%;
-}
-
-.upload-progress {
-    padding: 1rem 0;
-}
-
-.upload-info {
-    margin-bottom: 1.5rem;
-}
-
-.upload-filename {
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-    word-break: break-all;
-}
-
-.upload-status {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 8px;
-    background: var(--border-color);
-    border-radius: 4px;
-    margin: 1rem 0;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary-color), var(--success-color));
-    border-radius: 4px;
-    transition: width 0.3s ease;
-    width: 0%;
-}
-
-.upload-details {
-    display: flex;
-    justify-content: space-between;
-    margin: 1rem 0;
-    padding: 0.75rem;
-    background: var(--background-secondary);
-    border-radius: var(--radius-sm);
-}
-
-.detail-item {
-    display: flex;
-    flex-direction: column;
+.empty-pdf-list i {
+    font-size: 3rem;
+    margin-bottom: var(--space-lg);
+    opacity: 0.3;
+    color: var(--danger-color);
+    background: var(--danger-light);
+    width: 5rem;
+    height: 5rem;
+    border-radius: var(--radius-full);
+    display: inline-flex;
     align-items: center;
-    gap: 0.25rem;
-}
-
-.detail-item span:first-child {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-}
-
-.detail-item span:last-child {
-    font-weight: 600;
-    color: var(--text-primary);
-}
-
-.upload-actions {
-    display: flex;
     justify-content: center;
-    margin-top: 1.5rem;
 }
 
-.cancel-upload-btn {
-    padding: 0.75rem 1.5rem;
-    background: var(--text-muted);
-    color: white;
-    border: none;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease;
+.empty-pdf-list h4 {
+    margin: 0 0 var(--space-sm) 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
-.cancel-upload-btn:hover {
-    background: var(--danger-color);
+.empty-pdf-list p {
+    margin: 0 0 var(--space-lg) 0;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
 }
 
-/* Feature List Styles for Welcome Message */
-.feature-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.feature-item {
-    display: flex;
+.empty-pdf-list .upload-hint {
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 1rem;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--primary-50);
+    color: var(--primary-700);
+    border-radius: var(--radius-xl);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid var(--primary-200);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+[data-theme="dark"] .empty-pdf-list .upload-hint {
+    background: var(--primary-900);
+    color: var(--primary-300);
+    border-color: var(--primary-700);
+}
+
+.empty-pdf-list .upload-hint:hover {
+    background: var(--primary-100);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.empty-pdf-list .upload-hint i {
+    font-size: 1rem;
+    width: auto;
+    height: auto;
+    background: none;
+    margin: 0;
+    opacity: 1;
+    color: inherit;
+}
+
+/* PDF Upload Modal */
+.pdf-upload-modal {
+    max-width: 500px;
+}
+
+.upload-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-xl);
+    padding: var(--space-3xl);
+    text-align: center;
     background: var(--background-secondary);
-    border-radius: var(--radius-md);
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
+    cursor: pointer;
 }
 
-.feature-item:hover {
-    background: var(--border-color);
-    transform: translateY(-2px);
+.upload-zone:hover,
+.upload-zone.dragover {
+    border-color: var(--primary-color);
+    background: var(--primary-50);
 }
 
-.feature-item i {
-    font-size: 1.2rem;
+[data-theme="dark"] .upload-zone:hover,
+[data-theme="dark"] .upload-zone.dragover {
+    background: var(--primary-900);
+}
+
+.upload-zone i {
+    font-size: 3rem;
     color: var(--primary-color);
+    margin-bottom: var(--space-lg);
+    display: block;
 }
 
-/* PDF Icon in Input */
-.input-actions .attach-btn i.fa-file-pdf {
-    color: var(--danger-color);
+.upload-zone h4 {
+    margin: 0 0 var(--space-sm) 0;
+    color: var(--text-primary);
+    font-weight: 600;
 }
 
-.input-actions .attach-btn:hover i.fa-file-pdf {
-    color: var(--danger-color);
-    opacity: 0.8;
+.upload-zone p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* PDF Processing States */
+.pdf-processing {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.pdf-processing .pdf-icon {
+    animation: pulse 2s infinite;
+}
+
+.pdf-error {
+    border-color: var(--danger-color);
+    background: var(--danger-light);
+}
+
+.pdf-error .pdf-icon {
+    background: var(--danger-color);
+    color: white;
+}
+
+.pdf-success {
+    border-color: var(--success-color);
+    animation: successPulse 0.5s ease-out;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 var(--success-color);
+    }
+    70% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 10px transparent;
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 transparent;
+    }
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .pdf-section {
+        padding: var(--space-md);
+    }
+    
+    .pdf-header {
+        flex-direction: column;
+        gap: var(--space-md);
+        text-align: center;
+    }
+    
     .pdf-stats {
         flex-direction: column;
-        gap: 0.5rem;
+        gap: var(--space-sm);
     }
     
     .stat-item {
         flex-direction: row;
         justify-content: space-between;
+        padding: var(--space-md);
     }
     
-    .upload-modal {
-        width: 95%;
-        margin: 1rem;
+    .pdf-list {
+        max-height: 250px;
     }
     
-    .feature-list {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
     .pdf-item {
-        background: rgba(255, 255, 255, 0.05);
+        padding: var(--space-md);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-md);
     }
     
-    .pdf-item:hover {
-        background: rgba(255, 255, 255, 0.1);
+    .pdf-meta {
+        flex-direction: column;
+        gap: var(--space-xs);
     }
     
-    .pdf-stats {
-        background: rgba(255, 255, 255, 0.05);
+    .pdf-actions {
+        align-self: stretch;
+        justify-content: flex-end;
     }
     
-    .upload-details {
-        background: rgba(255, 255, 255, 0.05);
+    .empty-pdf-list {
+        padding: var(--space-2xl) var(--space-md);
     }
     
-    .feature-item {
-        background: rgba(255, 255, 255, 0.05);
-    }
-    
-    .feature-item:hover {
-        background: rgba(255, 255, 255, 0.1);
+    .empty-pdf-list i {
+        font-size: 2.5rem;
+        width: 4rem;
+        height: 4rem;
     }
 }

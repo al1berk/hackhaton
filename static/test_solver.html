@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test Çözücü</title>
-    <link rel="stylesheet" href="/static/css/test_solver.css">
+    <link rel="stylesheet" href="/static/CSS/test_solver.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
     <div class="test-container">
         <header class="test-header">
             <div class="header-content">
-                <h1><i class="fas fa-file-alt"></i> Doküman Testi</h1>
+                <h1><i class="fas fa-clipboard-check"></i> Doküman Testi</h1>
                 <div class="test-progress">
                     <div class="progress-bar-container">
                         <div class="progress-bar" id="progressBar"></div>
@@ -31,14 +31,32 @@
             </div>
         </main>
 
-        <footer class="test-footer">
-            <div id="resultSummary" class="result-summary" style="display: none;">
-                <h3>Test Tamamlandı!</h3>
-                <p>Skorunuz: <span id="finalScore">0</span></p>
+        <footer class="test-footer" id="testFooter">
+            <div class="test-controls">
+                <button id="finishTestBtn" class="finish-test-btn" style="display: none;">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Testi Bitir</span>
+                </button>
+                
+                <div class="test-actions">
+                    <button class="action-btn secondary-btn" onclick="window.close()">
+                        <i class="fas fa-times"></i>
+                        <span>İptal Et</span>
+                    </button>
+                    
+                    <button class="action-btn info-btn" onclick="showTestInfo()">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Test Bilgisi</span>
+                    </button>
+                </div>
             </div>
-            <button id="finishTestBtn" style="display: none;">
-                <i class="fas fa-check-circle"></i> Testi Bitir
-            </button>
+            
+            <div id="resultSummary" class="result-summary" style="display: none;">
+                <div class="result-content">
+                    <h3><i class="fas fa-trophy"></i> Test Tamamlandı!</h3>
+                    <p>Skorunuz: <span id="finalScore">0</span>%</p>
+                </div>
+            </div>
         </footer>
     </div>
 

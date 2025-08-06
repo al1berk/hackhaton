@@ -1,0 +1,121 @@
+[
+  {
+    "test_id": "test_1754497222449",
+    "created_at": "2025-08-06T19:20:22.457608",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2024-07-30T10:00:00",
+        "question_count": 8,
+        "question_types": {
+          "coktan_secmeli": 5,
+          "klasik": 3
+        },
+        "difficulty_distribution": {
+          "kolay": 0,
+          "orta": 8,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [
+          {
+            "soru": "Rapora göre insan beyninin yaklaşık ağırlığı ne kadardır?",
+            "secenekler": {
+              "A": "1.0 - 1.1 kg",
+              "B": "1.1 - 1.2 kg",
+              "C": "1.3 - 1.4 kg",
+              "D": "1.5 - 1.6 kg"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Rapor, insan beyninin yaklaşık 1.3 - 1.4 kilogram ağırlığında olduğunu belirtmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Raporda belirtilene göre, aşağıdakilerden hangisi insan beynini oluşturan bileşenlerden biri DEĞİLDİR?",
+            "secenekler": {
+              "A": "Sinir hücreleri (nöronlar)",
+              "B": "Destekleyici hücreler (nöroglia)",
+              "C": "Kas dokusu",
+              "D": "Kan damarları"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Rapor, sinir hücreleri, destekleyici hücreler ve kan damarlarını beynin bileşenleri olarak sayarken, kas dokusundan bahsetmemiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Aşağıdakilerden hangisi beynin raporda belirtilen otomatik yaşamsal fonksiyonlarından biri değildir?",
+            "secenekler": {
+              "A": "Solunum",
+              "B": "Kalp atışı",
+              "C": "Sindirim",
+              "D": "Problem çözme"
+            },
+            "dogru_cevap": "D",
+            "aciklama": "Solunum, kalp atışı ve sindirim otomatik yaşamsal fonksiyonlar olarak belirtilirken, problem çözme üst düzey bilişsel bir fonksiyondur.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beynin en büyük kısmı olan serebrum (beyin kabuğu), hangi tür fonksiyonlardan sorumludur?",
+            "secenekler": {
+              "A": "Otomatik yaşamsal fonksiyonlar",
+              "B": "Sadece duyusal algılar",
+              "C": "Yüksek bilişsel fonksiyonlar",
+              "D": "Vücut içi denge (homeostazi)"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Rapor, serebrumun düşünme, problem çözme, dil gibi yüksek bilişsel fonksiyonlardan sorumlu olduğunu belirtmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Rapora göre, beynin hangi lobu planlama ve karar verme gibi görevlerden sorumludur?",
+            "secenekler": {
+              "A": "Parietal lob",
+              "B": "Temporal lob",
+              "C": "Oksipital lob",
+              "D": "Frontal lob"
+            },
+            "dogru_cevap": "D",
+            "aciklama": "Metinde 'Frontal lob, planlama, karar verme' ifadeleri yer almaktadır.",
+            "zorluk": "Orta"
+          }
+        ],
+        "klasik": [
+          {
+            "soru": "Metinde insan beyni, \"tüm bilinçli ve bilinçsiz süreçlerimizin orkestra şefi\" olarak tanımlanmaktadır. Bu benzetmeyi temel alarak, beynin bu 'şeflik' görevini yerine getirirken hem üst düzey bilişsel fonksiyonları hem de otomatik yaşamsal fonksiyonları aynı anda nasıl koordine ettiğini, metinde belirtilen bileşenleri ve fonksiyonları bağlamında açıklayınız.",
+            "ornek_cevap": "İnsan beyni, nöronlar, nöroglia ve kan damarlarından oluşan karmaşık yapısıyla bilinçli (düşünme, öğrenme, hafıza) ve bilinçsiz (solunum, kalp atışı, sindirim) süreçleri eş zamanlı yöneten bir \"orkestra şefi\" gibidir. Üst düzey bilişsel fonksiyonlar, özellikle serebrum gibi belirli bölgelerdeki nöron ağları aracılığıyla gerçekleştirilirken, solunum veya kalp atışı gibi otomatik yaşamsal fonksiyonlar beynin daha alt bölgelerindeki otonom sinir sistemi kontrol merkezleri tarafından yönetilir. Beyin, bu farklı bölgeler ve sinirsel yollar arasındaki sürekli iletişim ve entegrasyon sayesinde, tüm bu fonksiyonları birbiriyle uyumlu ve kesintisiz bir şekilde koordine eder. Örneğin, frontal lob karar verme gibi bilinçli bir süreçle meşgulken, beyin sapı kalp atışını düzenlemeye devam eder. Bu koordinasyon, homeostaziyi sağlayarak vücut dengesini korur ve insan varoluşu için hayati önem taşır.",
+            "degerlendirme_kriterleri": "Beynin \"orkestra şefi\" benzetmesini açıklayabilme.\nBilinçli ve bilinçsiz süreçler arasındaki ayrımı doğru yapabilme.\nMetinde geçen beyin bileşenleri (nöron, nöroglia) veya bölgelerine (serebrum, frontal lob) atıfta bulunarak koordinasyon mekanizmasını açıklayabilme.\nÜst düzey bilişsel fonksiyonlar ile otomatik yaşamsal fonksiyonlar arasındaki ilişkiyi ve beynin bunları nasıl entegre ettiğini kavrayabilme.\nHomeostazi kavramına değinme (isteğe bağlı ama artı puan).",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metinde beynin, \"insan varoluşu için vazgeçilmez bir öneme sahip olduğu\" vurgulanmaktadır. Bu vazgeçilmezlik özelliğini, beynin yönettiği farklı fonksiyon türleri (örneğin, bilişsel fonksiyonlar ve yaşamsal fonksiyonlar) arasındaki ilişkiyi ve bu fonksiyonların herhangi birindeki ciddi bir bozulmanın bireyin yaşamı üzerindeki potansiyel etkilerini tartışarak açıklayınız.",
+            "ornek_cevap": "Beynin insan varoluşu için vazgeçilmez olması, hem üst düzey bilişsel fonksiyonları (düşünme, öğrenme, hafıza, problem çözme) hem de otomatik yaşamsal fonksiyonları (solunum, kalp atışı, sindirim) yönetmesinden kaynaklanır. Bilişsel fonksiyonlar, bireyin çevreyle etkileşimini, kendini ifade etmesini ve uyum sağlamasını mümkün kılarak yaşam kalitesini ve sosyal işlevselliğini doğrudan etkiler. Örneğin, frontal lobdaki bir hasar planlama ve karar verme yeteneğini ciddi şekilde bozabilir. Öte yandan, otomatik yaşamsal fonksiyonlar doğrudan hayatta kalma ile ilgilidir; solunum veya kalp atışı gibi fonksiyonlardaki ciddi bir bozulma bireyin hayatını anında tehdit eder. Beyin, bu iki tür fonksiyonu sürekli olarak entegre ederek bireyin hem hayatta kalmasını hem de anlamlı bir yaşam sürmesini sağlar. Bu nedenle, beynin herhangi bir fonksiyonundaki ciddi bir aksaklık, bireyin fiziksel sağlığından zihinsel yeteneklerine, sosyal ilişkilerinden bağımsız yaşam becerilerine kadar geniş bir yelpazede derin ve yıkıcı etkilere yol açabilir.",
+            "degerlendirme_kriterleri": "Beynin vazgeçilmezliğini, farklı fonksiyon türleri (bilişsel ve yaşamsal) üzerinden açıklayabilme.\nBilişsel fonksiyonların (düşünme, öğrenme, problem çözme) bireyin yaşam kalitesi ve sosyal işlevselliği üzerindeki etkisini örnekleyebilme.\nYaşamsal fonksiyonların (solunum, kalp atışı) hayatta kalma üzerindeki doğrudan etkisini açıklayabilme.\nHer iki fonksiyon türündeki bozulmaların bireyin yaşamı üzerindeki potansiyel etkilerini analiz edebilme.\nFonksiyonlar arası entegrasyonun önemine değinme.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metinde serebrumun (beyin kabuğu) düşünme, problem çözme, dil gibi yüksek bilişsel fonksiyonlardan sorumlu olduğu ve frontal lobun da planlama ve karar verme gibi spesifik görevlere sahip olduğu belirtilmiştir. Beynin farklı bölgelerinin (loblar gibi) belirli görevlere özelleşmesinin, organın genel işleyişi ve insan bilişi üzerindeki önemi nedir? Bu özelleşme olmasaydı insan beyninin fonksiyonelliği nasıl etkilenirdi?",
+            "ornek_cevap": "Beynin farklı bölgelerinin (loblar gibi) belirli görevlere özelleşmesi (fonksiyonel lokalizasyon), beynin muazzam karmaşıklığını ve verimliliğini sağlayan kritik bir özelliktir. Bu özelleşme sayesinde, her bölge kendi spesifik görevine odaklanabilir, bu da bilginin daha hızlı ve etkin işlenmesine olanak tanır. Örneğin, frontal lobun planlama ve karar vermeden sorumlu olması, bu karmaşık bilişsel süreçlerin özelleşmiş bir alanda optimize edilmesini sağlar. Bu özelleşme, aynı zamanda, farklı bilişsel ve duyusal bilgilerin eş zamanlı olarak işlenmesine ve entegre edilmesine imkan tanır, bu da insan bilişinin çok yönlülüğünü ve adaptasyon yeteneğini artırır. Eğer beyin bölgeleri bu şekilde özelleşmemiş olsaydı, her fonksiyon için tüm beynin aynı anda çalışması gerekirdi. Bu durum, bilgi işlem hızını ve verimliliğini düşürür, beyni aşırı yükler ve çok daha basit, temel işlevlerle sınırlı kalmasına neden olurdu. Sonuç olarak, yüksek bilişsel fonksiyonlar (dil, problem çözme, soyut düşünme) gelişemez, algı ve hareket koordinasyonu zayıflar, bu da insan türünün bugünkü karmaşık davranışlarını ve adaptasyon yeteneklerini sergilemesini imkansız kılardı.",
+            "degerlendirme_kriterleri": "Beyin bölgelerinin özelleşmesinin (fonksiyonel lokalizasyon) ne anlama geldiğini açıklayabilme.\nBu özelleşmenin beynin genel işleyişi ve insan bilişi üzerindeki olumlu etkilerini (verimlilik, hız, karmaşıklık) tartışabilme.\nMetinden örnekler (serebrumun yüksek bilişsel fonksiyonları, frontal lobun planlama/karar verme) verebilme.\nÖzelleşme olmasaydı beynin fonksiyonelliğinin nasıl etkileneceğine dair mantıklı çıkarımlar yapabilme (daha az verimlilik, daha basit işlevler, yüksek bilişsel fonksiyonların yokluğu vb.).\nAnalitik düşünme ve senaryo tabanlı çıkarım yapabilme yeteneği.",
+            "puan": 10,
+            "zorluk": "Orta"
+          }
+        ],
+        "bosluk_doldurma": []
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "coktan_secmeli": 5,
+        "klasik": 3
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

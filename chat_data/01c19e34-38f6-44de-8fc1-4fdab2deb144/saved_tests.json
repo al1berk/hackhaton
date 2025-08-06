@@ -1,0 +1,195 @@
+[
+  {
+    "test_id": "test_1754503344815",
+    "created_at": "2025-08-06T21:02:24.820257",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2024-07-30T10:00:00.000000",
+        "question_count": 17,
+        "question_types": {
+          "coktan_secmeli": 5,
+          "klasik": 2,
+          "bosluk_doldurma": 5,
+          "dogru_yanlis": 5
+        },
+        "difficulty_distribution": {
+          "kolay": 0,
+          "orta": 17,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [
+          {
+            "soru": "İnsan beyni ile ilgili aşağıdaki ifadelerden hangisi metindeki bilgilere göre yanlıştır?",
+            "secenekler": {
+              "A": "Yaklaşık 1.3 - 1.4 kilogram ağırlığındadır.",
+              "B": "Kafatası dışında yer alan bir organdır.",
+              "C": "Nöronlar, nöroglia ve kan damarlarından oluşur.",
+              "D": "Merkezi sinir sisteminin ana kontrol merkezidir."
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde insan beyninin 'kafatasımızın içinde yer alan' bir organ olduğu açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metne göre, beyin aşağıdaki fonksiyonlardan hangisini doğrudan yönetmez?",
+            "secenekler": {
+              "A": "Solunum ve kalp atışı gibi otomatik yaşamsal fonksiyonlar.",
+              "B": "Görme, işitme, tat alma gibi duyusal algılar.",
+              "C": "Vücut içi denge (homeostaz).",
+              "D": "Kanın pıhtılaşma süreci."
+            },
+            "dogru_cevap": "D",
+            "aciklama": "Metinde beynin düşünme, öğrenme, hafıza, duygu, solunum, kalp atışı, sindirim, hareketler, duyusal algılar ve homeostazı yönettiği belirtilmiştir. Kanın pıhtılaşması bu listeye dahil edilmemiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beynin en büyük kısmı olan serebrum (beyin kabuğu), metne göre aşağıdaki yüksek bilişsel fonksiyonlardan hangisinden sorumlu değildir??",
+            "secenekler": {
+              "A": "Düşünme ve problem çözme.",
+              "B": "Dil ve bilinçli hareketler.",
+              "C": "Duyusal yorumlama.",
+              "D": "Otomatik reflekslerin kontrolü."
+            },
+            "dogru_cevap": "D",
+            "aciklama": "Metinde serebrumun düşünme, problem çözme, dil, bilinçli hareketler ve duyusal yorumlamadan sorumlu olduğu belirtilmiştir. Otomatik reflekslerin kontrolü serebrumun spesifik olarak listelenen yüksek bilişsel fonksiyonları arasında yer almaz.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metinde belirtildiği üzere, serebrum (beyin kabuğu) kaç ana loba ayrılır ve bu lobların isimleri hangi seçenekte doğru verilmiştir?",
+            "secenekler": {
+              "A": "Üç ana loba: Ön, orta, arka lob.",
+              "B": "Dört ana loba: Frontal, parietal, temporal, oksipital loblar.",
+              "C": "Beş ana loba: Korteks, talamus, hipotalamus, beyincik, beyin sapı.",
+              "D": "İki ana loba: Sağ ve sol yarım küre."
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde serebrumun 'frontal, parietal, temporal ve oksipital loblar olmak üzere dört ana loba ayrıldığı' açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metne göre, serebrumun loblarından biri olan frontal lobun başlıca görevleri arasında aşağıdakilerden hangisi yer almaktadır?",
+            "secenekler": {
+              "A": "Duyusal bilgileri işlemek.",
+              "B": "Planlama ve karar verme.",
+              "C": "Uzun süreli hafızayı depolamak.",
+              "D": "Solunum hızını düzenlemek."
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde 'Frontal lob, planlama, karar verme' görevlerinden sorumlu olduğu açıkça ifade edilmiştir.",
+            "zorluk": "Orta"
+          }
+        ],
+        "klasik": [
+          {
+            "soru": "Metinde insan beyninin hem üst düzey bilişsel fonksiyonları (düşünme, öğrenme, hafıza) hem de otomatik yaşamsal fonksiyonları (solunum, kalp atışı) yönettiği belirtilmektedir. Beynin bu çok yönlü kontrol yeteneğini insan varoluşu açısından nasıl değerlendirirsiniz? Bu durum, beynin merkezi sinir sistemindeki rolünü nasıl pekiştirmektedir?",
+            "ornek_cevap": "İnsan beyninin hem karmaşık bilişsel süreçleri hem de temel yaşamsal faaliyetleri aynı anda yönetebilmesi, onun insan varoluşu için vazgeçilmez bir organ olduğunu açıkça göstermektedir. Bu çok yönlü kontrol yeteneği, beynin sadece düşünsel kapasitemizi değil, aynı zamanda hayatta kalmamızı sağlayan tüm otomatik süreçleri de orkestra şefi gibi idare ettiğini ortaya koyar. Bilişsel fonksiyonlar, bireyin çevresiyle etkileşim kurmasını, problem çözmesini ve uyum sağlamasını sağlarken, otomatik fonksiyonlar temel fizyolojik dengenin (homeostaz) korunmasını garanti eder. Bu dualite, beynin merkezi sinir sisteminin ana kontrol merkezi olarak ne denli entegre ve hayati bir rol oynadığını pekiştirir; zira sadece düşünen bir varlık değil, aynı zamanda hayatta kalabilen ve çevresine adapte olabilen bir organizma olmamızı sağlar. Beynin bu iki alanı kusursuz bir şekilde koordine etmesi, insanı hem fiziksel hem de zihinsel olarak bütüncül bir varlık haline getirir.",
+            "degerlendirme_kriterleri": "Beynin hem bilişsel hem de otomatik fonksiyonları yönetme yeteneğini doğru tanımlaması; Bu çok yönlü kontrolün insan varoluşu için önemini (vazgeçilmezlik) açıklayabilmesi; Bilişsel ve otomatik fonksiyonların birey ve organizma için farklı ama tamamlayıcı rollerini vurgulaması; Beynin merkezi sinir sistemindeki 'ana kontrol merkezi' rolünü bu bağlamda nasıl pekiştirdiğini analiz edebilmesi; Cevabın mantıksal tutarlılığı ve ifade netliği.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Metinde beynin farklı bölgelerinin özelleşmiş görevlere sahip olduğu ve serebrumun (beyin kabuğu) dört ana loba ayrıldığı belirtilmektedir. Beynin bu 'işlevsel özelleşme' yapısı, insan beyninin karmaşıklığına ve üstlendiği çok sayıda göreve nasıl bir katkı sağlamaktadır? Bu özelleşme olmasaydı insan bilişsel ve fiziksel yeteneklerinde ne gibi eksiklikler görülebilirdi?",
+            "ornek_cevap": "Beynin işlevsel özelleşme yapısı, yani farklı bölgelerin belirli görevlerden sorumlu olması, insan beyninin muazzam karmaşıklığını ve üstlendiği çok sayıda hayati görevi etkin bir şekilde yerine getirmesini sağlayan temel bir adaptasyondur. Serebrumun frontal, parietal, temporal ve oksipital loblara ayrılması gibi özelleşmeler, her bir lobun belirli bilişsel veya duyusal işlevlere odaklanmasına olanak tanır. Bu durum, beynin kaynaklarını daha verimli kullanmasını, paralel işlem yapmasını ve aynı anda birden fazla karmaşık görevi yönetmasını sağlar. Örneğin, frontal lobun planlama ve karar vermeden sorumlu olması, bu süreçlerin optimize edilmesini ve diğer bilişsel işlevlerle çakışmamasını sağlar. Eğer beyinde bu tür bir özelleşme olmasaydı, tüm işlevlerin tek bir alanda veya dağınık bir şekilde yürütülmesi gerekirdi. Bu durum, bilgi işlem hızında ciddi yavaşlamalara, görevler arasında karışıklığa ve genel bilişsel kapasitede önemli bir düşüşe yol açardı. İnsanlar muhtemelen karmaşık problem çözme, soyut düşünme, dil becerileri gibi üst düzey bilişsel yeteneklerden yoksun kalır, hatta temel duyusal algıları ve motor kontrolü bile verimli bir şekilde gerçekleştiremeyebilirdi. Bu nedenle, işlevsel özelleşme, insan beyninin evrimsel başarısının ve benzersiz yeteneklerinin anahtarlarından biridir.",
+            "degerlendirme_kriterleri": "Beynin 'işlevsel özelleşme' kavramını doğru anlaması ve tanımlaması; Bu özelleşmenin beynin karmaşıklığına ve görev çokluğuna nasıl katkıda bulunduğunu (verimlilik, paralel işlem, kaynak kullanımı) açıklayabilmesi; Özelleşme olmasaydı ortaya çıkabilecek potansiyel eksiklikleri (işlem yavaşlığı, karışıklık, bilişsel düşüş, belirli yeteneklerin eksikliği) öngörebilmesi; Metindeki serebrum ve lob örneklerini kullanarak argümanını desteklemesi; Cevabın analitik derinliği ve mantıksal akışı.",
+            "puan": 10,
+            "zorluk": "Orta"
+          }
+        ],
+        "bosluk_doldurma": [
+          {
+            "soru": "İnsan beyni, sinir hücreleri (nöronlar) ve destekleyici hücreler (_____) ile kan damarlarından oluşan, vücudumuzun en karmaşık organıdır.",
+            "dogru_cevap": "nöroglia",
+            "alternatif_cevaplar": [
+              "nöroglia"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beyin, merkezi sinir sisteminin ana _____ merkezi olarak tüm bilinçli ve bilinçsiz süreçlerimizi yönetir.",
+            "dogru_cevap": "kontrol",
+            "alternatif_cevaplar": [
+              "kontrol"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beyin, düşünme, öğrenme gibi üst düzey bilişsel fonksiyonların yanı sıra, vücut içi dengeyi sağlayan _____ kavramını da yönetir.",
+            "dogru_cevap": "homeostaz",
+            "alternatif_cevaplar": [
+              "homeostaz",
+              "homeostasis"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beynin en büyük kısmı olan _____ (beyin kabuğu), düşünme, problem çözme ve dil gibi yüksek bilişsel fonksiyonlardan sorumludur.",
+            "dogru_cevap": "serebrum",
+            "alternatif_cevaplar": [
+              "serebrum",
+              "beyin kabuğu"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrum, frontal, parietal, temporal ve _____ olmak üzere dört ana loba ayrılır.",
+            "dogru_cevap": "oksipital loblar",
+            "alternatif_cevaplar": [
+              "oksipital loblar",
+              "oksipital lob",
+              "oksipital"
+            ],
+            "zorluk": "Orta"
+          }
+        ],
+        "dogru_yanlis": [
+          {
+            "soru": "İnsan beyni yaklaşık olarak 1.3 ila 1.4 kilogram ağırlığındadır.",
+            "dogru_cevap": "true",
+            "aciklama": "Metinde insan beyninin yaklaşık 1.3 - 1.4 kilogram ağırlığında olduğu belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "İnsan beyni sadece nöronlardan ve kan damarlarından oluşur, destekleyici nöroglia hücrelerini içermez.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde beynin nöronlar, nöroglia ve kan damarlarından oluştuğu belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Beyin, sadece düşünme ve öğrenme gibi bilinçli bilişsel süreçleri yönetir, solunum gibi otomatik yaşamsal fonksiyonları kontrol etmez.",
+            "dogru_cevap": "false",
+            "aciklama": "Metin, beynin hem bilinçli hem de bilinçsiz (otomatik yaşamsal) süreçleri yönettiğini açıkça belirtmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrum, beynin en büyük kısmı olmasına rağmen, metne göre sadece dil becerilerinden sorumludur.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde serebrumun beynin en büyük kısmı olduğu belirtilmiş ancak sadece dil becerilerinden değil; düşünme, problem çözme, bilinçli hareketler ve duyusal yorumlama gibi birçok yüksek bilişsel fonksiyondan sorumlu olduğu ifade edilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Serebrumun loblarından biri olan Frontal lob, metne göre sadece duyusal bilgilerin işlenmesinden sorumludur.",
+            "dogru_cevap": "false",
+            "aciklama": "Metinde Frontal lobun planlama ve karar verme gibi görevlerden sorumlu olduğu belirtilmiştir, duyusal bilgilerin işlenmesi genellikle parietal loba aittir.",
+            "zorluk": "Orta"
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "coktan_secmeli": 5,
+        "klasik": 2,
+        "bosluk_doldurma": 5,
+        "dogru_yanlis": 5
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

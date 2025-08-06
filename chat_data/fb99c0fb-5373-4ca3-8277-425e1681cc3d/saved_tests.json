@@ -1,0 +1,97 @@
+[
+  {
+    "test_id": "test_1754500159408",
+    "created_at": "2025-08-06T20:09:19.412189",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2025-08-06T20:08:37.021954",
+        "question_count": 5,
+        "question_types": {
+          "coktan_secmeli": 5
+        },
+        "difficulty_distribution": {
+          "kolay": 0,
+          "orta": 5,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [
+          {
+            "soru": "Yultuz Takımı kaç kişiden oluşmaktadır ve üyeler hangi eğitim seviyesindedir?",
+            "secenekler": {
+              "A": "İki kişiden oluşmaktadır, üniversite öğrencisidirler.",
+              "B": "Üç kişiden oluşmaktadır, lise öğrencisidirler.",
+              "C": "İki kişiden oluşmaktadır, lise öğrencisidirler.",
+              "D": "Dört kişiden oluşmaktadır, ortaokul öğrencisidirler."
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Metinde \"iki lise öğrencisi\" olduğu açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın katılım amacı ve çalışmalarını yürüttüğü platform hangi organizasyondur?",
+            "secenekler": {
+              "A": "Bilim Şenliği",
+              "B": "Teknofest",
+              "C": "Robot Yarışması",
+              "D": "Yazılım Maratonu"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde \"Teknofest'in heyecan verici dünyasında\" ve \"Teknofest platformunu... bir fırsat olarak görüyoruz\" ifadeleri geçmektedir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nda Münevver Nur Topluyürek'in ana görevi aşağıdakilerden hangisidir?",
+            "secenekler": {
+              "A": "Teknik altyapıyı oluşturma ve kod yazma",
+              "B": "Proje planlaması ve takım içi koordinasyon",
+              "C": "Donanım geliştirme ve test süreçlerini yönetme",
+              "D": "Yaratıcı tasarım ve yazılım dilleri bilgisi"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Münevver Nur Topluyürek'in sorumlulukları arasında \"Proje planlaması, bütçe yönetimi, zaman çizelgesi takibi, raporlama ve takım içi koordinasyon\" belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Ali Berk Yeşilduman'ın yetenekleri arasında aşağıdakilerden hangisi yer almaz?",
+            "secenekler": {
+              "A": "Yazılım dilleri bilgisi (Python, C++)",
+              "B": "Elektronik ve donanım bilgisi",
+              "C": "Yaratıcı tasarım yeteneği",
+              "D": "Güçlü analitik düşünme ve detay odaklı çalışma"
+            },
+            "dogru_cevap": "D",
+            "aciklama": "Güçlü analitik düşünme ve detay odaklı çalışma, Münevver Nur Topluyürek'in yetenekleri arasında sayılmıştır. Ali Berk'in yetenekleri yazılım dilleri, elektronik/donanım bilgisi ve yaratıcı tasarım yeteneğidir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın vizyonu hakkında aşağıdakilerden hangisi doğrudur?",
+            "secenekler": {
+              "A": "Sadece yarışmalarda başarılı olmak ve ödüller kazanmak.",
+              "B": "Teknolojiyi kullanarak topluma fayda sağlayan ve çevreye duyarlı çözümler üretmek.",
+              "C": "Yalnızca yazılım tabanlı projeler geliştirmek.",
+              "D": "Uluslararası arenada Türkiye'yi temsil etmek."
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Takım vizyonunda \"sadece yarışmalarda başarılı olmak değil, aynı zamanda geliştirdiğimiz projelerle topluma fayda sağlayan, çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretmektir\" ifadesi yer almaktadır.",
+            "zorluk": "Orta"
+          }
+        ],
+        "klasik": [],
+        "bosluk_doldurma": []
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "coktan_secmeli": 5
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

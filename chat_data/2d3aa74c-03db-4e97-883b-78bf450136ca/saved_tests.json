@@ -1,0 +1,58 @@
+[
+  {
+    "test_id": "test_1754498831018",
+    "created_at": "2025-08-06T19:47:11.022844",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2024-07-30T13:00:00.000000",
+        "question_count": 3,
+        "question_types": {
+          "klasik": 3
+        },
+        "difficulty_distribution": {
+          "kolay": 0,
+          "orta": 3,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [],
+        "klasik": [
+          {
+            "soru": "Yultuz Takımı'nın iki üyesi, Münevver Nur Topluyürek ve Ali Berk Yeşilduman'ın farklı görev ve yetkinliklere sahip olması, takımın belirlediği \"topluma fayda sağlayan çözümler üretme\" hedefine ulaşmasında nasıl bir sinerji yaratmaktadır? Her bir üyenin rolünün bu hedefe katkısını detaylıca açıklayınız.",
+            "ornek_cevap": "Münevver Nur Topluyürek'in Takım Kaptanı/Proje Yöneticisi olarak proje planlaması, bütçe yönetimi ve koordinasyon becerileri, Ali Berk Yeşilduman'ın ise Teknik Sorumlu/Yazılımcı olarak teknik altyapı oluşturma, kodlama ve prototip geliştirme yetenekleriyle birleştiğinde, Yultuz Takımı güçlü bir sinerji oluşturur. Münevver, projenin genel çerçevesini ve hedeflerini netleştirerek Ali Berk'in teknik çalışmalarının doğru yönde ilerlemesini sağlar. Ali Berk ise Münevver'in planladığı çerçevede yenilikçi teknik çözümler geliştirerek projenin somutlaşmasını ve uygulanabilir hale gelmesini sağlar. Bu iş bölümü sayesinde, fikirler düzenli bir süreçle projelere dönüşür, kaynaklar verimli kullanılır ve geliştirilen çözümlerin sadece teknik olarak başarılı olması değil, aynı zamanda toplumsal fayda sağlaması için gerekli yönetimsel ve teknik entegrasyon sağlanır. Örneğin, Münevver'in detay odaklı problem çözme becerisi, Ali Berk'in teknik zorlukları aşmasında yol gösterici olabilirken, Ali Berk'in yaratıcı tasarım yeteneği de projenin topluma hitap eden kullanıcı dostu arayüzler geliştirmesine yardımcı olur.",
+            "degerlendirme_kriterleri": "Öğrencinin takım üyelerinin bireysel rollerini ve yeteneklerini doğru tanımlaması (3 puan). Bu rollerin takımın genel hedefine (topluma fayda sağlama) nasıl katkı sağladığını açıklayabilmesi (4 puan). Roller arası etkileşimi ve sinerjiyi mantıklı bir şekilde yorumlaması (3 puan).",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın vizyonunda yer alan \"çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretmek\" hedefi doğrultusunda, takımın mevcut bilgi ve yeteneklerini kullanarak hangi tür projeler geliştirebileceğini düşünüyorsunuz? Bu projelerin genel özelliklerini ve neden bu vizyona uygun olduğunu açıklayınız.",
+            "ornek_cevap": "Yultuz Takımı, Münevver'in analitik düşünme ve proje yönetimi yetenekleri ile Ali Berk'in yazılım ve donanım bilgisi sayesinde çevreye duyarlı ve öncü çözümler geliştirebilir. Örneğin, akıllı tarım sistemleri (sensörlerle su kullanımını optimize eden), atık yönetimi için yapay zeka destekli ayrıştırma sistemleri veya yenilenebilir enerji kaynaklarının verimliliğini artıran yazılımlar geliştirebilirler. Bu tür projeler, takımın \"yenilikçi fikirleri somut ve uygulanabilir projelere dönüştürme\" amacına uygun düşer. Münevver projenin çevresel etkilerini ve toplumsal faydasını analiz ederken, Ali Berk teknik altyapıyı kurarak projenin sürdürülebilir ve teknolojik olarak ileri düzeyde olmasını sağlar. Bu projeler, hem teknolojik yenilik hem de çevresel sürdürülebilirlik hedeflerini birleştirerek takımın vizyonunu doğrudan yansıtır.",
+            "degerlendirme_kriterleri": "Öğrencinin takımın yetenekleriyle (analitik düşünme, yazılım, donanım) uyumlu, çevreye duyarlı ve öncü proje fikirleri sunması (4 puan). Önerilen projelerin takımın vizyonuyla (toplumsal fayda, çevreye duyarlılık, öncülük) neden uyumlu olduğunu açıklayabilmesi (3 puan). Takım üyelerinin rollerinin bu projelerin geliştirilmesindeki potansiyel katkısını belirtmesi (3 puan).",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın Teknofest platformunu \"hayallerini gerçeğe dönüştürmek ve teknolojiye olan sevgilerini somut projelere yansıtmak için bir fırsat\" olarak görmesi, lise seviyesindeki öğrenciler için ne gibi ek motivasyonlar ve öğrenme fırsatları sunar? Bu tür bir platformun, takımın \"sürekli öğrenmeye ve gelişmeye açık bir ruhla çalışma\" prensibini nasıl desteklediğini tartışınız.",
+            "ornek_cevap": "Teknofest gibi platformlar, lise seviyesindeki öğrencilere teorik bilgilerini pratiğe dökme, gerçek dünya problemleri üzerinde çalışma ve somut çıktılar üretme şansı sunar. Bu, sadece teknik bilgi değil, aynı zamanda proje yönetimi, takım çalışması, sunum becerileri ve problem çözme gibi kritik yetkinliklerin gelişimi için eşsiz bir motivasyon kaynağıdır. Yultuz Takımı'nın bu platformu bir fırsat olarak görmesi, onların pasif bilgi alıcısı olmaktan çıkıp aktif üretici ve yaratıcı bireyler olma arzusunu gösterir. Yarışma ortamı, takımı sürekli yeni şeyler öğrenmeye, mevcut bilgilerini derinleştirmeye ve karşılaştıkları zorluklar karşısında çözüm üretmeye iter. Bu durum, onların \"sürekli öğrenmeye ve gelişmeye açık bir ruhla çalışma\" prensibini doğal bir şekilde pekiştirir; çünkü başarıya ulaşmak için sürekli adaptasyon ve yenilenme gereklidir. Ayrıca, diğer takımlarla etkileşim ve uzmanlardan geri bildirim alma fırsatları da öğrenme sürecini zenginleştirir.",
+            "degerlendirme_kriterleri": "Öğrencinin Teknofest gibi platformların lise öğrencileri için sunduğu motivasyon ve öğrenme fırsatlarını doğru bir şekilde tanımlaması (4 puan). Takımın \"sürekli öğrenme ve gelişme\" prensibi ile platform arasındaki bağlantıyı mantıklı bir şekilde kurması (4 puan). Cevabın genel akıcılığı ve argümanların tutarlılığı (2 puan).",
+            "puan": 10,
+            "zorluk": "Orta"
+          }
+        ],
+        "bosluk_doldurma": []
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "klasik": 3
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

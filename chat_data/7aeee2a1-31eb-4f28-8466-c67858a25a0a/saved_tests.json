@@ -1,0 +1,195 @@
+[
+  {
+    "test_id": "test_1754496345795",
+    "created_at": "2025-08-06T19:05:45.798909",
+    "questions": {
+      "document_info": {
+        "analysis_date": "2024-07-29T10:45:00.000000",
+        "question_count": 18,
+        "question_types": {
+          "coktan_secmeli": 5,
+          "klasik": 3,
+          "bosluk_doldurma": 5,
+          "dogru_yanlis": 5
+        },
+        "difficulty_distribution": {
+          "kolay": 1,
+          "orta": 17,
+          "zor": 0
+        },
+        "student_level": "lise",
+        "special_topics": [],
+        "validation_status": "completed"
+      },
+      "questions": {
+        "coktan_secmeli": [
+          {
+            "soru": "Yultuz Takımı hangi üyelerden oluşmaktadır?",
+            "secenekler": {
+              "A": "Sadece Münevver Nur Topluyürek",
+              "B": "Münevver Nur Topluyürek ve Ali Berk Yeşilduman",
+              "C": "Ali Berk Yeşilduman ve üç lise öğrencisi daha",
+              "D": "Beş farklı lise öğrencisi"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde açıkça belirtilmiştir ki Yultuz Takımı Münevver Nur Topluyürek ve Ali Berk Yeşilduman'dan oluşmaktadır.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın projelerindeki temel amacı nedir?",
+            "secenekler": {
+              "A": "Sadece Teknofest'te birincilik kazanmak.",
+              "B": "Yenilikçi fikirleri somut projelere dönüştürerek topluma fayda sağlamak.",
+              "C": "En karmaşık teknik problemleri çözmek.",
+              "D": "Yalnızca yazılım tabanlı çözümler üretmek."
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde 'Projelerimizde, yenilikçi fikirleri somut ve uygulanabilir projelere dönüştürerek topluma fayda sağlayan çözümler üretmeyi amaçlıyoruz.' ifadesi yer almaktadır.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Aşağıdakilerden hangisi Münevver Nur Topluyürek'in sorumluluklarından biri *değildir*?",
+            "secenekler": {
+              "A": "Proje planlaması",
+              "B": "Kod yazma ve prototip geliştirme",
+              "C": "Bütçe yönetimi",
+              "D": "Takım içi koordinasyon"
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Kod yazma ve prototip geliştirme, Ali Berk Yeşilduman'ın sorumlulukları arasındadır. Münevver'in sorumlulukları proje planlaması, bütçe yönetimi, zaman çizelgesi takibi, raporlama ve takım içi koordinasyondur.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Ali Berk Yeşilduman'ın yetenekleri arasında özellikle vurgulananlardan biri aşağıdakilerden hangisidir?",
+            "secenekler": {
+              "A": "Güçlü analitik düşünme",
+              "B": "Detay odaklı çalışma",
+              "C": "Yazılım dilleri bilgisi (örn. Python, C++)",
+              "D": "Proje bütçesi yönetimi"
+            },
+            "dogru_cevap": "C",
+            "aciklama": "Ali Berk Yeşilduman'ın yetenekleri arasında 'Yazılım dilleri bilgisi (örn. Python, C++)' açıkça belirtilmiştir. Diğerleri Münevver'in yetenekleri veya genel sorumluluklardır.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın vizyonu, sadece yarışmalarda başarılı olmanın ötesinde neyi hedeflemektedir?",
+            "secenekler": {
+              "A": "Sadece en güncel teknolojileri kullanmak.",
+              "B": "Topluma fayda sağlayan, çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretmek.",
+              "C": "Gelecekte büyük bir teknoloji şirketi kurmak.",
+              "D": "Sadece akademik araştırmalar yapmak."
+            },
+            "dogru_cevap": "B",
+            "aciklama": "Metinde 'vizyonumuz, sadece yarışmalarda başarılı olmak değil, aynı zamanda geliştirdiğimiz projelerle topluma fayda sağlayan, çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretmektir.' denilmektedir.",
+            "zorluk": "Orta"
+          }
+        ],
+        "klasik": [
+          {
+            "soru": "Yultuz Takımı'nın, \"güçlü analitik düşünme yetenekleri ile yaratıcı ve teknik çözümleri bir araya getirme\" yaklaşımı, takımın \"topluma fayda sağlayan çözümler üretme\" amacına ulaşmasında nasıl bir rol oynamaktadır? Bu entegre yaklaşımın önemini kendi kelimelerinizle açıklayınız.",
+            "ornek_cevap": "Yultuz Takımı'nın analitik ve yaratıcı/teknik becerileri birleştirmesi, onların karmaşık problemleri sadece mantıksal bir çerçevede değil, aynı zamanda yenilikçi ve uygulanabilir yollarla çözmelerini sağlar. Analitik düşünme, projenin fizibilitesini, potansiyel sorunlarını ve veri tabanlı kararları almalarını desteklerken; yaratıcı ve teknik çözümler, bu analitik verileri somut, özgün ve etkili projelere dönüştürmelerine olanak tanır. Bu sayede, sadece teknik olarak doğru değil, aynı zamanda kullanıcı dostu, yenilikçi ve toplumsal ihtiyaçlara gerçekten cevap veren projeler geliştirebilirler. Bu entegrasyon, takımın sadece mevcut sorunlara değil, gelecekteki potansiyel ihtiyaçlara da sürdürülebilir ve öncü çözümler sunmasını sağlar.",
+            "degerlendirme_kriterleri": "Analitik düşünme ile yaratıcı/teknik çözümler arasındaki bağlantıyı doğru kurabilme. Bu entegrasyonun topluma fayda sağlama amacına nasıl hizmet ettiğini açıklayabilme. Kendi kelimeleriyle açıklama yapabilme ve konuyu derinlemesine kavradığını gösterme. Cevabın akıcı ve tutarlı olması.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın iki üyesi, Münevver Nur Topluyürek ve Ali Berk Yeşilduman'ın farklı güçlü yönleri ve sorumlulukları bulunmaktadır. Bu iki üyenin rolleri birbirini nasıl tamamlayarak takımın genel hedeflerine ulaşmasında kritik bir sinerji yaratmaktadır? Örneklerle açıklayınız.",
+            "ornek_cevap": "Münevver Nur Topluyürek'in Takım Kaptanı/Proje Yöneticisi olarak proje planlaması, bütçe yönetimi ve koordinasyon gibi sorumlulukları, projenin genel stratejik çerçevesini ve yönetimsel disiplinini oluşturur. Onun güçlü analitik düşünme ve problem çözme becerileri, projenin yol haritasını çizerken karşılaşılacak engelleri önceden görmesini ve aşmasını sağlar. Ali Berk Yeşilduman ise Teknik Sorumlu/Yazılımcı olarak projenin teknik altyapısını kurar, kod yazar ve prototip geliştirir. Yazılım dilleri ve donanım bilgisi ile yaratıcı tasarım yeteneği, Münevver'in belirlediği hedefleri somut teknolojik ürünlere dönüştürür. Bu iki rol birbirini tamamlar: Münevver projenin \"ne\" ve \"neden\" yapıldığını, Ali Berk ise \"nasıl\" yapılacağını belirler. Münevver'in organizasyonel yetenekleri Ali Berk'in teknik yaratıcılığını yönlendirirken, Ali Berk'in teknik bilgisi Münevver'in planlarını uygulanabilir kılar. Bu sinerji, fikirlerin sadece kağıt üzerinde kalmamasını, aynı zamanda teknik olarak sağlam ve yönetilebilir projelere dönüşmesini sağlar.",
+            "degerlendirme_kriterleri": "Her bir üyenin rol ve sorumluluklarını doğru tanımlayabilme. Bu rollerin birbirini nasıl tamamladığını ve sinerji yarattığını açıklayabilme. Takımın genel hedeflerine ulaşmadaki kritik önemini vurgulayabilme. Mantıklı ve tutarlı örnekler sunabilme.",
+            "puan": 10,
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın vizyonu, sadece yarışmalarda başarılı olmak değil, aynı zamanda \"topluma fayda sağlayan, çevreye duyarlı ve teknolojik gelişmelere öncülük eden çözümler üretmektir.\" Bu vizyon doğrultusunda, Teknofest gibi bir platformda takımın hangi tür projelere odaklanması, hem hedeflerine ulaşmasını sağlayabilir hem de bahsedilen toplumsal etkiyi yaratabilir? Somut örnekler vererek açıklayınız.",
+            "ornek_cevap": "Yultuz Takımı'nın bu vizyonu gerçekleştirmesi için, çevre sorunlarına (örn. atık yönetimi, enerji verimliliği), sağlık alanındaki ihtiyaçlara (örn. uzaktan teşhis, erişilebilir tıbbi cihazlar) veya eğitimdeki yeniliklere (örn. interaktif öğrenme platformları) odaklanan projeler geliştirmesi beklenebilir. Örneğin, çevreye duyarlı bir çözüm olarak, atıkların ayrıştırılmasını kolaylaştıran yapay zeka destekli bir geri dönüşüm sistemi veya enerji tüketimini optimize eden akıllı bir ev otomasyon sistemi geliştirebilirler. Topluma fayda sağlama açısından, dezavantajlı grupların günlük yaşamını kolaylaştıracak (örn. görme engelliler için akıllı baston) veya afet durumlarında hızlı iletişim sağlayacak mobil uygulamalar tasarlayabilirler. Teknolojik gelişmelere öncülük etmek için ise, henüz yaygınlaşmamış ama potansiyeli yüksek olan alanlarda (örn. kuantum bilgi işlemeye giriş, biyoinformatik) pilot projeler yürütebilirler. Bu tür projeler, hem teknik yeteneklerini sergilemelerine olanak tanır hem de doğrudan toplumsal ve çevresel fayda sağlayarak vizyonlarına uygun hareket etmelerini sağlar.",
+            "degerlendirme_kriterleri": "Takım vizyonunu doğru anlayabilme. Vizyon doğrultusunda potansiyel proje alanları veya türleri önerebilme. Önerilen projelerin toplumsal fayda, çevresel duyarlılık ve teknolojik öncülük kriterleriyle nasıl örtüştüğünü açıklayabilme. Somut ve mantıklı proje örnekleri verebilme.",
+            "puan": 10,
+            "zorluk": "Orta"
+          }
+        ],
+        "bosluk_doldurma": [
+          {
+            "soru": "Yultuz Takımı, Münevver Nur Topluyürek ve _________ olmak üzere iki lise öğrencisinden oluşmaktadır.",
+            "dogru_cevap": "Ali Berk Yeşilduman",
+            "alternatif_cevaplar": [],
+            "zorluk": "Kolay"
+          },
+          {
+            "soru": "Yultuz Takımı'nın projelerindeki temel amacı, yenilikçi fikirleri somut projelere dönüştürerek topluma _________ çözümler üretmektir.",
+            "dogru_cevap": "fayda sağlayan",
+            "alternatif_cevaplar": [
+              "faydalı",
+              "yararlı"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Münevver Nur Topluyürek, Yultuz Takımı'nda _________ ve Proje Yöneticisi olarak görev yapmaktadır.",
+            "dogru_cevap": "Takım Kaptanı",
+            "alternatif_cevaplar": [
+              "Kaptan"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Ali Berk Yeşilduman'ın sorumlulukları arasında projenin teknik altyapısını oluşturma, kod yazma ve _________ geliştirme yer almaktadır.",
+            "dogru_cevap": "prototip",
+            "alternatif_cevaplar": [
+              "prototipler"
+            ],
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın vizyonu, sadece yarışmalarda başarılı olmak değil, aynı zamanda çevreye duyarlı ve teknolojik gelişmelere _________ çözümler üretmektir.",
+            "dogru_cevap": "öncülük eden",
+            "alternatif_cevaplar": [],
+            "zorluk": "Orta"
+          }
+        ],
+        "dogru_yanlis": [
+          {
+            "soru": "Yultuz Takımı, Münevver Nur Topluyürek ve Ali Berk Yeşilduman adlı iki lise öğrencisinden oluşmaktadır.",
+            "dogru_cevap": "true",
+            "aciklama": "Metinde takım üyeleri Münevver Nur Topluyürek ve Ali Berk Yeşilduman olarak açıkça belirtilmiştir.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı'nın projelerindeki temel amacı yalnızca Teknofest'te birincilik kazanmaktır.",
+            "dogru_cevap": "false",
+            "aciklama": "Takımın amacı, yenilikçi fikirleri somut projelere dönüştürerek topluma fayda sağlayan çözümler üretmektir; Teknofest bir araçtır.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Münevver Nur Topluyürek, Yultuz Takımı'nda Teknik Sorumlu ve Yazılımcı görevlerini üstlenmektedir.",
+            "dogru_cevap": "false",
+            "aciklama": "Münevver Nur Topluyürek Takım Kaptanı / Proje Yöneticisi'dir. Teknik Sorumlu / Yazılımcı Ali Berk Yeşilduman'dır.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Ali Berk Yeşilduman'ın sorumlulukları arasında proje planlaması ve bütçe yönetimi bulunmaktadır.",
+            "dogru_cevap": "false",
+            "aciklama": "Proje planlaması ve bütçe yönetimi Münevver Nur Topluyürek'in sorumlulukları arasındadır. Ali Berk Yeşilduman teknik altyapı, kod yazma ve prototip geliştirmeden sorumludur.",
+            "zorluk": "Orta"
+          },
+          {
+            "soru": "Yultuz Takımı, Teknofest platformunu hayallerini gerçeğe dönüştürmek ve teknolojiye olan sevgilerini somut projelere yansıtmak için bir fırsat olarak görmektedir.",
+            "dogru_cevap": "true",
+            "aciklama": "Metinde açıkça 'Teknofest platformunu, hayallerimizi gerçeğe dönüştürmek ve teknolojiye olan sevgimizi somut projelere yansıtmak için bir fırsat olarak görüyoruz.' ifadesi yer almaktadır.",
+            "zorluk": "Orta"
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "soru_turleri": {
+        "coktan_secmeli": 5,
+        "klasik": 3,
+        "bosluk_doldurma": 5,
+        "dogru_yanlis": 5
+      },
+      "zorluk_seviyesi": "orta",
+      "ogrenci_seviyesi": "lise"
+    },
+    "title": "Test - 6.08.2025"
+  }
+]

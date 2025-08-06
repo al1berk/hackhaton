@@ -1,0 +1,22 @@
+[
+  {
+    "type": "user",
+    "content": "merhaba",
+    "timestamp": "2025-08-06T17:40:09.657814"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Ben LangGraph ve CrewAI ile güçlendirilmiş akıllı bir asistanım. Size nasıl yardımcı olabilirim?\n\nİşte yapabileceklerimden bazıları:\n*   Web araştırması yapabilirim.\n*   Sorular üretebilirim.\n*   Veri analizi yapabilirim.\n*   Metin özetleyebilirim.\n*   Yüklediğiniz PDF dokümanlarından bilgi çıkarabilirim.\n*   Önceden yüklenmiş dokümanlar arasında arama yapabilirim.\n\nBana ne sormak istersiniz?",
+    "timestamp": "2025-08-06T17:40:11.217698"
+  },
+  {
+    "type": "user",
+    "content": "1920 1930 arasında yapılmış tablolarla ilgili bilgi istiyorum. o tarihler arasındaki sanatsal akımları araştır",
+    "timestamp": "2025-08-06T17:41:06.708677"
+  },
+  {
+    "type": "ai",
+    "content": "🔍 **'1920 1930 arasında yapılmış tablolarla ilgili bilgi istiyorum. o tarihler arasındaki sanatsal akımları' Araştırması Tamamlandı!**\n\n📋 **CrewAI Multi-Agent Sistemi Tarafından Keşfedilen Konular:**\n1. 1920'lerin Sosyo-Ekonomik ve Kültürel Ortamı\n2. Caz Çağı'nın Yükselişi ve Popülerliği\n3. Kadınların Toplumsal Rolünde Devrimsel Değişimler\n4. Dönemin Sanatsal Akımları ve Resim Sanatı İlişkisi\n\n🚀 **İlk konu ile başlıyorum:** 1920'lerin Sosyo-Ekonomik ve Kültürel Ortamı\n\n**1920'lerin Sosyo-Ekonomik ve Kültürel Ortamı Hakkında:**\n1920'ler, I. Dünya Savaşı'nın yıkıcı etkilerinden sonra toparlanma ve yeni bir kimlik arayışı içinde olan hem Amerika Birleşik Devletleri'nde hem de Avrupa'da belirgin bir kültürel ve ekonomik refah dönemi olarak tanımlanır. \"Kükreyen Yirmiler\" (Roaring Twenties) olarak bilinen bu dönem, genel bir canlılık, değişim ve geleneksel değerlere meydan okuma atmosferiyle karakterizedir. Sanat alanında da bu ruh hali kendini göstererek, önceki on yılların katı kurallarından ve savaşın travmasından uzakl...\n📊 **Toplam 4 konu detaylandırıldı**\n🤖 **CrewAI Multi-Agent sistemi (Asenkron) kullanıldı**\n⏰ **Araştırma tarihi:** 2025-08-06 17:48",
+    "timestamp": "2025-08-06T17:48:51.578481"
+  }
+]
