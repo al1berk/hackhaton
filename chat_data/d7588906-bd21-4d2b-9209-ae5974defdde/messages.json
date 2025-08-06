@@ -1,0 +1,87 @@
+[
+  {
+    "type": "user",
+    "content": "konu başlıklarını yaz",
+    "timestamp": "2025-08-06T09:58:45.350435"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz PDF dokümanlarından şu bilgileri buldum:\n\n*   **Yultuz.pdf** dosyasında geçen konu başlıkları şunlardır:\n    *   Yultuz Takımı Tanıtım Dokümanı\n    *   Takım Adı\n    *   Takım Üyeleri\n    *   Takım Tanıtımı\n    *   Takım Üyesi Profilleri\n    *   Görev\n    *   Sorumluluklar\n    *   Yetenekler\n    *   Takım Vizyonu\n\nKaynak: Yultuz.pdf, Bölüm 1, 2, 3",
+    "timestamp": "2025-08-06T09:58:49.817599"
+  },
+  {
+    "type": "user",
+    "content": "takım adı ne",
+    "timestamp": "2025-08-06T10:19:39.574782"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz **Yultuz.pdf** dokümanına göre takımın adı **Yultuz Takımı**'dır.\n\nKaynak: Yultuz.pdf, Bölüm 1",
+    "timestamp": "2025-08-06T10:19:41.331403"
+  },
+  {
+    "type": "user",
+    "content": "takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:27:49.462210"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz **Yultuz.pdf** dokümanına göre Yultuz Takımı'nın üyeleri şunlardır:\n\n*   **Ahmet Güneş**\n*   **Ayşe Yılmaz**\n*   **Mehmet Demir**\n*   **Zeynep Kaya**\n\nKaynak: Yultuz.pdf, Bölüm 2 (Takım Üyeleri)",
+    "timestamp": "2025-08-06T10:27:50.911655"
+  },
+  {
+    "type": "user",
+    "content": "pdf e bakarak sorumlulukları yaz",
+    "timestamp": "2025-08-06T10:28:22.896761"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz **Yultuz.pdf** dokümanına göre Yultuz Takımı'nın sorumlulukları şunlardır:\n\n*   **Proje Yönetimi:** Projelerin başlangıcından sonuna kadar tüm süreçleri yönetmek, zaman çizelgelerine ve bütçeye uygun ilerlemeyi sağlamak.\n*   **Yazılım Geliştirme:** İhtiyaç analizinden başlayarak tasarım, kodlama, test ve dağıtım süreçlerini kapsayan yazılım geliştirme döngüsünü yönetmek.\n*   **Veri Analizi ve Raporlama:** Toplanan verileri analiz ederek anlamlı içgörüler elde etmek ve düzenli raporlar sunmak.\n*   **Müşteri İletişimi:** Müşteri beklentilerini anlamak, geri bildirimleri toplamak ve çözüm odaklı yaklaşımlarla müşteri memnuniyetini sağlamak.\n*   **Teknik Destek:** Proje sonrası oluşabilecek teknik sorunlara hızlı ve etkili çözümler sunmak.\n*   **Sürekli İyileştirme:** Geliştirme süreçlerini ve kullanılan teknolojileri sürekli olarak gözden geçirerek verimliliği ve kaliteyi artırmak.\n\nKaynak: Yultuz.pdf, Bölüm 7 (Sorumluluklar)",
+    "timestamp": "2025-08-06T10:28:26.133468"
+  },
+  {
+    "type": "user",
+    "content": "test üret",
+    "timestamp": "2025-08-06T10:29:54.181068"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T10:29:54.187573"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T10:29:57.647365"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T10:29:57.657157"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T10:29:59.280302"
+  },
+  {
+    "type": "ai",
+    "content": "🎯 **Test Ayarları**\n\nTest oluşturmak için önce birkaç ayar yapalım:\n\n**1. Soru Türleri:** Hangi türde sorular istiyorsunuz?\n**2. Zorluk Seviyesi:** Kolay, Orta veya Zor?\n**3. Öğrenci Seviyesi:** Hedef kitle hangi seviyede?\n\nYukarıdaki menüden seçimlerinizi yapın ⬆️",
+    "timestamp": "2025-08-06T10:29:59.284690"
+  },
+  {
+    "type": "user",
+    "content": "Kullanıcı test parametrelerini seçti.",
+    "timestamp": "2025-08-06T10:30:01.213764"
+  },
+  {
+    "type": "user",
+    "content": "takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:31:41.518985"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz **Yultuz.pdf** dokümanına göre Yultuz Takımı'nın üyeleri şunlardır:\n\n*   **Ahmet Güneş**\n*   **Ayşe Yılmaz**\n*   **Mehmet Demir**\n*   **Zeynep Kaya**\n\nKaynak: Yultuz.pdf, Bölüm 2 (Takım Üyeleri)",
+    "timestamp": "2025-08-06T10:31:43.462186"
+  }
+]

@@ -851,15 +851,24 @@ async def websocket_endpoint(websocket: WebSocket, chat_id: str):
                 message_data = json.loads(data)
                 
                 if message_data.get("type") == "user_message":
-                    user_message = message_data.get("message", "")
+                    # YENİ DÜZELTME: Mesaj formatını düzelt
+                    if "message" in message_data:
+                        user_message = message_data["message"]
+                    else:
+                        # Legacy destek için direkt message olabilir
+                        user_message = message_data.get("content", "")
                     
-                    # Mesaj formatını kontrol et
+                    # Eğer mesaj nested object ise
                     if isinstance(user_message, dict):
-                        # Eğer mesaj dict ise, içindeki message alanını al
                         user_message = user_message.get("message", "")
                     
                     # String'e çevir ve temizle
                     user_message = str(user_message).strip()
+                    
+                    # YENİ: force_web_research parametresini kontrol et
+                    force_web_research = message_data.get("force_web_research", False)
+                    if force_web_research:
+                        dialog.conversation_state["force_web_research"] = True
                     
                     if user_message:
                         response = await dialog.process_user_message(user_message)

@@ -1021,11 +1021,24 @@ export class WebSocketHandler {
     send(messageData) {
         if (this.isConnected()) {
             try {
-                const message = {
-                    type: 'user_message',
-                    message: messageData.message || messageData,
-                    force_web_research: messageData.force_web_research || false
-                };
+                // YENİ DÜZELTME: Mesaj formatını standardize et
+                let message;
+                if (typeof messageData === 'string') {
+                    message = {
+                        type: 'user_message',
+                        message: messageData
+                    };
+                } else if (messageData && typeof messageData === 'object') {
+                    message = {
+                        type: 'user_message',
+                        message: messageData.message || messageData.content || '',
+                        force_web_research: messageData.force_web_research || false
+                    };
+                } else {
+                    console.error('❌ Geçersiz mesaj formatı:', messageData);
+                    return false;
+                }
+                
                 this.ws.send(JSON.stringify(message));
                 console.log('📤 Mesaj gönderildi:', message.type);
                 return true;

@@ -1,0 +1,22 @@
+[
+  {
+    "type": "user",
+    "content": "takım üyelerini pdf e bakarak yaz",
+    "timestamp": "2025-08-06T10:50:46.698151"
+  },
+  {
+    "type": "ai",
+    "content": "Elbette, size yardımcı olabilirim! Takım üyelerini PDF'ten çıkarmak için o PDF'e erişmem gerekiyor.\n\nLütfen bana hangi PDF dosyasından bahsettiğinizi belirtin veya dosyayı yüklememi sağlayın. Eğer daha önce bir PDF yüklediyseniz, bana o dosyanın adını söyleyebilirsiniz.\n\nDosyaya erişebildiğimde, içindeki takım üyelerini bulup size yazabilirim.",
+    "timestamp": "2025-08-06T10:50:49.240204"
+  },
+  {
+    "type": "user",
+    "content": "takım üyelerini pdf e bakarak yaz",
+    "timestamp": "2025-08-06T10:55:01.202611"
+  },
+  {
+    "type": "ai",
+    "content": "Anladım, takım üyelerini bir PDF dosyasından çıkarmamı istiyorsunuz. Ancak şu anda bana herhangi bir PDF dosyası yüklemediniz veya hangi dosyaya bakmam gerektiğini belirtmediniz.\n\nLütfen takım üyelerinin bulunduğu PDF dosyasını bana yükleyebilir misiniz? Dosyayı yükledikten sonra, içeriğini inceleyip size takım üyelerinin listesini çıkarabilirim.",
+    "timestamp": "2025-08-06T10:55:02.926260"
+  }
+]

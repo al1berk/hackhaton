@@ -2005,5 +2005,41 @@
     "message_count": 4,
     "pdf_count": 0,
     "last_message": "pdf den referansla anlat"
+  },
+  "5c4b50e9-2fab-452e-b04e-71cc0463a599": {
+    "id": "5c4b50e9-2fab-452e-b04e-71cc0463a599",
+    "title": "takım üyelerini yaz",
+    "created_at": "2025-08-06T11:03:52.545458",
+    "updated_at": "2025-08-06T11:04:39.572938",
+    "message_count": 4,
+    "pdf_count": 1,
+    "last_message": "pdf e bakarak takım üylerini yaz"
+  },
+  "f077b21e-e942-4668-be80-fc5707837c2d": {
+    "id": "f077b21e-e942-4668-be80-fc5707837c2d",
+    "title": "pdf e bakarak takım üyelerini  yaz",
+    "created_at": "2025-08-06T11:04:43.993954",
+    "updated_at": "2025-08-06T11:05:36.401530",
+    "message_count": 2,
+    "pdf_count": 1,
+    "last_message": "pdf e bakarak takım üyelerini  yaz"
+  },
+  "73692a11-4b46-4f4d-9d99-a81a85ab71eb": {
+    "id": "73692a11-4b46-4f4d-9d99-a81a85ab71eb",
+    "title": "pdf deki konuları yaz",
+    "created_at": "2025-08-06T11:13:41.679838",
+    "updated_at": "2025-08-06T11:14:16.936540",
+    "message_count": 2,
+    "pdf_count": 1,
+    "last_message": "pdf deki konuları yaz"
+  },
+  "29e20083-b876-428b-bb01-d49460dc4e7d": {
+    "id": "29e20083-b876-428b-bb01-d49460dc4e7d",
+    "title": "takım üyelerinin yetenekleri neler",
+    "created_at": "2025-08-06T11:14:25.795015",
+    "updated_at": "2025-08-06T11:15:00.657356",
+    "message_count": 2,
+    "pdf_count": 0,
+    "last_message": "takım üyelerinin yetenekleri neler"
   }
 }

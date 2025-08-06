@@ -1,0 +1,92 @@
+[
+  {
+    "type": "user",
+    "content": "pdf deki konubaşlıklarını yaz",
+    "timestamp": "2025-08-06T10:37:17.084542"
+  },
+  {
+    "type": "ai",
+    "content": "Yüklediğiniz PDF dokümanlarından şu bilgileri buldum:\n\n*   **Yultuz.pdf** dosyasında bulunan konu başlıkları şunlardır:\n    *   Yultuz Takımı Tanıtım Dokümanı\n    *   Takım Adı\n    *   Takım Üyeleri\n    *   Takım Tanıtımı\n    *   Takım Üyesi Profilleri\n    *   Takım Vizyonu\n\nKaynak: Yultuz.pdf, Bölüm 1, 2, 3",
+    "timestamp": "2025-08-06T10:37:25.576124"
+  },
+  {
+    "type": "user",
+    "content": "t<kım üyelerini yaz",
+    "timestamp": "2025-08-06T10:38:04.624045"
+  },
+  {
+    "type": "ai",
+    "content": "Yultuz.pdf dokümanında belirtilen takım üyeleri şunlardır:\n\n*   Ali Can (Takım Lideri)\n*   Ayşe Yılmaz (Yazılımcı)\n*   Mehmet Demir (Tasarımcı)\n*   Zeynep Kaya (Pazarlama)\n\nKaynak: Yultuz.pdf, Takım Üyeleri bölümü",
+    "timestamp": "2025-08-06T10:38:08.384146"
+  },
+  {
+    "type": "user",
+    "content": "takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:38:14.931859"
+  },
+  {
+    "type": "ai",
+    "content": "Elbette, Yultuz.pdf dokümanında belirtilen takım üyeleri şunlardır:\n\n*   **Ali Can** (Takım Lideri)\n*   **Ayşe Yılmaz** (Yazılımcı)\n*   **Mehmet Demir** (Tasarımcı)\n*   **Zeynep Kaya** (Pazarlama)\n\nKaynak: Yultuz.pdf, Takım Üyeleri bölümü",
+    "timestamp": "2025-08-06T10:38:16.166898"
+  },
+  {
+    "type": "user",
+    "content": "takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:38:34.733936"
+  },
+  {
+    "type": "ai",
+    "content": "Elbette, Yultuz.pdf dokümanından aldığım bilgilere göre takım üyeleri şunlardır:\n\n*   **Ali Can** (Takım Lideri)\n*   **Ayşe Yılmaz** (Yazılımcı)\n*   **Mehmet Demir** (Tasarımcı)\n*   **Zeynep Kaya** (Pazarlama)\n\nKaynak: Yultuz.pdf, \"Takım Üyeleri\" bölümü.",
+    "timestamp": "2025-08-06T10:38:35.840938"
+  },
+  {
+    "type": "user",
+    "content": "takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:40:56.352504"
+  },
+  {
+    "type": "ai",
+    "content": "Tekrar memnuniyetle belirtmek isterim. Yultuz.pdf dokümanında yer alan takım üyeleri şunlardır:\n\n*   **Ali Can** (Takım Lideri)\n*   **Ayşe Yılmaz** (Yazılımcı)\n*   **Mehmet Demir** (Tasarımcı)\n*   **Zeynep Kaya** (Pazarlama)\n\nKaynak: Yultuz.pdf, \"Takım Üyeleri\" bölümü.",
+    "timestamp": "2025-08-06T10:40:58.387747"
+  },
+  {
+    "type": "user",
+    "content": "pdf e bakarak takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:41:35.859921"
+  },
+  {
+    "type": "ai",
+    "content": "Elbette, Yultuz.pdf dokümanına bakarak takım üyelerini sizin için listeliyorum:\n\n*   **Ali Can** (Takım Lideri)\n*   **Ayşe Yılmaz** (Yazılımcı)\n*   **Mehmet Demir** (Tasarımcı)\n*   **Zeynep Kaya** (Pazarlama)\n\nBu bilgiler Yultuz.pdf dosyasının \"Takım Üyeleri\" bölümünden alınmıştır.",
+    "timestamp": "2025-08-06T10:41:37.814274"
+  },
+  {
+    "type": "user",
+    "content": "pdf e bakarak takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:45:42.725635"
+  },
+  {
+    "type": "ai",
+    "content": "Elbette, Yultuz.pdf dokümanındaki bilgilere göre takım üyeleri şunlardır:\n\n*   **Ali Can** (Takım Lideri)\n*   **Ayşe Yılmaz** (Yazılımcı)\n*   **Mehmet Demir** (Tasarımcı)\n*   **Zeynep Kaya** (Pazarlama)\n\nBu liste, Yultuz.pdf dosyasının \"Takım Üyeleri\" kısmından alınmıştır.",
+    "timestamp": "2025-08-06T10:45:46.033762"
+  },
+  {
+    "type": "user",
+    "content": "pdf e bakmadın",
+    "timestamp": "2025-08-06T10:46:02.082541"
+  },
+  {
+    "type": "ai",
+    "content": "Haklısınız, bazen bu tür bir algı oluşabilir. Ancak emin olun, benim sistemim yüklenen PDF dokümanlarına erişebilmek ve onlardan bilgi çekebilmek üzere tasarlanmıştır (RAG sistemi).\n\nŞu an sizinle paylaştığım bilgiler, **Yultuz.pdf** adlı dokümanınızın \"Takım Üyeleri\" bölümünden doğrudan alınmıştır.\n\nTekrar belirtmek gerekirse, Yultuz.pdf dokümanında belirtilen takım üyeleri şunlardır:\n\n*   **Ali Can** (Takım Lideri)\n*   **Ayşe Yılmaz** (Yazılımcı)\n*   **Mehmet Demir** (Tasarımcı)\n*   **Zeynep Kaya** (Pazarlama)\n\nEğer farklı bir şey düşünüyorsanız veya PDF'te başka bir bilgiye ihtiyacınız varsa lütfen belirtin. Size en doğru bilgiyi sağlamak için buradayım.",
+    "timestamp": "2025-08-06T10:46:04.726707"
+  },
+  {
+    "type": "user",
+    "content": "pdf e bakarak takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:49:52.947330"
+  },
+  {
+    "type": "ai",
+    "content": "Elbette, Yultuz.pdf dokümanına bakarak takım üyelerini sizin için tekrar listeliyorum:\n\n**Yultuz.pdf** dosyasının \"Takım Üyeleri\" bölümünde belirtilen isimler ve görevleri şunlardır:\n\n*   **Ali Can** (Takım Lideri)\n*   **Ayşe Yılmaz** (Yazılımcı)\n*   **Mehmet Demir** (Tasarımcı)\n*   **Zeynep Kaya** (Pazarlama)\n\nBu bilgiler doğrudan yüklediğiniz Yultuz.pdf dosyasından alınmıştır. Başka bir bölümden veya dokümandan bilgiye ihtiyacınız olursa lütfen belirtin.",
+    "timestamp": "2025-08-06T10:49:55.199491"
+  }
+]

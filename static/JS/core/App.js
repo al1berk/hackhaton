@@ -201,6 +201,11 @@ class App {
                     
                     console.log(`📝 Aktif sohbet güncellendi: ${data.chat_id}`);
                     
+                    // YENİ: PDF Manager'ı chat değişikliğinden haberdar et
+                    if (this.pdfManager && typeof this.pdfManager.onChatChanged === 'function') {
+                        this.pdfManager.onChatChanged(data.chat_id);
+                    }
+                    
                     // İlk yüklemede hoş geldin mesajını göster, sonrasında gizle
                     if (!this.isFirstLoad) {
                         this.ui.hideWelcomeMessage();

@@ -1,0 +1,22 @@
+[
+  {
+    "type": "user",
+    "content": "konu başlıklarını yaz",
+    "timestamp": "2025-08-06T10:17:13.355006"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz PDF dokümanlarından şu bilgileri buldum:\n\n*   **Yultuz.pdf** dosyasında geçen konu başlıkları şunlardır:\n    *   Yultuz Takımı Tanıtım Dokümanı\n    *   Takım Adı\n    *   Takım Üyeleri\n    *   Takım Tanıtımı\n    *   Takım Üyesi Profilleri\n    *   Görev\n    *   Sorumluluklar\n    *   Yetenekler\n    *   Takım Vizyonu\n\nKaynak: Yultuz.pdf, Bölüm 1, 2, 3",
+    "timestamp": "2025-08-06T10:17:17.434140"
+  },
+  {
+    "type": "user",
+    "content": "yetenekleri yaz",
+    "timestamp": "2025-08-06T10:17:55.448254"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz PDF dokümanlarından şu bilgileri buldum:\n\n*   **Yultuz.pdf** dosyasında belirtilen yetenekler şunlardır:\n    *   **Proje Yönetimi:** Takımın, projeleri başlangıçtan bitişe kadar etkili bir şekilde planlama, organize etme ve yürütme yeteneği.\n    *   **Yazılım Geliştirme:** Çeşitli programlama dilleri ve çerçeveler kullanarak sağlam ve ölçeklenebilir yazılım çözümleri geliştirme becerisi.\n    *   **Veri Analizi:** Büyük veri kümelerini analiz etme, içgörüler çıkarma ve bu verilere dayalı kararlar alma yeteneği.\n    *   **Problem Çözme:** Karmaşık sorunları tanımlama, analiz etme ve yenilikçi çözümler üretme becerisi.\n    *   **İletişim:** Takım içinde ve dış paydaşlarla açık ve etkili bir şekilde iletişim kurma yeteneği.\n    *   **İşbirliği:** Ortak hedeflere ulaşmak için diğer takım üyeleriyle ve departmanlarla uyum içinde çalışma becerisi.\n\nKaynak: Yultuz.pdf, Bölüm 3.4 (Yetenekler)",
+    "timestamp": "2025-08-06T10:17:58.190682"
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "type": "user",
+    "content": "pdfdeki konu başlıklarını söyle",
+    "timestamp": "2025-08-06T09:48:06.888765"
+  },
+  {
+    "type": "ai",
+    "content": "Yüklediğiniz PDF dokümanlarından şu bilgileri buldum:\n\n*   **arastirma-raporu-2025-07-30.pdf** dosyasında bulunan konu başlıkları şunlardır:\n    *   Dürtü Kontrolü ve Davranış Ketleme\n    *   Dikkatin Sürdürülmesi ve Yönlendirilmesi\n    *   Kişilik ve Duygu\n    *   Serebrum (Beyin Korteksi) ve Genel Yapısı\n    *   Serebrum (Beyin Korteksi / Büyük Beyin)\n    *   Frontal Lob (Ön Lob)\n    *   Serebellum (Beyincik / Küçük Beyin)\n\nKaynak: arastirma-raporu-2025-07-30.pdf, Bölüm 30, 18, 9, 16",
+    "timestamp": "2025-08-06T09:48:12.807950"
+  }
+]

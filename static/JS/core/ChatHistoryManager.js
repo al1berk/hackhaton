@@ -186,6 +186,11 @@ export class ChatHistoryManager {
                     this.app.updatePDFStats(data.vector_store_stats);
                 }
                 
+                // YENİ: PDF Manager'ı chat değişikliğinden haberdar et
+                if (this.app.pdfManager && typeof this.app.pdfManager.onChatChanged === 'function') {
+                    this.app.pdfManager.onChatChanged(chatId);
+                }
+                
                 // WebSocket bağlantısını bu chat için yeniden kur
                 this.app.ws.reconnectWithChatId(chatId);
                 

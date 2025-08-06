@@ -1,0 +1,22 @@
+[
+  {
+    "type": "user",
+    "content": "takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:39:16.972803"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Ben bir yapay zeka asistanıyım ve belirli bir takımın üyeleri hakkında doğrudan bilgiye sahip değilim. Bu tür kişisel veya şirket içi bilgilere erişimim bulunmamaktadır.\n\nAncak, size başka konularda yardımcı olabilirim:\n\n*   **Web araştırması** yapabilirim.\n*   Konuyla ilgili **sorular üretebilirim**.\n*   **Veri analizi** yapabilirim.\n*   **Metinleri özetleyebilirim**.\n*   Yüklediğiniz **PDF dokümanlarından bilgi çıkarabilirim** (RAG sistemi).\n*   Önceden yüklenmiş **dokümanlar arasında arama yapabilirim**.\n\nEğer bana belirli bir takımın üyeleri hakkında bilgi verirseniz veya bu konuda yapabileceğim başka bir şey varsa, lütfen çekinmeyin. Size nasıl yardımcı olabilirim?",
+    "timestamp": "2025-08-06T10:39:19.979871"
+  },
+  {
+    "type": "user",
+    "content": "pdf deki takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:39:29.735338"
+  },
+  {
+    "type": "ai",
+    "content": "Yüklediğiniz PDF dokümanlarından şu bilgileri buldum:\n\n• Yultuz Takımı'nın üyeleri şunlardır:\n    * Münevver Nur Topluyürek\n    * Ali Berk Yeşilduman\n\nKaynak: Yultuz.pdf, Bölüm 1, 2",
+    "timestamp": "2025-08-06T10:39:31.701038"
+  }
+]

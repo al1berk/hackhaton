@@ -1,0 +1,22 @@
+[
+  {
+    "type": "user",
+    "content": "yetenekler ne imiş",
+    "timestamp": "2025-08-06T09:59:21.233792"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Ben LangGraph ve CrewAI ile güçlendirilmiş akıllı bir asistanım. Size yardımcı olabileceğim bazı yeteneklerim şunlardır:\n\n*   **Web araştırması yapabilirim:** İnternet üzerindeki bilgileri sizin için bulabilirim.\n*   **Soru üretebilirim:** Belirli bir konu hakkında sorular oluşturabilirim.\n*   **Veri analizi yapabilirim:** Verileri inceleyip size anlamlı bilgiler sunabilirim.\n*   **Metin özetleyebilirim:** Uzun metinleri daha kısa ve anlaşılır bir şekilde özetleyebilirim.\n*   **Yüklenen PDF dokümanlarından bilgi çıkarabilirim (RAG sistemi):** Yüklediğiniz PDF dosyalarının içeriğini anlayıp sorularınıza yanıt verebilirim.\n*   **Önceden yüklenmiş dokümanlar arasında arama yapabilirim:** Benim için önceden erişilebilir hale getirilmiş belgeler içinde bilgi arayabilirim.\n\nEğer sorunuz yüklediğiniz veya benim erişebildiğim bir dokümanla ilgiliyse, öncelikle o dokümanlardaki bilgileri kullanır ve size hangi kaynaklardan geldiğini belirtirim.\n\nSize nasıl yardımcı olabilirim?",
+    "timestamp": "2025-08-06T09:59:23.405198"
+  },
+  {
+    "type": "user",
+    "content": "hayır yüklenen pdf deki yetenekler neler",
+    "timestamp": "2025-08-06T09:59:34.394553"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Bu sohbette henüz herhangi bir PDF dokümanı yüklenmemiş. Bir doküman hakkında soru sorabilmem için önce PDF dosyanızı yüklemeniz gerekiyor.\n\n💡 **Nasıl PDF yükleyebilirim?**\n• Ekranın sol üstündeki **'PDF Yükle'** butonuna tıklayın\n• Dosyanızı seçin ve yükleme işlemini bekleyin\n• Yükleme tamamlandıktan sonra doküman içeriği hakkında sorular sorabilirsiniz!\n\n🔍 **PDF yükledikten sonra neler yapabilirim?**\n• Dokümanın özetini isteyebilirsiniz\n• Belirli konular hakkında sorular sorabilirsiniz\n• İçerikten alıntılar ve detaylar alabilirsiniz\n\n📝 **Not:** Bu PDF'ler sadece bu sohbete (e3d44d9c-5ec2-47d5-b9d8-e55177025a29) özeldir.",
+    "timestamp": "2025-08-06T09:59:34.407763"
+  }
+]

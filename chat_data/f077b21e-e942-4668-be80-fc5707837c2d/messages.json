@@ -1,0 +1,12 @@
+[
+  {
+    "type": "user",
+    "content": "pdf e bakarak takım üyelerini  yaz",
+    "timestamp": "2025-08-06T11:05:35.033688"
+  },
+  {
+    "type": "ai",
+    "content": "Elbette, yüklenmiş PDF dokümanlarınıza bakarak takım üyelerini sizin için listeleyebilirim.\n\nHangi PDF'ten bahsettiğinizi veya hangi dokümanı kontrol etmem gerektiğini belirtir misiniz? Eğer birden fazla doküman varsa, lütfen dosya adını söyleyin.\n\nŞimdi kontrol ediyorum...",
+    "timestamp": "2025-08-06T11:05:36.401056"
+  }
+]

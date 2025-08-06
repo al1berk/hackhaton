@@ -1,0 +1,22 @@
+[
+  {
+    "type": "user",
+    "content": "takım üyelerini yaz",
+    "timestamp": "2025-08-06T10:32:21.286676"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! \"Takım üyelerini yaz\" derken tam olarak hangi takımın üyelerini kastettiğinizi anlayamadım.\n\nBenim önceden tanımlanmış bir takım üyeleri listem bulunmamaktadır. Eğer bahsettiğiniz takım üyeleri hakkında bilgi içeren bir belge (PDF gibi) yüklediyseniz veya bu bilgilerin bulunduğu bir web sayfası varsa, size yardımcı olabilirim.\n\nLütfen bana biraz daha bağlam veya detay verir misiniz? Örneğin:\n*   Hangi şirketin/projenin/grubun takım üyeleri?\n*   Bu bilgilere nereden ulaşabilirim? (Bir doküman, bir web sitesi bağlantısı vb.)\n\nDaha fazla bilgi verdiğinizde size yardımcı olmaktan mutluluk duyarım!",
+    "timestamp": "2025-08-06T10:32:24.520368"
+  },
+  {
+    "type": "user",
+    "content": "pdf deki konu başlıklarını yaz",
+    "timestamp": "2025-08-06T10:32:33.252981"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Bu sohbette henüz herhangi bir PDF dokümanı yüklenmemiş. Bir doküman hakkında soru sorabilmem için önce PDF dosyanızı yüklemeniz gerekiyor.\n\n💡 **Nasıl PDF yükleyebilirim?**\n• Ekranın sol üstündeki **'PDF Yükle'** butonuna tıklayın\n• Dosyanızı seçin ve yükleme işlemini bekleyin\n• Yükleme tamamlandıktan sonra doküman içeriği hakkında sorular sorabilirsiniz!\n\n🔍 **PDF yükledikten sonra neler yapabilirim?**\n• Dokümanın özetini isteyebilirsiniz\n• Belirli konular hakkında sorular sorabilirsiniz\n• İçerikten alıntılar ve detaylar alabilirsiniz\n\n📝 **Not:** Bu PDF'ler sadece bu sohbete (f6e157eb-f4c8-4c77-8f4d-c7c8fe530de0) özeldir.",
+    "timestamp": "2025-08-06T10:32:33.263900"
+  }
+]

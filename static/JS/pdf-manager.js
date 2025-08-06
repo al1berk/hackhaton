@@ -487,5 +487,27 @@
     initializePDFList() {
         this.loadPDFList();
     }
+
+    // YENİ METOD: Chat değişikliklerini algıla ve PDF listesini güncelle
+    onChatChanged(newChatId) {
+        console.log(`📚 PDF Manager: Chat değişti (${newChatId}), PDF listesi güncelleniyor...`);
+        
+        // Chat ID'yi güncelle
+        if (this.app.pdfState) {
+            this.app.pdfState.currentChatId = newChatId;
+        }
+        
+        // PDF listesini yenile
+        this.loadPDFList();
+    }
+
+    // YENİ METOD: Aktif chat ID'yi güncelle ve PDF listesini yenile
+    updateCurrentChat(chatId) {
+        if (chatId && chatId !== this.currentChatId) {
+            this.currentChatId = chatId;
+            console.log(`📚 PDF Manager aktif chat güncellendi: ${chatId}`);
+            this.loadPDFList();
+        }
+    }
 }
 

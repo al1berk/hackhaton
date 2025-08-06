@@ -1,0 +1,12 @@
+[
+  {
+    "type": "user",
+    "content": "konu başlıklarını yaz",
+    "timestamp": "2025-08-06T10:33:11.077087"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Elbette, size yardımcı olabileceğim bazı ana konu başlıkları ve yeteneklerim şunlardır:\n\n*   **Web Araştırması:** İnternetten bilgi bulma ve güncel konular hakkında araştırma yapma.\n*   **Soru Üretimi:** Belirli bir konu hakkında sorular oluşturma.\n*   **Veri Analizi:** Sağlanan verileri analiz etme ve içgörüler sunma.\n*   **Metin Özetleme:** Uzun metinleri veya dokümanları özetleme.\n*   **PDF Dokümanlarından Bilgi Çıkarma (RAG Sistemi):** Yüklediğiniz PDF dosyalarından belirli bilgilere ulaşma ve özetleme.\n*   **Yüklenmiş Dokümanlarda Arama:** Önceden sisteme yüklenmiş dokümanlar arasında spesifik bilgiler arama.\n\nBu konulardan herhangi biri hakkında veya başka bir konuda yardıma ihtiyacınız olursa, lütfen bana bildirin!",
+    "timestamp": "2025-08-06T10:33:14.403431"
+  }
+]

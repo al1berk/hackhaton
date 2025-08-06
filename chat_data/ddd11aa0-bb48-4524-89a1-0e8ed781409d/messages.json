@@ -1,0 +1,22 @@
+[
+  {
+    "type": "user",
+    "content": "takım üyelerini yaz",
+    "timestamp": "2025-08-06T11:01:26.940656"
+  },
+  {
+    "type": "ai",
+    "content": "Merhaba! Ben bir yapay zeka asistanıyım, bu yüzden insanlardan oluşan bir \"takımım\" yok. Ama size yardımcı olmak için buradayım!\n\nBenim \"takımım\" diyebileceğimiz şey, size yardımcı olabilecek yeteneklerimden oluşuyor:\n\n*   Web araştırması yapabilirim.\n*   Soru üretebilirim.\n*   Veri analizi yapabilirim.\n*   Metinleri özetleyebilirim.\n*   Yüklenen PDF dokümanlarından bilgi çıkarabilirim.\n*   Önceden yüklenmiş dokümanlar arasında arama yapabilirim.\n\nEğer belirli bir konu hakkında bilgi almak veya bir konuda yardımcı olmamı isterseniz, lütfen bana söyleyin! Size nasıl yardımcı olabilirim?",
+    "timestamp": "2025-08-06T11:01:30.132332"
+  },
+  {
+    "type": "user",
+    "content": "pdf e bakarak takım üyelerini yaz",
+    "timestamp": "2025-08-06T11:01:37.440482"
+  },
+  {
+    "type": "ai",
+    "content": "Harika bir fikir! PDF dokümanından bilgi çıkarabilirim, evet.\n\nAncak, şu an için bana yüklenmiş bir PDF bulunmuyor.\n\nLütfen incelememi istediğiniz PDF dosyasını bana ulaştırabilir misiniz? Genellikle, bu tür bir sistemde PDF'i yüklemeniz veya bana bir link sağlamanız gerekebilir.\n\nPDF'i bana sağladığınızda, içindeki takım üyeleri bilgilerini dikkatlice inceleyip size sunabilirim.\n\nNasıl yardımcı olmamı istersiniz?",
+    "timestamp": "2025-08-06T11:01:43.853166"
+  }
+]

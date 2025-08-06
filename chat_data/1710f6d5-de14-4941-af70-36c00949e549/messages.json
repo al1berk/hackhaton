@@ -1,0 +1,12 @@
+[
+  {
+    "type": "user",
+    "content": "pdf deki konu başlıklarını anlat",
+    "timestamp": "2025-08-06T09:50:47.285988"
+  },
+  {
+    "type": "ai",
+    "content": "📄 Yüklediğiniz PDF dokümanlarından şu konu başlıklarını buldum:\n\n*   **E-Ticaret_Hackathonu_2025_Şartnamesi_TR1_TqdGv.pdf** dosyasında bulunan konu başlıkları şunlardır:\n    *   3. BAŞVURU VE KATILIM KOŞULLARI\n    *   3.1. Takım Oluşturma\n    *   3.2. Danışman Yükümlülükleri\n    *   3.3. Süreç Bilgileri\n    *   3.4. Başvuru Esasları\n    *   4. YARIŞMA TAKVİMİ\n    *   5. PUANLAMA VE DEĞERLENDİRME\n    *   5.1. Ön Değerlendirme Süreci\n    *   5.2. Hackathon Süreci\n    *   7. İLETİŞİM\n\nKaynak: E-Ticaret_Hackathonu_2025_Şartnamesi_TR1_TqdGv.pdf, Bölüm 2, 15, 23, 27",
+    "timestamp": "2025-08-06T09:50:53.344286"
+  }
+]
